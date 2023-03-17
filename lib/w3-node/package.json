@@ -1,0 +1,53 @@
+{
+  "name": "w3-node",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "W3 node implementation.",
+  "scripts": {
+    "dev": "cross-env DEBUG=w3* vite",
+    "test": "cross-env DEBUG=w3* mocha --exit --ui bdd \"./test/**/*.test.js\"",
+    "deps": "depcruise --include-only \"^src\" --output-type dot src | dot -T svg > architecture.svg",
+    "version": "auto-changelog -p && git add CHANGELOG.md",
+    "size": "t=\"$(npm pack .)\"; wc -c \"${t}\"; tar tvf \"${t}\"; rm \"${t}\";",
+    "stage": "git add . && git commit -m \"$npm_package_version\" && git tag $npm_package_version && git push && git push --tags",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "author": "wangqing@mq-ai.cn",
+  "license": "MIT",
+  "dependencies": {
+    "@libp2p/bootstrap": "^2.0.0",
+    "@libp2p/floodsub": "^3.0.7",
+    "@libp2p/mplex": "5.2.2",
+    "@libp2p/peer-id": "^1.1.15",
+    "@libp2p/peer-id-factory": "^1.0.18",
+    "@libp2p/webrtc-direct": "^2.0.2",
+    "@libp2p/webrtc-star": "^3.0.0",
+    "@libp2p/websockets": "^3.0.0",
+    "@mq/fsm": "file:lib/fsm/",
+    "cross-env": "^7.0.3",
+    "debug": "^4.3.3",
+    "dotenv": "^16.0.1",
+    "eventemitter2": "^6.4.7",
+    "gauss": "^0.2.12",
+    "javascript-state-machine": "^3.1.0",
+    "libp2p": "^0.39.0",
+    "lodash": "^4.17.21",
+    "uint8arrays": "^3.1.0"
+  },
+  "devDependencies": {
+    "auto-changelog": "^2.3.0",
+    "chai": "^4.3.4",
+    "chai-exclude": "^2.1.0",
+    "chai-string": "^1.5.0",
+    "dependency-cruiser": "^11.7.1",
+    "ethereum-cryptography": "^1.1.2",
+    "fs-extra": "^10.1.0",
+    "inquirer": "^8.2.4",
+    "mocha": "^10.0.0",
+    "nyc": "^15.1.0"
+  },
+  "engines": {
+    "node": ">= 16.0.0"
+  }
+}
