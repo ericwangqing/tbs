@@ -1,9 +1,9 @@
 <template lang="pug">
 .scanned-box
   .border-wrapper.left.top
-  .border-wrapper.right.top
+  .border-wrapper.right.top(v-if="!noRightWrapper")
   .border-wrapper.left.bottom
-  .border-wrapper.right.bottom
+  .border-wrapper.right.bottom(v-if="!noRightWrapper")
   slot
 </template>
 
@@ -11,6 +11,12 @@
 import { defineComponent } from 'vue'
 export default defineComponent({
 name: 'ScannedBox',
+props: {
+  noRightWrapper: {
+    type: Boolean,
+    default: false
+  }
+},
 setup: () => {
   return {}
 },
