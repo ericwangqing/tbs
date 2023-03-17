@@ -1,7 +1,7 @@
 <template lang="pug">
-.home
+.home.pt-20px
   BasicInfoCard(:class="{ left: chartVisible } ", :chainHeight="config.chainHeight", :totalTransactions="config.totalTransactions")
-  WorldMap
+  WorldMap.world-map
   Charts
 
 </template>
@@ -49,6 +49,12 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   display: flex;
-  padding: 20px 20px 40px 30px;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  .world-map {
+    width: 88%;
+    flex-grow: 1;
+  }
 }
 </style>
