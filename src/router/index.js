@@ -1,5 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '@/pages/Home/index.vue'
+import Benchmark from '@/pages/Benchmark/index.vue'
+import Security from '@/pages/Security/index.vue'
 
 const routes = [
   {
@@ -16,7 +18,17 @@ const routes = [
   {
     path: '/:pathMatch(.*)*',
     redirect: { name: 'home' },
-  }
+  },
+  {
+    path: '/benchmark/',
+    name: 'benchmark',
+    component: Benchmark,
+  },
+  {
+    path: '/security/',
+    name: 'security',
+    component: Security,
+  },
 ]
 
 const router = createRouter({
