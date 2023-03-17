@@ -1,36 +1,54 @@
 <template lang="pug">
 .home
-  span TBS-testbed homepage
-  AButton Start up
+  BasicInfoCard(:class="{ left: chartVisible } ", :chainHeight="config.chainHeight", :totalTransactions="config.totalTransactions")
+  WorldMap
+  Charts
+
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-export default defineComponent({
-name: 'Home',
-components: {},
+import { defineComponent, ref } from 'vue'
+import BasicInfoCard from './components/BasicInfoCard.vue'
+import WorldMap from './components/WorldMap.vue'
+import Charts from './components/Charts.vue'
 
-setup: () => {
-  return {}
-},
+export default defineComponent({
+  name: 'Home',
+  components: {
+    BasicInfoCard,
+    WorldMap,
+    Charts
+  },
+  setup: () => {
+    const chartVisible = ref(false)
+    const config = ref({
+      tps: 15,
+      chainHeight: 181311,
+      totalTransactions: 103123414,
+      playing: true
+    })
+
+    setInterval(() => {
+      if(config.value.playing) {
+        config.value.chainHeight += config.value.tps / (40 + 10 * Math.random())
+        config.value.totalTransactions += config.value.tps
+      }
+    }, 1000)
+
+    return {
+      config,
+      chartVisible
+    }
+  },
 })
 </script>
 
 <style scoped lang="scss">
 .home {
-  height: 100%;
+  position: relative;
   width: 100%;
-  font-size: 24px;
+  height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  span {
-    font-size: 36px;
-    margin-top: -60px;
-  }
-  .ant-btn {
-    margin-top: 36px;
-  }
+  padding: 20px 20px 40px 30px;
 }
 </style>
