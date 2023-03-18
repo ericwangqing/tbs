@@ -140,7 +140,6 @@ export default defineComponent({
       width: 100%;
       aspect-ratio: 2;
       margin-left: -2vw;
-      margin-top: -6vh;
     }
     .bg {
       position: absolute;

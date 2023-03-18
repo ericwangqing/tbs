@@ -17,6 +17,7 @@ name: 'Performance',
   },
 setup: (props) => {
   const performanceContainerRef = ref(null)
+  let performanceChart
 
   const generateOption = (startAttackSimulate) => {
     const series = [
@@ -99,17 +100,11 @@ setup: (props) => {
     controller.performanceWithAttackerChartOutboundData = []
     performanceChart.clear()
     performanceChart.setOption(generateOption(props.config.startAttackSimulate))
-
-    if (props.config.startAttackSimulate) {
-      setTimeout(() => displayAttackLine.value = true, 2000);
-    } else {
-      displayAttackLine.value = false;
-    }
   })
 
   onMounted(async () => {
     setTimeout(() => {
-      const performanceChart = initPerformance()
+      performanceChart = initPerformance()
       controller.initChart({ performanceChart, withAttacker: props.config.startAttackSimulate })
     }, 300)
   })

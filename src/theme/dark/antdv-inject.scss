@@ -1,0 +1,188 @@
+// --------------- input ------------
+.ant-input {
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 4px;
+  color: #ffffff;
+  outline: none;
+  background: rgba(0, 0, 0, 0.1);
+  ::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+  &:hover {
+    border: 1px solid #fff;
+  }
+  &-disabled, &[disabled] {
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.45);
+    &:hover {
+      border: 1px solid rgba(255, 255, 255, 0.45);
+    }
+  }
+  &:focus, &-focused {
+    border: 1px solid #fff;
+    box-shadow: none;
+  }
+
+  &-lg {
+    font-size: 18px;
+    height: 50px;
+    border-radius: 8px;
+  }
+}
+
+// -------------- input-number-------------
+.ant-input-number {
+  font-size: 16px;
+  background: rgba(0, 0, 0, 0.1);
+  border-color: rgba(255,255,255,0.45);
+  border-radius: 4px;
+  color: white;
+  &:focus, &.ant-input-number-focused, &:hover {
+    border-color: #ffffff;
+    box-shadow: none;
+  }
+  .ant-input-number-handler-wrap {
+    border-radius: 0 4px 4px 0;
+    background: #64687d;
+    border: none;
+    .ant-input-number-handler {
+      border-left: 1px solid rgba(255,255,255,0.45);
+      span {
+        color: white;
+      }
+      &:hover span {
+        color: #ffae00;
+      }
+      &:active {
+        background: initial;
+      }
+      &:active::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        border-radius: inherit;
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+    .ant-input-number-handler-down {
+      border-top: 1px solid rgba(255,255,255,0.45);
+    }
+  }
+
+  &:hover .ant-input-number-input {
+    padding-right: 28px;
+  }
+  &-lg {
+    height: 50px;
+    .ant-input-number-input {
+      line-height: 50px;
+      height: 50px;
+      font-size: 18px;
+    }
+  }
+}
+.ant-input-number-group-wrapper {
+  .ant-input-number-group {
+    border: 1px solid rgba(255,255,255,0.45);
+    border-radius: 4px;
+    transition: border-color 0.3s;
+    &:focus-within, &:hover {
+      border-color: #ffffff;
+    }
+    .ant-input-number {
+      border: none;
+      .ant-input-number-handler-wrap {
+        border-radius: 0;
+      }
+    }
+    .ant-input-number-group-addon {
+      padding: 0 5px;
+      background: #64687d;
+      border: none;
+      border-left: 1px solid rgba(255,255,255,0.45);
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+      color: #ffffff;
+    }
+  }
+  &-lg {
+    .ant-input-number-group {
+      border-radius: 8px;
+      .ant-input-number-group-addon {
+        font-size: 18px;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+      } 
+    }
+  }
+}
+
+// ----------------- select -----------------------
+.ant-select {
+  &:not(.ant-select-customize-input), &-disabled.ant-select:not(.ant-select-customize-input) {
+    .ant-select-selector {
+      border-radius: 4px;
+      border-color: rgba(255, 255, 255, 0.45);
+      background: rgba(0, 0, 0, 0.1);
+      &:hover {
+        border-color: #fff;
+      }
+      &:hover + .ant-select-arrow {
+        color: #fff;
+      }
+      &-disabled, &[disabled] {
+        border-color: rgba(255, 255, 255, 0.45);
+        background: transparent;
+        color: rgba(255, 255, 255, 0.45);
+        &:hover {
+          border-color: rgba(255, 255, 255, 0.45);
+        }
+      }
+    }
+    .ant-select-arrow {
+      color: rgba(255, 255, 255, 0.45);
+    }
+    .ant-select-selection-item {
+      color: #fff;
+    }
+  }
+  &-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) &-selector {
+    border-color: #fff;
+  }
+  &-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) &-arrow {
+    color: #fff;
+  }
+  &-lg.ant-select-single:not(.ant-select-customize-input) &-selector {
+    height: 50px;
+    border-radius: 8px;
+    input.ant-select-selection-search-input, .ant-select-selection-item {
+      line-height: 50px;
+      height: 50px;
+    }
+  }
+}
+
+.ant-select-dropdown {
+  background: #343643;
+  border: solid 1px rgba(255, 255, 255, 0.45);
+  border-radius: 4px;
+  .ant-select-item-option {
+    color: #fff;
+    &-active {
+      background: rgba(0, 0, 0, 0.3);
+    }
+    &-selected {
+      background: rgba(0, 0, 0, 0.6);
+    }
+    &-disabled {
+      color: rgba(255, 255, 255, 0.45);
+    }
+  }
+  &-lg {
+    border-radius: 8px;
+  }
+}

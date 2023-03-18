@@ -1,0 +1,4 @@
+@import '../mixin.scss';
+* {
+  @include scrollbar(#212435, #4e505d);
+}

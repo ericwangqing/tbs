@@ -3,7 +3,7 @@
   BasicInfoCard.basic-info(:class="{ 'mr-38vw': chartVisible } ", :chainHeight="config.chainHeight", :totalTransactions="config.totalTransactions")
   WorldMap.world-map(:config="config")
   Charts(:config="config", @visible="onVisibleChange")
-  ConfigPopup(:configBtnSide="'left'", :configBtnTop="'949px'")
+  Config(:default-config="config" @change-config="onChangeConfig" @changeForgeAccountRatio="onChangeForgeAccountRatio")
 
 </template>
 
@@ -12,7 +12,7 @@ import { defineComponent, onBeforeUnmount, onMounted, ref, toRaw, watch } from '
 import BasicInfoCard from './components/BasicInfoCard.vue'
 import WorldMap from './components/WorldMap.vue'
 import Charts from './components/Charts.vue'
-import ConfigPopup from '@/components/ConfigPopup.vue'
+import Config from './components/Config.vue'
 
 import { useRoute } from 'vue-router'
 import controller from './composition/controller.js'
@@ -24,7 +24,7 @@ export default defineComponent({
     BasicInfoCard,
     WorldMap,
     Charts,
-    ConfigPopup
+    Config
   },
   setup: () => {
     const chartVisible = ref(false)
@@ -98,6 +98,14 @@ export default defineComponent({
       }
     }
 
+    const onChangeForgeAccountRatio = (forgeAccountRatio) => {
+      config.value.forgeAccountRatio = forgeAccountRatio;
+      if (config.value.startAttackSimulate) {
+        const attackerNodeScale = Math.floor(config.value.nodeScale * config.value.forgeAccountRatio / 100);
+        controller.setNodesScale(config.value.nodeScale-attackerNodeScale, attackerNodeScale);
+      }
+    }
+
     const onVisibleChange = (val) => {
       chartVisible.value = val
     }
@@ -122,7 +130,9 @@ export default defineComponent({
       config,
       chartVisible,
       isSecurity,
-      onVisibleChange
+      onVisibleChange,
+      onChangeConfig,
+      onChangeForgeAccountRatio
     }
   },
 })

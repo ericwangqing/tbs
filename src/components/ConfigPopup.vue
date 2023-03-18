@@ -1,23 +1,24 @@
 <template lang="pug">
-.config-popup(:class="{ visible: visible }")
-  .config-popup--mask
-  .config-popup--container
-    .config-popup--container-header
-      slot(name="header")
-    .config-popup--container-main(ref="popupMain", :class="{ needScroll: needScroll }")
-      slot(name="main")
-  .config-popup--footer
-    .operation-btns
-      slot(name="footer")
-    AButton.back-btn.bottom-animated(type="text" @click="handleBack")
-      span Back
-      img(:src="BackSvg")
+.config-popup-wrapper
+  .config-popup(:class="{ visible: show }")
+    .config-popup--mask
+    .config-popup--container
+      .config-popup--container-header
+        slot(name="header")
+      .config-popup--container-main(ref="popupMain", :class="{ needScroll: needScroll }")
+        slot(name="main")
+    .config-popup--footer
+      .operation-btns
+        slot(name="footer")
+      AButton.back-btn.bottom-animated(type="text" @click="handleBack")
+        span Back
+        img(:src="BackSvg")
 
-SideBtn.config-btn(@click="openConfig", :breathe="btnEmphasize", :side="configBtnSide" :class="configBtnSide")
+  SideBtn.config-btn(@click="openConfig", :breathe="btnEmphasize", :side="configBtnSide" :class="configBtnSide")
 </template>
 
 <script>
-import { computed, defineComponent, nextTick, ref, onMounted, onBeforeUnmount } from 'vue'
+import { computed, defineComponent, nextTick, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import BackSvg from '@/assets/back-icon.svg'
 import SideBtn from './SideBtn.vue'
 export default defineComponent({
@@ -41,11 +42,16 @@ export default defineComponent({
     btnEmphasize: {
       type: Boolean,
       default: false
+    },
+    visible: {
+      type: Boolean,
+      default: false
     }
   },
+  emits: ['show', 'close'],
   setup: (props, { emit }) => {
     const popupMain = ref(null)
-    const visible = ref(false)
+    const show = ref(false)
     const needScroll = ref(false)
 
     const calcNeedScroll = async () => {
@@ -55,12 +61,12 @@ export default defineComponent({
     }
 
     const handleBack = () => {
-      visible.value = false
+      show.value = false
       emit('close')
     }
 
     const openConfig = () => {
-      visible.value = true
+      show.value = true
       emit('show')
     }
 
@@ -73,11 +79,16 @@ export default defineComponent({
       window.removeEventListener('resize', calcNeedScroll)
     })
 
+    watch(() => props.visible, (val) => {
+      show.value = val
+      console.log('!!', val)
+    })
+
     return {
       popupMain,
       needScroll,
       BackSvg,
-      visible,
+      show,
       handleBack,
       openConfig,
     }
@@ -158,9 +169,9 @@ export default defineComponent({
     }
     &-main {
       max-height: 100%;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
+      // display: flex;
+      // flex-wrap: wrap;
+      // justify-content: space-between;
       margin-top: 20px;
       padding: 0 40px;
       overflow-y: auto;
