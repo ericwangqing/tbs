@@ -26,7 +26,6 @@ export default defineComponent({
 <style scoped lang="scss">
 .basic-info {
   position: relative;
-  margin: 0 auto;
   height: 72px;
   display: flex;
   align-items: center;

@@ -4,11 +4,17 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, watch } from 'vue'
 import * as echarts from 'echarts'
+import controller from "../composition/controller.js"
 
 export default defineComponent({
 name: 'Performance',
+  props: {
+    config: {
+      type: Object
+    }
+  },
 setup: (props) => {
   const performanceContainerRef = ref(null)
 
@@ -87,10 +93,24 @@ setup: (props) => {
     return performanceChart
   }
 
+  watch(() => props.config.startAttackSimulate, () => {
+    controller.withAttacker = props.config.startAttackSimulate
+    controller.performanceWithAttackerChartInboundData = []
+    controller.performanceWithAttackerChartOutboundData = []
+    performanceChart.clear()
+    performanceChart.setOption(generateOption(props.config.startAttackSimulate))
+
+    if (props.config.startAttackSimulate) {
+      setTimeout(() => displayAttackLine.value = true, 2000);
+    } else {
+      displayAttackLine.value = false;
+    }
+  })
+
   onMounted(async () => {
     setTimeout(() => {
       const performanceChart = initPerformance()
-      performanceChart.setOption(generateOption([]))
+      controller.initChart({ performanceChart, withAttacker: props.config.startAttackSimulate })
     }, 300)
   })
 

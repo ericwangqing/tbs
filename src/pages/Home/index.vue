@@ -1,16 +1,19 @@
 <template lang="pug">
 .home.pt-20px
-  BasicInfoCard(:class="{ left: chartVisible } ", :chainHeight="config.chainHeight", :totalTransactions="config.totalTransactions")
-  WorldMap.world-map
-  Charts
+  BasicInfoCard.basic-info(:class="{ 'mr-38vw': chartVisible } ", :chainHeight="config.chainHeight", :totalTransactions="config.totalTransactions")
+  WorldMap.world-map(:config="config")
+  Charts(:config="config", @visible="onVisibleChange")
 
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onBeforeUnmount, onMounted, ref, toRaw, watch } from 'vue'
 import BasicInfoCard from './components/BasicInfoCard.vue'
 import WorldMap from './components/WorldMap.vue'
 import Charts from './components/Charts.vue'
+
+import { useRoute } from 'vue-router'
+import controller from './composition/controller.js'
 
 export default defineComponent({
   name: 'Home',
@@ -21,11 +24,29 @@ export default defineComponent({
   },
   setup: () => {
     const chartVisible = ref(false)
+    const route = useRoute()
     const config = ref({
       tps: 15,
       chainHeight: 181311,
       totalTransactions: 103123414,
-      playing: true
+      playing: true,
+      nodeScale: 1000,
+      latencyInSwarm: 20,
+      latencyBetweenSwarm: 100,
+      swarmScale: 1,
+      attackType: 'Sybil',
+      forgeAccountRatio: 30,
+      isAttackSimulate: route.name === 'security',
+      startAttackSimulate: false,
+    })
+
+    watch(() => route.name, (newRouteName) => {
+      config.value.isAttackSimulate = newRouteName === 'security'
+      isSecurity.value = newRouteName === 'security'
+      if (!config.value.isAttackSimulate) {
+        config.value.startAttackSimulate = false
+      }
+      onChangeConfig(toRaw(config.value))
     })
 
     setInterval(() => {
@@ -35,9 +56,66 @@ export default defineComponent({
       }
     }, 1000)
 
+    if (config.value.isAttackSimulate && config.value.startAttackSimulate) {
+      const attackerNodeScale = Math.floor(config.value.nodeScale * config.value.forgeAccountRatio / 100)
+      controller.setNodesScale(config.value.nodeScale - attackerNodeScale,  attackerNodeScale)
+    } else {
+      controller.setNodesScale(config.value.nodeScale,  0)
+    }
+    controller.autoGenerateTx(config.value.tps)
+
+    const onChangeConfig = (newConfig) => {
+      console.log('change config', newConfig)
+      configVisible.value = false;
+      if (newConfig.tps)
+        controller.autoGenerateTx(newConfig.tps);
+
+      newConfig.nodeScale && (config.value.nodeScale = newConfig.nodeScale);
+      if (newConfig.tps) {
+        config.value.tps = newConfig.tps
+        config.value.swarmScale = Math.ceil(newConfig.nodeScale / (150 + Math.random() * 50))
+      }
+      if (!isNil(newConfig.isAttackSimulate))
+        config.value.isAttackSimulate = newConfig.isAttackSimulate;
+      if (!isNil(newConfig.startAttackSimulate))
+        config.value.startAttackSimulate = newConfig.startAttackSimulate;
+      if (newConfig.forgeAccountRatio)
+        config.value.forgeAccountRatio = newConfig.forgeAccountRatio;
+
+      if (!isNil(newConfig.startAttackSimulate)) {
+        if (config.value.startAttackSimulate) {
+          const attackerNodeScale = Math.floor(config.value.nodeScale * config.value.forgeAccountRatio / 100);
+          controller.setNodesScale(config.value.nodeScale - attackerNodeScale, attackerNodeScale);
+        } else {
+          controller.setNodesScale(config.value.nodeScale, 0);
+        }
+      }
+    }
+
+    const onVisibleChange = (val) => {
+      chartVisible.value = val
+    }
+
+    const onKeydown = (event) => {
+      if (event.key === 'p') {
+        config.value.playing = !config.value.playing
+        if (config.value.playing) controller.play()
+        else controller.pause()
+      }
+    }
+
+    onMounted(() => {
+      document.addEventListener('keydown', onKeydown)
+    })
+
+    onBeforeUnmount(() => {
+      document.removeEventListener('keydown', onKeydown)
+    })
+
     return {
       config,
-      chartVisible
+      chartVisible,
+      onVisibleChange
     }
   },
 })
