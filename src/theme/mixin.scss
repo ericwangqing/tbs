@@ -1,0 +1,63 @@
+@mixin scrollbar($trackBg, $thumbBg, $trackWidth: 28px, $thumbWidth: 12px) {
+  &::-webkit-scrollbar {
+    width: #{$trackWidth};
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    width: #{$thumbWidth};
+  }
+  &::-webkit-scrollbar-thumb {
+    border: calc((#{$trackWidth} - #{$thumbWidth}) / 2) solid #{$trackBg};
+    border-radius: 999px;
+    background: #{$thumbBg};
+    width: #{$thumbWidth};
+  }
+}
+
+/**
+ * linearGradientRadiusBorder, use for a box with linear-gradient colored border and border-radius.
+ * custom three children elements, border, bg, mask.
+ * border element present a linear-gradient bg box.
+ * bg element present a smaller box with given bg, cover center of the border element.
+ * mask element is used if need some UI state like hover mask with #fff, 0.1
+ */
+
+ @mixin basicCard($width, $height, $borderWidth, $borderRadius, $background) {
+  position: absolute;
+  top: #{$borderWidth}px;
+  left: #{$borderWidth}px;
+  @if $width == min-content {
+    width: calc(100% - #{$borderWidth}px * 2);
+  } @else {
+    width: calc(#{$width} - #{$borderWidth}px * 2);
+  }
+  @if $height == min-content {
+    height: calc(100% - #{$borderWidth}px * 2);
+  } @else {
+    height: calc(#{$height} - #{$borderWidth}px * 2);
+  }
+  border: solid transparent #{$borderWidth}px;
+  background: #{$background};
+  border-radius: #{$borderRadius}px;
+}
+
+@mixin linearGradientRadiusBorder($width, $height, $borderWidth, $borderRadius, $background, $borderColor) {
+  position: relative;
+  width: #{$width};
+  height: #{$height};
+  &--border {
+    @include basicCard(#{$width}, #{$height}, 0, #{$borderRadius}, #{$borderColor});
+    transition: all 0.3s ease-in-out;
+  }
+  &--bg {
+    @include basicCard(#{$width}, #{$height}, #{$borderWidth}, #{$borderRadius}, #{$background});
+    transition: all 0.3s ease-in-out;
+  }
+  &--mask {
+    @include basicCard(#{$width}, #{$height}, 0, #{$borderRadius}, none);
+    transition: all 0.3s ease-in-out;
+  }
+  &--content {
+    @include basicCard(#{$width}, #{$height}, 0, #{$borderRadius}, transparent);
+  }
+}

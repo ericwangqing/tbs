@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>返回icon</title>
+    <defs>
+        <linearGradient x1="50%" y1="29.8899741%" x2="50%" y2="99.2958336%" id="linearGradient-1">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="W3-benchamrk-cockpit-config" transform="translate(-1823.000000, -1010.000000)">
+            <g id="编组-26" transform="translate(0.000000, 130.000000)">
+                <g id="编组-25" transform="translate(0.000000, 815.000000)">
+                    <g id="编组-20" transform="translate(1717.000000, 62.000000)">
+                        <g id="返回icon" transform="translate(106.000000, 3.000000)">
+                            <rect id="矩形" x="0" y="0" width="40" height="40"></rect>
+                            <polygon id="三角形" fill="url(#linearGradient-1)" transform="translate(25.571429, 19.571429) rotate(90.000000) translate(-25.571429, -19.571429) " points="25.5714286 10.5714286 40.5714286 28.5714286 10.5714286 28.5714286"></polygon>
+                            <polygon id="三角形备份" fill="url(#linearGradient-1)" transform="translate(14.571429, 19.571429) rotate(90.000000) translate(-14.571429, -19.571429) " points="14.5714286 10.5714286 29.5714286 28.5714286 -0.428571429 28.5714286"></polygon>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
