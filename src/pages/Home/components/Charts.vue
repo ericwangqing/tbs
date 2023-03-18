@@ -4,13 +4,13 @@ ScannedBox.charts-btn(v-show="!chartVisible" :noRightWrapper="true" @click="char
 .charts-wrapper(:style="{ opacity: chartVisible ? 1 : 0 }")
   AButton.close-btn(type="text" @click="chartVisible=!chartVisible")
     CloseOutlined
-  Performance.performance
+  Performance.performance(:config="config")
   .divider
-  Resource.resource
+  Resource.resource(:config="config")
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import ScannedBox from '@/components/ScannedBox.vue'
 import { LineChartOutlined, CloseOutlined } from '@ant-design/icons-vue'
 import Performance from './Performance.vue'
@@ -18,6 +18,12 @@ import Resource from './Resource.vue'
 
 export default defineComponent({
   name: 'Charts',
+  props: {
+    config: {
+      type: Object
+    }
+  },
+  emits: ['visible'],
   components: {
     ScannedBox,
     LineChartOutlined,
@@ -25,8 +31,11 @@ export default defineComponent({
     Performance,
     Resource
   },
-  setup: () => {
+  setup: (props, { emit }) => {
     const chartVisible = ref(false)
+    watch(() => chartVisible.value, () => {
+      emit('visible', chartVisible.value)
+    })
     return {
       chartVisible
     }

@@ -9,12 +9,19 @@ import { defineComponent, onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
 import 'echarts-gl'
 import axios from 'axios'
+import controller from "../composition/controller.js"
 import mapBg from '@/assets/map.png'
 
 export default defineComponent({
   name: 'WorldMap',
+  props: {
+    config: {
+      type: Object
+    }
+  },
   setup: (props) => {
     const worldMapContainer = ref(null)
+    let worldMapChart
 
     async function registerMap() {
       const {data: worldGeoJson} = await Promise.race([
@@ -92,18 +99,27 @@ export default defineComponent({
       return map
     }
 
+    watch(() => props.config.tps, () => {
+      let tps = Number.parseInt(props.config.tps)
+      worldMapChart.setOption({
+        series: [
+          {
+            effect: {
+              show: true,
+              trailWidth: 2,
+              trailOpacity: 1,
+              trailLength: 0.2,
+              constantSpeed: Math.max(1, Math.ceil(Math.log10(tps) * 10))
+            },
+          }
+        ]
+      })
+    })
+
     onMounted(async () => {
       await registerMap()
-      const mapChart = await initWorldMap()
-      mapChart.setOption({
-        series: [{
-          data: [{
-            coords: [[-72.303062, 43.730282], [-44.915199, 6.23344]],
-            lineStyle: '#FF4343',
-            opacity: 1
-          }]
-        }]
-      })
+      worldMapChart = await initWorldMap()
+      controller.initChart({ worldMapChart })
     })
 
     return {

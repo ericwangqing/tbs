@@ -10,9 +10,15 @@
 <script>
 import { defineComponent, ref, onMounted } from 'vue'
 import * as echarts from 'echarts'
+import controller from "../composition/controller.js"
 
 export default defineComponent({
   name: 'Resource',
+  props: {
+    config: {
+      type: Object
+    }
+  },
   setup: () => {
     const resourceContainerRef = ref(null)
     const cpuGaugeRef = ref(null)
@@ -149,7 +155,8 @@ export default defineComponent({
 
     onMounted(() => {
       setTimeout(() => {
-        initResourceCharts()
+        const { resourceChart, bandwidthGauge, memoryGauge, cpuGauge } = initResourceCharts()
+        controller.initChart({ resourceChart, bandwidthGauge, memoryGauge, cpuGauge })
       }, 300)
     })
 

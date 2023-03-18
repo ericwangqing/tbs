@@ -16,7 +16,7 @@ export default defineComponent({
 <style>
 html,
 body {
-  overflow-y: hidden;
+  overflow: hidden;
 }
 
 #app {
