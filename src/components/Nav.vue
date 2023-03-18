@@ -2,7 +2,7 @@
 ALayout
   ALayoutHeader.layout-header
     .logo(@click="goHome")
-      | TBS
+        img(:src="Logo")
     AMenu(
       mode="horizontal"
       v-model:selectedKeys="selectedRoute"
@@ -21,6 +21,7 @@ ALayout
 <script>
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import Logo from '@/assets/logo.png'
 
 export default defineComponent({
   name: 'Nav',
@@ -48,6 +49,7 @@ export default defineComponent({
     return {
       route,
       selectedRoute,
+      Logo,
       goHome,
       linkToRoute
     }
@@ -73,15 +75,14 @@ export default defineComponent({
     .logo
       position: absolute
       left: 0
+      display: inline-block
+      font-size: 30px
+      margin-right: 282px
       user-select: none
       height: 100%
-      // TODO wait for logo img
-      font-size: 30px
       color: #fff
-      width: 100px
-      line-height: 90px
-      text-align: center
-      font-weight: bolder
+      img
+        max-height: 100%
 
     .ant-menu
       line-height: 90px

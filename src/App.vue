@@ -1,6 +1,6 @@
 <template lang="pug">
 Nav
-  router-view
+  router-view(:key="getRoute($route)")
 </template>
 
 <script>
@@ -9,7 +9,17 @@ import Nav from '@/components/Nav.vue'
 
 export default defineComponent({
   name: 'App',
-  components: { Nav }
+  components: { Nav },
+  setup: () => {
+    const getRoute = (route) => {
+      if (route.name === 'home') return 'network'
+      if (route.name === 'security') return 'network'
+      return route.fullPath
+    }
+    return {
+      getRoute
+    }
+  }
 })
 </script>
 
