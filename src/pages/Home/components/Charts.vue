@@ -59,7 +59,7 @@ export default defineComponent({
 }
 .charts-wrapper {
   position: absolute;
-  top: 0;
+  top: 5px;
   right: 0;
   padding-top: 20px;
   width: 38vw;

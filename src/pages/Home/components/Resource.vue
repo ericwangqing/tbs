@@ -142,13 +142,13 @@ export default defineComponent({
       })
       
       const cpuGauge = echarts.init(cpuGaugeRef.value);
-      cpuGauge.setOption(generateGaugeOption({ name: 'CPU', borderColor: '#FC6E21', axisColor: '#FBE031' }))
+      cpuGauge.setOption(generateGaugeOption({ name: 'CPU', borderColor: '#FC6E21', axisColor: 'rgba(251, 224, 49, 0.2)' }))
 
       const memoryGauge = echarts.init(memoryGaugeRef.value);
-      memoryGauge.setOption(generateGaugeOption({ name: 'Memory', borderColor: '#5AD8A6', axisColor: '#5EF87F' }))
+      memoryGauge.setOption(generateGaugeOption({ name: 'Memory', borderColor: '#5AD8A6', axisColor: 'rgba(94, 248, 127, 0.2)' }))
 
       const bandwidthGauge = echarts.init(bandwidthGaugeRef.value);
-      bandwidthGauge.setOption(generateGaugeOption({ name: 'BW', borderColor: '#F6BD16', axisColor: '#F6E516' }))
+      bandwidthGauge.setOption(generateGaugeOption({ name: 'BW', borderColor: '#F6BD16', axisColor: 'rgba(246, 229, 22, 0.2)' }))
 
       return { resourceChart, cpuGauge, memoryGauge, bandwidthGauge }
     }
