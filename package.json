@@ -32,6 +32,7 @@
     "dotenv": "^16.0.1",
     "echarts": "^5.4.2",
     "echarts-gl": "^2.0.9",
+    "ethers": "^5.7.2",
     "eventemitter2": "^6.4.9",
     "events": "^3.3.0",
     "lodash": "^4.17.21",

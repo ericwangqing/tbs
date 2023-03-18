@@ -28,6 +28,11 @@ const routes = [
     name: 'security',
     component: Home,
   },
+  {
+    path: '/explorer/',
+    name: 'explorer',
+    component: () => import('@/pages/explorer/index.vue'),
+  },
 ]
 
 const router = createRouter({
