@@ -1,9 +1,9 @@
 <template>
-  <a-card :loading="loading" :bodyStyle="{ padding: 0 }">
-    <a-list :data-source="filterDataSource">
+  <a-card :loading="props.loading" :bodyStyle="{ padding: 0 }">
+    <a-list :data-source="props.datasource">
       <template #renderItem="{ item, index }">
         <a-list-item>
-          <slot :item="item" :lastItem="datasource[index + 1]"></slot>
+          <slot :item="item"></slot>
         </a-list-item>
       </template>
     </a-list>
@@ -25,10 +25,6 @@ const props = defineProps([
 ])
 
 defineEmits(['viewMore'])
-
-const filterDataSource = computed(() => {
-  return props.datasource.slice(0, props.datasource.length - 1)
-})
 </script>
 <style lang="scss">
 .ant-card {

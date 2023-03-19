@@ -18,11 +18,11 @@ class TBSApi {
   async getBlockList(offset = 0, limit = 20, withFirstBlockTransactions) {
     //如果没有传start，默认是获取最新的区块信息
     let start = await this.getBlockNumber()
-    return { blocks: blockList, start }
+    // return { blocks: blockList, start }
     if (offset) {
       start = start - offset
     }
-    let end = start - limit
+    let end = start - limit - 1
     const promises = []
     for (let i = start; i > end; i--) {
       promises.push(
@@ -30,7 +30,9 @@ class TBSApi {
       )
     }
     const blocks = await Promise.all(promises)
-    return { start, blocks }
+    const nextBlock = blocks.pop()
+    console.log(blocks, nextBlock)
+    return { start, blocks, nextBlock }
   }
 
   sleep(time = 1000) {
@@ -69,6 +71,10 @@ class TBSApi {
     }
     const blocks = await this.provider.getBlockWithTransactions(blockNumber)
     return blocks.transactions
+  }
+
+  async getTransaction(hash) {
+    return await this.provider.getTransaction(hash)
   }
 }
 
