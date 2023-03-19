@@ -1,36 +1,37 @@
 <template lang="pug">
-.cockpit(@mousedown="isFast = true", @mouseup="isFast = false")
+.cockpit
   ScannedBox.count-board
     .count-board-ceil
       .count-board-ceil__label TPS
-      .count-board-ceil__num 100,008
+      .count-board-ceil__num {{ thousands(controller.tps) }}
     .count-board-ceil
       .count-board-ceil__label Total transactions
-      .count-board-ceil__num 134,435,499
+      .count-board-ceil__num {{ thousands(controller.txCount) }}
     .count-board-ceil
       .count-board-ceil__label W3 chain height
-      .count-board-ceil__num 145,678
+      .count-board-ceil__num {{ thousands(controller.blockHeight) }}
     .count-board-ceil
       .count-board-ceil__label Shards
-      .count-board-ceil__num 229
+      .count-board-ceil__num {{ thousands(controller.shards) }}
     .count-board-ceil
       .count-board-ceil__label Nodes
-      .count-board-ceil__num 109,293
-  StarField(:isFast="isFast")
-  RoadLine(:isFast="isFast")
+      .count-board-ceil__num {{ thousands(controller.nodes) }}
+  StarField()
+  RoadLine()
   .footer-shadow
-  InstrumentPanel(:isFast="isFast")
-  RoadMap.road-map-container(:percent="percent")
+  InstrumentPanel()
+  RoadMap.road-map-container()
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, onBeforeMount, onBeforeUnmount } from 'vue'
 import RoadLine from './components/road-line.vue'
 import StarField from './components/star-field.vue'
 import InstrumentPanel from './components/instrument-panel.vue'
 import RoadMap from './components/road-map.vue'
 import ScannedBox from '@/components/ScannedBox.vue'
 import { thousands } from './composition/util.js'
+import { controller } from './composition/controller.js'
 
 export default defineComponent({
   name: 'Cockpit',
@@ -42,21 +43,41 @@ export default defineComponent({
     ScannedBox
   },
   setup: () => {
-    const isFast = ref(false)
-    const percent = ref(0)
-    let trigger = 0
-    onMounted(() => {
-      setInterval(() => {
-        let judge = isFast.value ? 1 : 25
-        if (trigger % judge === 0) percent.value += 0.5
-        if (percent.value >= 100) percent.value = 0
-        trigger++
-      }, 16)
+    let presetProgress = ''
+    let timeout = null
+    
+    const bindKeyEvent = ({key}) => {
+      if (key === 'ArrowUp') controller.setSpeed(true)
+      if (key === 'ArrowDown') controller.setSpeed(false)
+      if (key === ' ') controller.startOrStop()
+      if (/^\d$/.test(key)) {
+        if (presetProgress) {
+          controller.setProgress(Number(presetProgress + key))
+          if(timeout) clearTimeout(timeout)
+          presetProgress = ''
+          timeout = null
+        } else {
+          timeout = setTimeout(() => {
+            controller.setProgress(Number(key))
+            presetProgress = ''
+            timeout = null
+          }, 500)
+          presetProgress = key
+        }
+      }
+    }
+
+    onBeforeMount(() => {
+      document.addEventListener('keydown', bindKeyEvent)
     })
+
+    onBeforeUnmount(() => {
+      document.removeEventListener('keydown', bindKeyEvent)
+    })
+
     return {
-      isFast,
-      percent,
-      thousands
+      thousands,
+      controller
     }
   }
 })
@@ -117,7 +138,7 @@ export default defineComponent({
   .road-map-container {
     position: absolute;
     top: 45px;
-    right: 45px;
+    right: 25px;
   }
 }
 </style>

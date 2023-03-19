@@ -18,21 +18,16 @@
 import { defineComponent, nextTick, onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
 import GradientGauge from './gradient-gauge.vue'
+import { controller } from '../composition/controller.js'
 
 export default defineComponent({
   name: 'ResourceCharts',
-  props: {
-    isFast: {
-      default: false,
-      type: Boolean
-    },
-  },
   components: {
     GradientGauge
   },
   setup: (props) => {
     const resourceChart = ref(null)
-    const chart = ref(null)
+    let chart = null
     const cpuData = ref([])
     const memoryData = ref([])
     const bandwidthData = ref([])
@@ -41,7 +36,7 @@ export default defineComponent({
     const currentBandwidth = ref(0)
 
     const initChart = () => {
-      chart.value = echarts.init(resourceChart.value)
+      chart = echarts.init(resourceChart.value, null, { renderer: 'svg' })
       const option = {
         title: {
           text: 'Node Resource Consumption (avg.)',
@@ -97,13 +92,14 @@ export default defineComponent({
           { name: 'Bandwidth', type: 'line', symbol: 'none', data: [] }
         ],
       }
-      chart.value.setOption(option)
+      chart.setOption(option)
     }
 
     const redraw = () => {
+      if(!controller.running) return
       const now = Date.now()
       const LINE_CHART_X_RANGE = 40 // datas in ${x}s per page
-      // TODO data from network!!!
+      
       currentCpu.value = 10 * Math.random();
       currentMemory.value = 10 + 10 * Math.random();
       currentBandwidth.value = 20 + 10 * Math.random();
@@ -121,7 +117,7 @@ export default defineComponent({
         name: now.toString(),
         value: [new Date(), currentBandwidth.value],
       })
-      chart.value && chart.value.setOption({
+      chart && chart.setOption({
         series: [
           { data: cpuData.value },
           { data: memoryData.value },
@@ -131,7 +127,9 @@ export default defineComponent({
     }
 
     setInterval(() => {
-      redraw()
+      setTimeout(() => {
+        redraw()
+      }, 0)
     }, 1000)
 
     onMounted(() => {

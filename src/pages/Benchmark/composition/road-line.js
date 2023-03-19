@@ -2,6 +2,7 @@ import * as POSTPROCESSING from 'postprocessing'
 import * as THREE from 'three'
 
 export class RoadLine {
+  running = false
   constructor(container, options = {}) {
     // Init ThreeJS Basics
     this.options = options
@@ -46,6 +47,7 @@ export class RoadLine {
       fogFar: { type: 'f', value: fog.far },
     }
     this.clock = new THREE.Clock()
+    // if (!this.running) this.clock.stop()
     this.assets = {}
     this.disposed = false
 
@@ -77,8 +79,8 @@ export class RoadLine {
     this.tick = this.tick.bind(this)
     this.init = this.init.bind(this)
     this.setSize = this.setSize.bind(this)
-    this.onMouseDown = this.onMouseDown.bind(this)
-    this.onMouseUp = this.onMouseUp.bind(this)
+    this.onSpeedUp = this.onSpeedUp.bind(this)
+    this.onSlowDown = this.onSlowDown.bind(this)
   }
   initPasses() {
     this.renderPass = new POSTPROCESSING.RenderPass(this.scene, this.camera)
@@ -148,18 +150,18 @@ export class RoadLine {
       -(options.roadWidth + options.islandWidth / 2)
     )
 
-    this.container.addEventListener('mousedown', this.onMouseDown)
-    this.container.addEventListener('mouseup', this.onMouseUp)
-    this.container.addEventListener('mouseout', this.onMouseUp)
+    // this.container.addEventListener('mousedown', this.onMouseDown)
+    // this.container.addEventListener('mouseup', this.onMouseUp)
+    // this.container.addEventListener('mouseout', this.onMouseUp)
 
     this.tick()
   }
-  onMouseDown(ev) {
+  onSpeedUp(ev) {
     if (this.options.onSpeedUp) this.options.onSpeedUp(ev)
     this.fovTarget = this.options.fovSpeedUp
     this.speedUpTarget = this.options.speedUp
   }
-  onMouseUp(ev) {
+  onSlowDown(ev) {
     if (this.options.onSlowDown) this.options.onSlowDown(ev)
     this.fovTarget = this.options.fov
     this.speedUpTarget = 0
@@ -216,6 +218,8 @@ export class RoadLine {
   }
   tick() {
     if (this.disposed || !this) return
+    requestAnimationFrame(this.tick)
+    // if (!this.running) return
     if (resizeRendererToDisplaySize(this.renderer, this.setSize)) {
       const canvas = this.renderer.domElement
       this.camera.aspect = canvas.clientWidth / canvas.clientHeight
@@ -224,7 +228,18 @@ export class RoadLine {
     const delta = this.clock.getDelta()
     this.render(delta)
     this.update(delta)
-    requestAnimationFrame(this.tick)
+  }
+
+  start() {
+    this.running = true
+    this.clock.getDelta()
+    this.clock.running = true
+  }
+
+  stop() {
+    this.running = false
+    // this.clock.running = false
+    this.clock.stop()
   }
 }
 

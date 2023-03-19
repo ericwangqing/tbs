@@ -5,16 +5,11 @@
 <script>
 import { defineComponent, nextTick, onMounted, ref, watch } from 'vue'
 import { StarField } from '../composition/star-field.js'
+import { controller } from '../composition/controller.js'
 
 export default defineComponent({
   name: 'StarField',
-  props: {
-    isFast: {
-      default: false,
-      type: Boolean
-    },
-  },
-  setup: (props) => {
+  setup: () => {
     const starFieldCvs = ref(null)
     const starField = new StarField()
 
@@ -24,10 +19,18 @@ export default defineComponent({
     })
 
     watch(
-      () => props.isFast,
+      () => controller.isFast,
       (val) => {
         if (val) starField.speedUp()
         else starField.speedDown()
+      }
+    )
+
+    watch(
+      () => controller.running,
+      (val) => {
+        if (val) starField.start()
+        else starField.stop()
       }
     )
     return {

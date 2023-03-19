@@ -5,23 +5,18 @@
 <script>
 import { defineComponent, nextTick, onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
+import { controller } from '../composition/controller.js'
 
 export default defineComponent({
   name: 'PerformanceChart',
-  props: {
-    isFast: {
-      default: false,
-      type: Boolean
-    },
-  },
   setup: (props) => {
     const performanceChart = ref(null)
-    const chart = ref(null)
+    let chart = null
     const performanceChartOutboundData = ref([])
     const performanceChartInboundData = ref([])
 
     const initChart = () => {
-      chart.value = echarts.init(performanceChart.value)
+      chart = echarts.init(performanceChart.value)
       const series = [
         { name: 'In_all', type: 'line', symbol: 'none', data: [{ name: 'init1', value: [new Date().toString(), 0] }] },
         { name: 'Out_all', type: 'line', symbol: 'none', data: [{ name: 'init2', value: [new Date().toString(), 0] }] }
@@ -77,19 +72,16 @@ export default defineComponent({
         color: ['#3c7bfd', '#5ad8a6', 'rgb(232,104,74)', 'rgb(246,189,22)'],
         series
       }
-      chart.value.setOption(option)
+      chart.setOption(option)
     }
 
     const redraw = () => {
-      if (!chart.value) return
+      if(!controller.running) return
+      if (!chart) return
       const now = Date.now()
       const LINE_CHART_X_RANGE = 40 // datas in ${x}s per page
 
-      const nodeLength = 100
-
-      const tps = props.isFast ? 100000 : 100
-      // TODO real TPS!!
-      const departureMessagesLastSec = tps * (nodeLength - 1)
+      const departureMessagesLastSec = controller.tps * controller.nodes
       const arrivalMessagesLastSec = Math.round(departureMessagesLastSec * (0.9 + Math.random() * 0.2))
 
       if (performanceChartOutboundData.value.length > LINE_CHART_X_RANGE)
@@ -105,11 +97,13 @@ export default defineComponent({
         { type: 'line', data: performanceChartOutboundData.value },
       ];
 
-      chart.value && chart.value.setOption({ series })
+      chart && chart.setOption({ series })
     }
 
     setInterval(() => {
-      redraw()
+      setTimeout(() => {
+        redraw()
+      }, 0)
     }, 1000)
 
     onMounted(() => {
