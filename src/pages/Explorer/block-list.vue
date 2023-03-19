@@ -41,30 +41,24 @@
           <template v-else-if="column.dataIndex === 'gasUsed'">
             <div>
               <div>
-                <span>{{ BigNumber.from(record.gasUsed.hex).toString() }}</span>
-                <span>({{ calcGasUsePecent(record) }}%)</span>
+                <span>{{ getGasUsed(record) }}</span>
+                <span>({{ getGasUsePecent(record) }}%)</span>
               </div>
               <a-progress
                 :strokeWidth="2"
                 :showInfo="false"
-                :percent="calcGasUsePecent(record)"
+                :percent="getGasUsePecent(record)"
               />
             </div>
           </template>
           <template v-else-if="column.dataIndex === 'gasLimit'">
-            <span>{{ BigNumber.from(record.gasLimit.hex).toString() }}</span>
+            <span>{{ getGasLimit(record) }}</span>
           </template>
-          <template v-else-if="column.dataIndex === 'baseFeePerGas'">
-            <span>{{
-              Number(
-                utils.formatUnits(
-                  BigNumber.from(record.baseFeePerGas.hex).mul(
-                    BigNumber.from(record.gasUsed.hex)
-                  ),
-                  'gwei'
-                )
-              ).toFixed(2) + 'Gwei'
-            }}</span>
+          <template v-else-if="column.dataIndex === 'baseFee'">
+            <!-- <span>{{
+              Number(getBaseFeePerGas(record, 'gwei')).toFixed(2) + 'Gwei'
+            }}</span> -->
+            待定
           </template>
           <template v-else-if="column.dataIndex === 'Reward'"> 待定 </template>
           <template v-else-if="column.dataIndex === 'Burnt'"> 待定 </template>
@@ -76,14 +70,16 @@
 <script setup>
 import { inject, onMounted, computed, ref, watchEffect } from 'vue'
 import useTime from '@/hook/timeHook'
-import { BigNumber, utils } from 'ethers'
+import useBlock from '@/hook/blockHook'
 const TBSApi = inject('TBSApi')
 const blocks = ref([])
 const blockStart = ref(0)
 const current = ref(1)
-const pageSize = ref(20)
+const pageSize = ref(2)
 const loading = ref(false)
 const { fromNow } = useTime()
+const { getGasUsed, getGasLimit, getGasUsePecent, getBaseFeePerGas } =
+  useBlock()
 
 onMounted(async () => {})
 
@@ -144,7 +140,7 @@ const columns = [
   },
   {
     title: 'Base Fee',
-    dataIndex: 'baseFeePerGas',
+    dataIndex: 'baseFee',
   },
   {
     title: 'Reward',
@@ -159,14 +155,5 @@ const columns = [
 function tableChange(page) {
   current.value = page.current
   pageSize.value = page.pageSize
-}
-
-function calcGasUsePecent({ gasUsed, gasLimit }) {
-  return (
-    BigNumber.from(gasUsed.hex)
-      .mul(10000)
-      .div(BigNumber.from(gasLimit.hex))
-      .toNumber() / 100
-  )
 }
 </script>

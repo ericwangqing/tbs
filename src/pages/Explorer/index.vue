@@ -9,20 +9,23 @@
           footerTitle="View All Blocks"
           :loading="loading"
         >
-          <template v-slot="{ item, lastItem }">
-            <div class="flex px-12px">
-              <div class="bk mr-8px">Bk</div>
-              <div class="mr-8px" @click="gotoBlockDetail(item.number)">
-                <router-link :to="`/explorer-block/${item.number}`">{{
-                  item.number
-                }}</router-link>
-                <div>{{ fromNow(item.timestamp) }}</div>
+          <template v-slot="{ item }">
+            <div class="flex px-12px justify-between w-100%">
+              <div class="flex w-200px">
+                <div class="bk mr-8px">Bk</div>
+                <div @click="gotoBlockDetail(item.number)">
+                  <router-link :to="`/explorer-block/${item.number}`">{{
+                    item.number
+                  }}</router-link>
+                  <div>{{ fromNow(item.timestamp) }}</div>
+                </div>
               </div>
-              <div>
+
+              <div class="w-400px">
                 <div>
                   Fee Recipient
                   <router-link
-                    :to="`/explorer-block/${item.number}`"
+                    :to="`/explorer-address/${item.miner}`"
                     class="truncate max-w-200px inline-block h-16px"
                     >{{ item.miner }}</router-link
                   >
@@ -33,11 +36,13 @@
                     >{{ item.transactions.length + ' txns ' }}</router-link
                   >{{
                     `in ${
-                      item.timestamp - (lastItem && lastItem.timestamp)
+                      item.timestamp -
+                      (nextPageBlock && nextPageBlock.timestamp)
                     } secs`
                   }}
                 </div>
               </div>
+              <div>Reward待计算</div>
             </div>
           </template>
         </card>
@@ -51,17 +56,20 @@
           :loading="loading"
         >
           <template v-slot="{ item }">
-            <div class="flex px-12px">
-              <div class="tx mr-8px">TX</div>
-              <div class="mr-8px">
-                <router-link
-                  :to="`/explorer-transaction/${item.hash}`"
-                  class="truncate max-w-200px inline-block h-16px"
-                  >{{ item.hash }}</router-link
-                >
-                <div>{{ fromNow(transactionBlock.timestamp) }}</div>
+            <div class="flex w-100% px-12px justify-between">
+              <div class="flex">
+                <div class="tx mr-8px">TX</div>
+                <div>
+                  <router-link
+                    :to="`/explorer-transaction/${item.hash}`"
+                    class="truncate max-w-200px inline-block h-16px"
+                    >{{ item.hash }}</router-link
+                  >
+                  <div>{{ fromNow(transactionBlock.timestamp) }}</div>
+                </div>
               </div>
-              <div>
+
+              <div class="w-400px">
                 <div>
                   From
                   <router-link
@@ -79,6 +87,13 @@
                   >
                 </div>
               </div>
+              <div>
+                {{
+                  Number(
+                    utils.formatUnits(BigNumber.from(item.value).toString())
+                  ).toFixed(4) + 'ETH'
+                }}
+              </div>
             </div>
           </template>
         </card>
@@ -89,6 +104,7 @@
 <script setup>
 import card from '@/pages/explorer/components/card.vue'
 import { onMounted, ref, inject } from 'vue'
+import { BigNumber, utils } from 'ethers'
 import { useRouter } from 'vue-router'
 import useTime from '@/hook/timeHook'
 import { computed } from '@vue/reactivity'
@@ -97,12 +113,17 @@ const TBSApi = inject('TBSApi')
 const router = useRouter()
 const loading = ref(false)
 const blocks = ref([])
+const nextPageBlock = ref(null)
 
 onMounted(async () => {
   try {
     loading.value = true
-    const { blocks: bs } = await TBSApi.getBlockListWithTransactions()
+    const { blocks: bs, nextBlock } = await TBSApi.getBlockListWithTransactions(
+      0,
+      2
+    )
     blocks.value = bs
+    nextPageBlock = nextBlock
   } catch (e) {
   } finally {
     loading.value = false
@@ -131,10 +152,7 @@ function gotoAllTransactionList() {
 
 function gotoBlockDetail() {}
 </script>
-<style lang="scss">
-.ant-card-head {
-  padding-left: 16px;
-}
+<style lang="scss" scoped>
 .bk,
 .tx {
   width: 45px;
@@ -147,5 +165,22 @@ function gotoBlockDetail() {}
 
 .tx {
   border-radius: 100%;
+}
+
+.eth-container {
+  position: relative;
+  color: #77838f;
+  background-color: rgba(119, 131, 143, 0.1);
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  &::after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    content: '';
+    border-top: 0.7rem solid transparent;
+    border-bottom: 0.7rem solid transparent;
+    border-left: 0.7rem solid #fff;
+  }
 }
 </style>

@@ -32,6 +32,9 @@ const TBSApi = inject('TBSApi')
 const route = useRoute()
 const loading = ref(false)
 const block = ref(null)
+const current = ref(1)
+const pageSize = ref(2)
+const txs = ref([])
 
 onMounted(async () => {})
 
@@ -40,15 +43,23 @@ const blockNumber = computed(() => {
 })
 
 const transactions = computed(() => {
-  return (block.value && block.value.transactions) || []
+  if (blockNumber.value) {
+    return (block.value && block.value.transactions) || []
+  } else {
+    return txs.value
+  }
 })
 
 watchEffect(async () => {
   loading.value = true
   try {
-    if (blockNumber) {
+    if (blockNumber.value) {
       block.value = await TBSApi.getBlockDetail(blockNumber.value, true)
     } else {
+      const blockNumber = await TBSApi.getBlockNumber()
+      txs.value = await TBSApi.getTransactionsByBlock(
+        blockNumber - current.value + 1
+      )
     }
   } catch (e) {
   } finally {
