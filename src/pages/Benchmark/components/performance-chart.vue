@@ -72,6 +72,7 @@ export default defineComponent({
           left: '12%',
           top: '20%',
           right: '3%',
+          bottom: '10%'
         },
         color: ['#3c7bfd', '#5ad8a6', 'rgb(232,104,74)', 'rgb(246,189,22)'],
         series

@@ -1,12 +1,23 @@
 <template lang="pug">
 .resource-charts-container
   .resource-chart(ref="resourceChart")
+  .resource-gauges
+    GradientGauge.cpu-gauge(id="cpuGauge", :radius="48", :strokeWidth="10", leftColor="#B85718", rightColor="#FC6E21", :needBackRing="false", :percent="currentCpu", :needShadow="false", :backRingAround="true")
+      .gauge-count {{Math.floor(currentCpu)}}%
+      .gauge-label CPU
+    GradientGauge.memory-gauge(id="memoryGauge", :radius="48", :strokeWidth="10", leftColor="#46B8C0", rightColor="#49DAB0", :needBackRing="false", :percent="currentMemory", :needShadow="false", :backRingAround="true")
+      .gauge-count {{Math.floor(currentMemory)}}%
+      .gauge-label Memory
+    GradientGauge.bandwidth-gauge(id="bandwidthGauge", :radius="48", :strokeWidth="10", leftColor="#F6BD16", rightColor="#EF8C30", :needBackRing="false", :percent="currentBandwidth", :needShadow="false", :backRingAround="true")
+      .gauge-count {{Math.floor(currentBandwidth)}}%
+      .gauge-label BW
 
 </template>
 
 <script>
 import { defineComponent, nextTick, onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
+import GradientGauge from './gradient-gauge.vue'
 
 export default defineComponent({
   name: 'ResourceCharts',
@@ -16,12 +27,18 @@ export default defineComponent({
       type: Boolean
     },
   },
+  components: {
+    GradientGauge
+  },
   setup: (props) => {
     const resourceChart = ref(null)
     const chart = ref(null)
     const cpuData = ref([])
     const memoryData = ref([])
     const bandwidthData = ref([])
+    const currentCpu = ref(0)
+    const currentMemory = ref(0)
+    const currentBandwidth = ref(0)
 
     const initChart = () => {
       chart.value = echarts.init(resourceChart.value)
@@ -87,22 +104,22 @@ export default defineComponent({
       const now = Date.now()
       const LINE_CHART_X_RANGE = 40 // datas in ${x}s per page
       // TODO data from network!!!
-      const cpuUsage = 10 * Math.random();
-      const memoryUsage = 10 + 10 * Math.random();
-      const bandwidthUsage = 20 + 10 * Math.random();
+      currentCpu.value = 10 * Math.random();
+      currentMemory.value = 10 + 10 * Math.random();
+      currentBandwidth.value = 20 + 10 * Math.random();
 
       if (cpuData.value.length > LINE_CHART_X_RANGE) cpuData.value.shift()
       if (memoryData.value.length > LINE_CHART_X_RANGE) memoryData.value.shift()
       if (bandwidthData.value.length > LINE_CHART_X_RANGE) bandwidthData.value.shift()
 
-      cpuData.value.push({ name: now.toString(), value: [new Date(), cpuUsage] })
+      cpuData.value.push({ name: now.toString(), value: [new Date(), currentCpu.value] })
       memoryData.value.push({
         name: now.toString(),
-        value: [new Date(), memoryUsage],
+        value: [new Date(), currentMemory.value],
       })
       bandwidthData.value.push({
         name: now.toString(),
-        value: [new Date(), bandwidthUsage],
+        value: [new Date(), currentBandwidth.value],
       })
       chart.value && chart.value.setOption({
         series: [
@@ -111,9 +128,6 @@ export default defineComponent({
           { data: bandwidthData.value },
         ],
       })
-      // this.cpuGauge && this.cpuGauge.setOption({ series: [{ data: [{ value: cpuUsage, name: 'CPU' }] }] })
-      // this.memoryGauge && this.memoryGauge.setOption({ series: [{ data: [{ value: memoryUsage, name: 'Memory' }] }] })
-      // this.bandwidthGauge && this.bandwidthGauge.setOption({ series: [{ data:[{ value: bandwidthUsage, name: 'BW' }] }] })
     }
 
     setInterval(() => {
@@ -125,6 +139,9 @@ export default defineComponent({
     })
     return {
       resourceChart,
+      currentCpu,
+      currentMemory,
+      currentBandwidth
     }
   },
 })
@@ -132,10 +149,32 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .resource-charts-container {
+  position: relative;
   .resource-chart {
     display: block;
-    height: 179px;
-    width: 549px;
+    height: 305px;
+    width: 578px;
+  }
+  .resource-gauges {
+    position: absolute;
+    top: 80px;
+    left: 40px;
+    height: 106px;
+    display: flex;
+    margin: 8px 36px;
+    svg:not(:last-child) {
+      margin-right: 64px;
+    }
+    .gauge-count {
+      font-size: 36px;
+      font-style: italic;
+      font-weight: bold;
+    }
+    .gauge-label {
+      margin-top: -10px;
+      font-size: 14px;
+      font-style: italic;
+    }
   }
 }
 </style>

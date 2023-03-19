@@ -6,7 +6,7 @@
       .count {{formattedTps}}
       .tps TPS
       img.logo(:src="logo")
-    GradientGauge.tps-gauge(:percent="percent")
+      GradientGauge.tps-gauge(id="tpsGauge", :percent="percent")
   ResourceCharts.resource-charts-container
 </template>
 
@@ -97,7 +97,7 @@ export default defineComponent({
     position: relative;
     .tps-gauge {
       position: absolute;
-      top: 0;
+      top: -34px;
       filter: drop-shadow(0px 0px 25px rgba(186, 219, 255, 0.5));
     }
     .tps-gauge-content {
