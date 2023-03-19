@@ -71,6 +71,7 @@ export default defineComponent({
     height: 90px
     background: #212435
     box-shadow: 0px 1px 8px 0px rgba(255, 255, 255, 0.15)
+    z-index: 1000
 
     .logo
       position: absolute
