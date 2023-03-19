@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { defineComponent, inject, toRefs, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 import RoadLine from './components/road-line.vue'
 import StarField from './components/star-field.vue'
 import InstrumentPanel from './components/instrument-panel.vue'
@@ -47,6 +47,13 @@ export default defineComponent({
   height: 100%;
   position: relative;
   background: #212435;
+  .footer-shadow {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 90px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.00),  rgba(0, 0, 0, 0.45));
+  }
 }
 </style>
   
