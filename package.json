@@ -36,6 +36,8 @@
     "eventemitter2": "^6.4.9",
     "events": "^3.3.0",
     "lodash": "^4.17.21",
+    "postprocessing": "^6.29.1",
+    "three": "^0.146.0",
     "uuid": "^9.0.0",
     "vue": "^3.0.5",
     "vue-router": "^4.0.11"

@@ -1,32 +1,28 @@
 <template lang="pug">
-.benchmark
-  span TBS-testbed benchmark
+.cockpit
+  RoadLine
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-export default defineComponent({
-name: 'Benchmark',
-components: {},
+import { defineComponent, inject, toRefs, ref, onMounted } from 'vue'
+import RoadLine from './components/road-line.vue'
 
-setup: () => {
-  return {}
-},
+export default defineComponent({
+  name: 'Cockpit',
+  components: {
+    RoadLine
+  },
+  setup: () => {
+    return {
+    }
+  }
 })
 </script>
 
-<style scoped lang="scss">
-.benchmark {
-  height: 100%;
+<style lang="scss" scoped>
+.cockpit {
   width: 100%;
-  font-size: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  span {
-    font-size: 36px;
-    margin-top: -60px;
-  }
+  height: 100%;
 }
 </style>
+  
