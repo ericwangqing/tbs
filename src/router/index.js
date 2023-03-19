@@ -29,20 +29,36 @@ const routes = [
     component: Home,
   },
   {
-    path: '/explorer/',
+    path: '/explorer',
     name: 'explorer',
     component: () => import('@/pages/explorer/index.vue'),
   },
   {
-    path: '/explorer-block-list/',
+    path: '/explorer-block-list',
     name: 'explorer-block-list',
     component: () => import('@/pages/explorer/all-block-list.vue'),
   },
   {
-    path: '/explorer-transaction-list/',
+    path: '/explorer-transaction-list',
     name: 'explorer-transaction-list',
     component: () => import('@/pages/explorer/all-transaction-list.vue'),
-  }
+  },
+  {
+    path: '/explorer-block/:blockNumber',
+    name: 'explorer-block-detail',
+    component: () => import('@/pages/explorer/block-detail.vue'),
+  },
+  {
+    path: '/explorer-transaction/:hash',
+    name: 'explorer-transaction-detail',
+    component: () => import('@/pages/explorer/transaction-detail.vue'),
+  },
+  {
+    path: '/explorer-address/:hash',
+    name: 'explorer-address-detail',
+    component: () => import('@/pages/explorer/address-detail.vue'),
+  },
+
 
 ]
 
