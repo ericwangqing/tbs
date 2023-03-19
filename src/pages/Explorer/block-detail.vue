@@ -1,12 +1,12 @@
 <template>
-  <div class="px-48px pt-12px pb-48px h-100%">
+  <div class="px-48px pt-12px pb-48px h-100% flex flex-col overflow-hidden">
     <div class="text-white text-36px">
       <span>Block</span>
       <span class="text-white text-16px ml-8px" v-if="blockNumber">
         # {{ blockNumber }}
       </span>
     </div>
-    <div class="bg-white px-8px">
+    <div class="bg-white px-8px h-0 flex-1">
       <a-tabs v-model:activeKey="activeKey">
         <a-tab-pane key="Overview" tab="Overview"
           ><BlockOverview :block="block"></BlockOverview
@@ -32,6 +32,10 @@ const blockNumber = computed(() => {
   return route.params.blockNumber - 0
 })
 
+const isHash = computed(() => {
+  return route.params.blockNumber.startsWith('0x')
+})
+
 watchEffect(async () => {
   loading.value = true
   try {
@@ -45,3 +49,11 @@ watchEffect(async () => {
   }
 })
 </script>
+<style lang="scss">
+.ant-tabs {
+  height: 100%;
+  .ant-tabs-content-holder {
+    overflow-y: auto;
+  }
+}
+</style>

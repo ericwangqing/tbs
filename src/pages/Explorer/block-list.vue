@@ -55,13 +55,13 @@
             <span>{{ getGasLimit(record) }}</span>
           </template>
           <template v-else-if="column.dataIndex === 'baseFee'">
-            <!-- <span>{{
-              Number(getBaseFeePerGas(record, 'gwei')).toFixed(2) + 'Gwei'
-            }}</span> -->
+            <!-- <span>{{ Number(getBaseFee(record)).toFixed(2) + 'Gwei' }}</span> -->
             待定
           </template>
           <template v-else-if="column.dataIndex === 'Reward'"> 待定 </template>
-          <template v-else-if="column.dataIndex === 'Burnt'"> 待定 </template>
+          <template v-else-if="column.dataIndex === 'Burnt'">{{
+            getBurntFees(record)
+          }}</template>
         </template>
       </a-table>
     </div>
@@ -78,8 +78,14 @@ const current = ref(1)
 const pageSize = ref(2)
 const loading = ref(false)
 const { fromNow } = useTime()
-const { getGasUsed, getGasLimit, getGasUsePecent, getBaseFeePerGas } =
-  useBlock()
+const {
+  getGasUsed,
+  getGasLimit,
+  getGasUsePecent,
+  getBaseFeePerGas,
+  getBurntFees,
+  getBaseFee,
+} = useBlock()
 
 onMounted(async () => {})
 
@@ -106,7 +112,7 @@ watchEffect(async () => {
     )
     blocks.value = bs
     blockStart.value = start
-    console.log(blocks)
+    console.log(blocks, start)
   } catch (e) {
   } finally {
     loading.value = false
