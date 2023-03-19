@@ -1,8 +1,27 @@
-console.log(POSTPROCESSING)
 import * as POSTPROCESSING from 'postprocessing'
 import * as THREE from 'three'
+import {
+  Vector3,
+  Curve
+} from 'three';
 
-export class LineComp {
+export default class CustomSinCurve extends Curve {
+  constructor(scale) {
+      super();
+      this.scale = (scale === undefined) ? 1 : scale;
+
+  }
+
+  getPoint(t) {
+      var tx = t * 3 - 1.5;
+      var ty = Math.sin(2 * Math.PI * t);
+      var tz = 0;
+
+      return new Vector3(tx, ty, tz).multiplyScalar(this.scale);
+  }
+}
+
+export class RoadLine {
   constructor(container, options = {}) {
     // Init ThreeJS Basics
     this.options = options
@@ -136,7 +155,6 @@ export class LineComp {
     const options = this.options
     this.road.init()
     this.leftCarLights.init()
-    console.log('??', this.leftCarLights)
 
     this.leftCarLights.mesh.position.setX(
       -options.roadWidth / 2 - options.islandWidth / 2
@@ -290,7 +308,7 @@ class CarLights {
     // Tube with radius = 1
     let geometry = new THREE.TubeGeometry(curve, 40, 1, 8, false)
     let instanced = new THREE.InstancedBufferGeometry().copy(geometry)
-    instanced.maxInstancedCount = options.lightPairsPerRoadWay * 2
+    instanced.instanceCount = options.lightPairsPerRoadWay * 2
 
     let laneWidth = options.roadWidth / options.lanesPerRoad
 
@@ -350,15 +368,15 @@ class CarLights {
     }
     instanced.setAttribute(
       'aOffset',
-      new THREE.InstancedBufferAttribute(new Float32Array(aOffset), 3, false)
+      new THREE.InstancedBufferAttribute(new Float32Array(aOffset), 3)
     )
     instanced.setAttribute(
       'aMetrics',
-      new THREE.InstancedBufferAttribute(new Float32Array(aMetrics), 3, false)
+      new THREE.InstancedBufferAttribute(new Float32Array(aMetrics), 3)
     )
     instanced.setAttribute(
       'aColor',
-      new THREE.InstancedBufferAttribute(new Float32Array(aColor), 3, false)
+      new THREE.InstancedBufferAttribute(new Float32Array(aColor), 3)
     )
     let material = new THREE.ShaderMaterial({
       fragmentShader: carLightsFragment,
@@ -380,7 +398,7 @@ class CarLights {
         '#include <getDistortion_vertex>',
         options.distortion.getDistortion
       )
-      console.log(shader.vertex)
+      // console.log(shader.vertexShader)
     }
     let mesh = new THREE.Mesh(instanced, material)
     mesh.frustumCulled = false

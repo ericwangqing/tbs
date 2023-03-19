@@ -5,7 +5,7 @@
 <script>
 import { defineComponent, inject, toRefs, ref, onMounted } from 'vue'
 import { mountainDistortion, LongRaceDistortion } from '../composition/distortions.js'
-import { LineComp } from '../composition/line.js'
+import { RoadLine } from '../composition/road-line.js'
 
 export default defineComponent({
   name: 'RoadLine',
@@ -20,17 +20,17 @@ export default defineComponent({
       distortion: LongRaceDistortion, 
       
       length: 400,
-      roadWidth: 10,
-      islandWidth: 5,
-      lanesPerRoad: 2,
+      roadWidth: 36,
+      islandWidth: 2,
+      lanesPerRoad: 3,
 
       fov: 90,
       fovSpeedUp: 150,
       speedUp: 2,
       carLightsFade: 0.4,
 
-      totalSideLightSticks: 50,
-      lightPairsPerRoadWay: 70,
+      totalSideLightSticks: 200,
+      lightPairsPerRoadWay: 200,
 
       // Percentage of the lane's width
       shoulderLinesWidthPercentage: 0.05,
@@ -60,20 +60,20 @@ export default defineComponent({
       carFloorSeparation: [0.05, 1],
 
       colors: {
-        roadColor: 0x080808,
-        islandColor: 0x0a0a0a,
-        background: 0x000000,
-        shoulderLines: 0x131318,
-        brokenLines: 0x131318,
+        roadColor: 0x212435,
+        islandColor: 0x212435,
+        background: 0x212435,
+        shoulderLines: 0x212435,
+        brokenLines: 0x212435,
         /***  Only these colors can be an array ***/
-        leftCars: [0xFF5F73, 0xE74D60, 0xff102a],
-        rightCars: [0xA4E3E6, 0x80D1D4, 0x53C2C6],
-        sticks: 0xA4E3E6,
+        leftCars: [0x9e9b5f, 0xfdf5cf, 0xf7e88d],
+        rightCars: [0xd8ac9b, 0xfbefec, 0xf4c7bb],
+        sticks: 0x212435,
       }
     }
 
     onMounted(() => {
-      const lineComp = new LineComp(lineCvs.value, options);
+      const lineComp = new RoadLine(lineCvs.value, options);
       lineComp.loadAssets().then(lineComp.init)
     })
 
