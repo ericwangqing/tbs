@@ -1,25 +1,5 @@
 import * as POSTPROCESSING from 'postprocessing'
 import * as THREE from 'three'
-import {
-  Vector3,
-  Curve
-} from 'three';
-
-export default class CustomSinCurve extends Curve {
-  constructor(scale) {
-      super();
-      this.scale = (scale === undefined) ? 1 : scale;
-
-  }
-
-  getPoint(t) {
-      var tx = t * 3 - 1.5;
-      var ty = Math.sin(2 * Math.PI * t);
-      var tz = 0;
-
-      return new Vector3(tx, ty, tz).multiplyScalar(this.scale);
-  }
-}
 
 export class RoadLine {
   constructor(container, options = {}) {
@@ -38,7 +18,7 @@ export class RoadLine {
     })
     this.renderer.setSize(container.offsetWidth, container.offsetHeight, false)
     this.renderer.setPixelRatio(window.devicePixelRatio)
-    this.renderer.setClearColor(0x212435, 1) // background color of scene
+    this.renderer.setClearColor(0x212435, 0) // background color of scene
     this.composer = new POSTPROCESSING.EffectComposer(this.renderer)
     container.append(this.renderer.domElement)
 
