@@ -18,7 +18,7 @@ class TBSApi {
   async getBlockList(offset = 0, limit = 20, withFirstBlockTransactions) {
     //如果没有传start，默认是获取最新的区块信息
     let start = await this.getBlockNumber()
-    //return { blocks: blockList, start }
+    return { blocks: blockList, start }
     if (offset) {
       start = start - offset
     }
