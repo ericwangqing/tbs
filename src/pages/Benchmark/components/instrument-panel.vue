@@ -6,7 +6,7 @@
       .count {{formattedTps}}
       .tps TPS
       img.logo(:src="logo")
-      GradientGauge.tps-gauge(id="tpsGauge", :percent="percent")
+    GradientGauge.tps-gauge(id="tpsGauge", :percent="percent")
   ResourceCharts.resource-charts-container
 </template>
 
@@ -17,61 +17,64 @@ import PerformanceChart from './performance-chart.vue'
 import ResourceCharts from './resource-charts.vue'
 import logo from '@/assets/logo.svg'
 import { thousands } from '../composition/util.js'
+import { controller } from '../composition/controller'
 
 export default defineComponent({
   name: 'InstrumentPanel',
   props: {
     isFast: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   components: {
     GradientGauge,
     PerformanceChart,
-    ResourceCharts
+    ResourceCharts,
   },
   setup: (props) => {
-    const percent = ref(10)
-    const tps = ref(100)
-    let interval = ref(0)
-
-    let stage = 0
-    watch(() => props.isFast, (val) => {
-      if (interval.value) clearInterval(interval.value)
-      interval.value = setInterval(() => {
-        if ((percent.value > 90 && val) || (percent.value < 10 && !val)) {
-          stage++
-          if (stage % 50 !== 0) return
-          const add = (Math.random() > 0.5 ? 1 : -1)
-          percent.value += add * Math.floor(Math.random() * 3)
-          if (val) {
-            tps.value += Math.floor(Math.random() * 5000) * add
-            tps.value = Math.max(Math.min(110000 + Math.floor(Math.random() * 3000), tps.value), 98000)
-            percent.value = Math.max(Math.min(100, percent.value), 90)
-          }
-          else {
-            tps.value += Math.floor(Math.random() * 5) * add
-            tps.value = Math.max(Math.min(150, tps.value), 50)
-            percent.value = Math.max(Math.min(15, percent.value), 5)
-          }
-        } else if (val) {
-          percent.value += 4
-          tps.value += Math.floor(Math.random() * 1000) * (Math.random() > 0.5 ? 1 : -1) + 5000
+    let interval = null
+    const tps = ref(controller.tps)
+    watch(
+      () => controller.tps,
+      () => {
+        if (interval) {
+          clearInterval(interval)
+          interval = null
         } else {
-          percent.value -= 6
-          tps.value -= Math.floor(Math.random() * 2000) * (Math.random() > 0.5 ? 1 : -1) + 10000
-          tps.value = Math.max(tps.value, Math.floor(Math.random() * 50) * (Math.random() > 0.5 ? 1 : -1) + 100)
+          const diff = controller.tps - tps.value
+          const diffEveryTime = Math.abs(diff) > 1000 ? Math.floor(diff / (diff > 0 ? 15 : 30)) : diff
+          interval = setInterval(() => {
+            if (diff > 0) {
+              tps.value += diffEveryTime
+              if (tps.value > controller.tps) tps.value = controller.tps
+            } else if (diff < 0) {
+              tps.value += diffEveryTime
+              if (tps.value < controller.tps) tps.value = controller.tps
+            }
+            if (tps.value === controller.tps) {
+              clearInterval(interval)
+              interval = null
+              return
+            }
+          }, 16)
         }
-      }, 16);
-    })
-
+      }
+    )
     const formattedTps = computed(() => thousands(tps.value))
+    const percent = computed(() => {
+      if (tps.value < 100) return (tps.value / 100) * 10
+      else if (tps.value < 1000) return ((tps.value - 100) / 1000) * 5 + 10
+      else if (tps.value < 10000) return ((tps.value - 1000) / 10000) * 5 + 15
+      else if (tps.value < 100000)
+        return ((tps.value - 10000) / 100000) * 70 + 20
+      else return Math.min(100, ((tps.value - 100000) / 100000) * 10 + 90)
+    })
 
     return {
       percent,
       logo,
-      formattedTps
+      formattedTps,
     }
   },
 })
@@ -97,7 +100,7 @@ export default defineComponent({
     position: relative;
     .tps-gauge {
       position: absolute;
-      top: -34px;
+      top: 0;
       filter: drop-shadow(0px 0px 25px rgba(186, 219, 255, 0.5));
     }
     .tps-gauge-content {
@@ -106,13 +109,13 @@ export default defineComponent({
       left: 34px;
       width: calc(100% - 68px);
       height: calc(100% - 68px);
-      border: 1px solid rgba(255,255,255,0.10);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 50%;
       display: flex;
       align-items: center;
       flex-direction: column;
       color: #fff;
-      background: linear-gradient(180deg,#000000 24%, #313131);
+      background: linear-gradient(180deg, #000000 24%, #313131);
       user-select: none;
       .count {
         margin-top: 79px;
@@ -131,12 +134,12 @@ export default defineComponent({
         width: 80px;
         height: 55px;
         position: absolute;
-        bottom: 24px;        
+        bottom: 24px;
       }
-
     }
   }
-  .performance-chart, .resource-charts-container {
+  .performance-chart,
+  .resource-charts-container {
     margin-top: 110px;
     width: 633px;
   }

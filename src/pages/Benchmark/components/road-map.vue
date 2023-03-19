@@ -3,26 +3,26 @@
   svg(width="238px" height="229px" viewBox="-20 -20 238 229" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="filter: drop-shadow(0px 0px 4px 0px rgba(0, 0, 0, 0.3));")
     defs
     linearGradient(x1="0" y1="0" x2="0" y2="1" id="gradient1")
-      stop(offset="0%" stop-color="#FFCB00")
-      stop(offset="100%" stop-color="#F08B00")
+      stop(offset="0%" stop-color="#6fb2ff")
+      stop(offset="100%" stop-color="#3c7bfd")
     g(stroke-width="5" fill="none" fill-rule="evenodd")
       polygon(:points="points" stroke="url(#gradient1)")
       polygon(:points="startLine" stroke="#fff")
       polygon(:points="points" stroke="#fff" stroke-width="5" fill="none" fill-rule="evenodd" :stroke-dasharray="strokeDasharray" :stroke-dashoffset="strokeDashoffset")
     g
       polygon(style="fill: #fff; stroke: #fff; stroke-width: 4", stroke-linejoin="round" :points="triangleBackPoints" )
-      polygon(style="fill: #FD693C; stroke: #FD693C; stroke-width: 4", stroke-linejoin="round" :points="trianglePoints" )
-  
+      polygon(style="fill: #1acd57; stroke: #1acd57; stroke-width: 4", stroke-linejoin="round" :points="trianglePoints" )
+
   .test-plan-info
-    .test-plan-name ETH 2022
+    .test-plan-name {{ controller.testData?.name || 'Not Running' }}
     .test-plan-txn
-      .test-plan-txn--total 1,000G
+      .test-plan-txn--current {{ formattedCurrentTxn }}
       span /
-      .test-plan-txn--current 234G
+      .test-plan-txn--total {{ formattedTotalTxn }}
     .test-plan-elapsed-time
-      .text-plan-elapsed-time__text 06:23.24
+      .text-plan-elapsed-time__text {{ formattedTimeCost }}
       .text-plan-elapsed-time__icon
-    .test-plan-estimated-time Estimated Time: 18:00.00
+    .test-plan-estimated-time Estimated Time: {{ formattedTimeEstimated }}
   .test-plan-config-btn
     .text-plan-config-btn__text Config
     .text-plan-config-btn__icon
@@ -31,16 +31,11 @@
 <script>
 import { computed, defineComponent, ref, watch } from 'vue'
 import roadCoordinates from '@/assets/road-coordinates.json'
+import { controller } from '../composition/controller.js'
 
 export default defineComponent({
   name: 'RoadMap',
-  props: {
-    percent: {
-      default: 0,
-      type: Number
-    },
-  },
-  setup: (props) => {
+  setup: () => {
     const startPos = roadCoordinates[0]
 
     const currentPos = ref({
@@ -67,7 +62,7 @@ export default defineComponent({
     })
 
     const calcCurrentPos = () => {
-      const percent = props.percent / 100
+      const percent = controller.percent
       for (let i = 0; i < roadCoordinates.length; i++) {
         if (i === roadCoordinates.length - 1 || (roadCoordinates[i].percent <= percent && roadCoordinates[i + 1].percent > percent)) {
           stage = i
@@ -85,6 +80,7 @@ export default defineComponent({
       strokeDasharray.value = `${(1 - percent) * perimeter} 10000`
       strokeDashoffset.value = -(percent) * perimeter
     }
+    calcCurrentPos()
 
     const calcTrianglePointsWithSize = (width, height) => {
       // 根据当前pos，以及所处的direction，计算三角points。
@@ -116,9 +112,45 @@ export default defineComponent({
 
     calcTrianglePoints()
 
-    watch(() => props.percent, () => {
+    watch(() => controller.percent, () => {
       calcCurrentPos()
       calcTrianglePoints()
+    })
+
+    const formatNumWithUnit = (num) => {
+      if (num < 10000) return `${num}`
+      else if (num < 10000000) return `${Math.floor(num / 1000)}K`
+      else if (num < 10000000000) return `${Math.floor(num / 1000000)}M`
+      else if (num < 10000000000000) return `${Math.floor(num / 1000000000)}G`
+      else if (num < 10000000000000000) return `${Math.floor(num / 1000000000000)}T`
+    }
+
+    const formatTime = (num) => {
+      const hour = Math.floor(num / 60 / 24)
+      const minute = Math.floor(num % (60 * 24) / 60)
+      const second = num % (60 * 24) % 60
+      const hourStr = `${hour}`.padStart(2, '0')
+      const minuteStr = `${minute}`.padStart(2, '0')
+      const secondStr = `${second}`.padStart(2, '0')
+      return `${hourStr}:${minuteStr}.${secondStr}`
+    }
+
+    const formattedCurrentTxn = computed(() => {
+      return formatNumWithUnit(controller.txCount)
+    })
+
+    const formattedTotalTxn = computed(() => {
+      if (!controller.testData) return '0'
+      return formatNumWithUnit(controller.testData.txn)
+    })
+
+    const formattedTimeCost = computed(() => {
+      return formatTime(controller.timeCost)
+    })
+
+    const formattedTimeEstimated = computed(() => {
+      if (!controller.testData) return '00:00.00'
+      return formatTime(controller.testData.estimated)
     })
 
     return {
@@ -127,7 +159,12 @@ export default defineComponent({
       trianglePoints,
       triangleBackPoints,
       strokeDasharray,
-      strokeDashoffset
+      strokeDashoffset,
+      controller,
+      formattedCurrentTxn,
+      formattedTotalTxn,
+      formattedTimeCost,
+      formattedTimeEstimated
     }
   },
 })
@@ -156,7 +193,7 @@ export default defineComponent({
         color: #fff;
       }
       &--current {
-        color: #FFD300;
+        color: #3c7bfd;
       }
     }
     .test-plan-elapsed-time {
@@ -176,6 +213,8 @@ export default defineComponent({
     font-style: italic;
     font-size: 20px;
     border-radius: 8px 0px 0px 8px;
+    user-select: none;
+    cursor: pointer;
   }
 }
 </style>

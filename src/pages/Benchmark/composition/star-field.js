@@ -9,6 +9,7 @@ export class StarField {
     this.option = option || {}
     this.speed = 1
     this.speedInterval = null
+    this.running = false
   }
 
   init(container) {
@@ -79,7 +80,7 @@ export class StarField {
   render() {
     //get the frame
     requestAnimationFrame(() => this.render())
-  
+    if (!this.running) return
     //render the scene
     this.renderer.render(this.scene, this.camera)
     this.animateStars()
@@ -103,5 +104,13 @@ export class StarField {
       this.speed -= 2
       this.speed = Math.max(this.speed, 1)
     }, 50)
+  }
+
+  start() {
+    this.running = true
+  }
+
+  stop() {
+    this.running = false
   }
 }
