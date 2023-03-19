@@ -2,23 +2,40 @@
 .cockpit(@mousedown="isFast = true", @mouseup="isFast = false")
   StarField(:isFast="isFast")
   RoadLine(:isFast="isFast")
+  InstrumentPanel(:isFast="isFast")
+  RoadMap(:percent="percent")
 </template>
 
 <script>
 import { defineComponent, inject, toRefs, ref, onMounted } from 'vue'
 import RoadLine from './components/road-line.vue'
 import StarField from './components/star-field.vue'
+import InstrumentPanel from './components/instrument-panel.vue'
+import RoadMap from './components/road-map.vue'
 
 export default defineComponent({
   name: 'Cockpit',
   components: {
     RoadLine,
-    StarField
+    StarField,
+    InstrumentPanel,
+    RoadMap
   },
   setup: () => {
     const isFast = ref(false)
+    const percent = ref(0)
+    let trigger = 0
+    onMounted(() => {
+      setInterval(() => {
+        let judge = isFast.value ? 1 : 25
+        if (trigger % judge === 0) percent.value += 0.5
+        if (percent.value >= 100) percent.value = 0
+        trigger++
+      }, 16)
+    })
     return {
-      isFast
+      isFast,
+      percent
     }
   }
 })

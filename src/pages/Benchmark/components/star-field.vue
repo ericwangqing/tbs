@@ -49,3 +49,11 @@ export default defineComponent({
   }
 }
 </style>
+
+
+<style lang="scss">
+.star-field-container canvas {
+  width: 100%;
+  height: 100%;
+}
+</style>

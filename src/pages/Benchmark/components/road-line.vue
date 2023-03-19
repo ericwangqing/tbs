@@ -90,10 +90,12 @@ export default defineComponent({
   top: 0;
   width: 100%;
   height: 100%;
-  canvas {
-    width: 100%;
-    height: 100%;
-  }
 }
 </style>
-  
+
+<style lang="scss">
+.road-line-container canvas {
+  width: 100%;
+  height: 100%;
+}
+</style>
