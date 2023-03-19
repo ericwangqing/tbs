@@ -86,6 +86,7 @@ export default defineComponent({
     const redraw = () => {
       const now = Date.now()
       const LINE_CHART_X_RANGE = 40 // datas in ${x}s per page
+      // TODO data from network!!!
       const cpuUsage = 10 * Math.random();
       const memoryUsage = 10 + 10 * Math.random();
       const bandwidthUsage = 20 + 10 * Math.random();

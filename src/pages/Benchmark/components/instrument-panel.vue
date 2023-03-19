@@ -16,6 +16,7 @@ import GradientGauge from './gradient-gauge.vue'
 import PerformanceChart from './performance-chart.vue'
 import ResourceCharts from './resource-charts.vue'
 import logo from '@/assets/logo.svg'
+import { thousands } from '../composition/util.js'
 
 export default defineComponent({
   name: 'InstrumentPanel',
@@ -34,10 +35,6 @@ export default defineComponent({
     const percent = ref(10)
     const tps = ref(100)
     let interval = ref(0)
-
-    const thousands = (num) => {
-      return num.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,')
-    }
 
     let stage = 0
     watch(() => props.isFast, (val) => {

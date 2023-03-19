@@ -12,7 +12,20 @@
     g
       polygon(style="fill: #fff; stroke: #fff; stroke-width: 4", stroke-linejoin="round" :points="triangleBackPoints" )
       polygon(style="fill: #FD693C; stroke: #FD693C; stroke-width: 4", stroke-linejoin="round" :points="trianglePoints" )
-
+  
+  .test-plan-info
+    .test-plan-name ETH 2022
+    .test-plan-txn
+      .test-plan-txn--total 1,000G
+      span /
+      .test-plan-txn--current 234G
+    .test-plan-elapsed-time
+      .text-plan-elapsed-time__text 06:23.24
+      .text-plan-elapsed-time__icon
+    .test-plan-estimated-time Estimated Time: 18:00.00
+  .test-plan-config-btn
+    .text-plan-config-btn__text Config
+    .text-plan-config-btn__icon
 </template>
 
 <script>
@@ -122,10 +135,47 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .road-map-container {
-  width: 238px;
-  height: 229px;
-  position: absolute;
-  top: 15%;
-  right: 10%;
+  .test-plan-info {
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+    align-items: flex-end;
+    padding-right: 20px;
+    font-family: Helvetica, Helvetica-Regular;
+    .test-plan-name {
+      font-size: 30px;
+      font-weight: bold;
+    }
+    .test-plan-txn, .test-plan-estimated-time {
+      font-size: 16px;
+      display: flex;
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.45);
+      span {
+        margin: 0 4px;
+        color: #fff;
+      }
+      &--current {
+        color: #FFD300;
+      }
+    }
+    .test-plan-elapsed-time {
+      font-size: 34px;
+      font-weight: bold;
+      font-style: italic;
+    }
+  }
+  .test-plan-config-btn {
+    position: fixed;
+    right: 0;
+    padding: 12px 45px 10px 16px;
+    margin-top: 40px;
+    color: #fff;
+    background: linear-gradient(90deg,rgba(0,0,0,0.80) 46%, rgba(0,0,0,0.00));
+    font-weight: bold;
+    font-style: italic;
+    font-size: 20px;
+    border-radius: 8px 0px 0px 8px;
+  }
 }
 </style>
