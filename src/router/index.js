@@ -36,12 +36,12 @@ const routes = [
   {
     path: '/explorer-block-list',
     name: 'explorer-block-list',
-    component: () => import('@/pages/explorer/all-block-list.vue'),
+    component: () => import('@/pages/explorer/block-list.vue'),
   },
   {
     path: '/explorer-transaction-list',
     name: 'explorer-transaction-list',
-    component: () => import('@/pages/explorer/all-transaction-list.vue'),
+    component: () => import('@/pages/explorer/transaction-list.vue'),
   },
   {
     path: '/explorer-block/:blockNumber',

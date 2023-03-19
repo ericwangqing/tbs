@@ -59,7 +59,6 @@ class TBSApi {
     if (blocks) {
       return blocks
     } else {
-      debugger
       throw Error('get block error')
     }
   }
