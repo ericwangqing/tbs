@@ -1,16 +1,20 @@
 <template lang="pug">
 .instrument-panel-container
+  PerformanceChart.performance-chart(:isFast="isFast")
   .tps-gauge-wrapper
     .tps-gauge-content(xmlns="http://www.w3.org/1999/xhtml")
       .count {{formattedTps}}
       .tps TPS
       img.logo(:src="logo")
     GradientGauge.tps-gauge(:percent="percent")
+  ResourceCharts.resource-charts-container
 </template>
 
 <script>
 import { computed, defineComponent, ref, watch } from 'vue'
 import GradientGauge from './gradient-gauge.vue'
+import PerformanceChart from './performance-chart.vue'
+import ResourceCharts from './resource-charts.vue'
 import logo from '@/assets/logo.svg'
 
 export default defineComponent({
@@ -22,7 +26,9 @@ export default defineComponent({
     }
   },
   components: {
-    GradientGauge
+    GradientGauge,
+    PerformanceChart,
+    ResourceCharts
   },
   setup: (props) => {
     const percent = ref(10)
@@ -132,6 +138,10 @@ export default defineComponent({
       }
 
     }
+  }
+  .performance-chart, .resource-charts-container {
+    margin-top: 110px;
+    width: 633px;
   }
 }
 </style>
