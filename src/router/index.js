@@ -33,6 +33,17 @@ const routes = [
     name: 'explorer',
     component: () => import('@/pages/explorer/index.vue'),
   },
+  {
+    path: '/explorer-block-list/',
+    name: 'explorer-block-list',
+    component: () => import('@/pages/explorer/all-block-list.vue'),
+  },
+  {
+    path: '/explorer-transaction-list/',
+    name: 'explorer-transaction-list',
+    component: () => import('@/pages/explorer/all-transaction-list.vue'),
+  }
+
 ]
 
 const router = createRouter({
