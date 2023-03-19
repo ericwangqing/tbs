@@ -8,5 +8,7 @@ import 'uno.css'
 import '@/theme/dark/index.scss'
 
 const app = createApp(App)
-app.provide('TBSApi', new TBSApi('goerli'))
+const network = 'goerli'
+app.provide('TBSApi', new TBSApi())
+
 app.use(router).mount('#app')

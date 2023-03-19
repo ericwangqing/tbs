@@ -31,10 +31,15 @@
                   >
                 </div>
                 <div>
-                  <router-link
-                    :to="`/explorer-transaction-list?block=${item.number}`"
-                    >{{ item.transactions.length + ' txns ' }}</router-link
-                  >{{
+                  <a-tooltip
+                    ><router-link
+                      :to="`/explorer-transaction-list?block=${item.number}`"
+                      >{{ item.transactions.length + ' txns ' }}</router-link
+                    ><template #title
+                      >Transactions in this Block</template
+                    ></a-tooltip
+                  >
+                  {{
                     `in ${
                       item.timestamp -
                       (nextPageBlock && nextPageBlock.timestamp)
@@ -42,7 +47,13 @@
                   }}
                 </div>
               </div>
-              <div>Reward待计算</div>
+              <div>
+                <a-tooltip
+                  >Reward计算方式待研究<template #title
+                    >Block Reward</template
+                  ></a-tooltip
+                >
+              </div>
             </div>
           </template>
         </card>
@@ -88,11 +99,13 @@
                 </div>
               </div>
               <div>
-                {{
-                  Number(
-                    utils.formatUnits(BigNumber.from(item.value).toString())
-                  ).toFixed(4) + 'ETH'
-                }}
+                <a-tooltip
+                  >{{
+                    Number(
+                      utils.formatUnits(BigNumber.from(item.value).toString())
+                    ).toFixed(4) + ' ETH'
+                  }}<template #title>Amount</template></a-tooltip
+                >
               </div>
             </div>
           </template>
@@ -123,7 +136,7 @@ onMounted(async () => {
       2
     )
     blocks.value = bs
-    nextPageBlock = nextBlock
+    nextPageBlock.value = nextBlock
   } catch (e) {
   } finally {
     loading.value = false

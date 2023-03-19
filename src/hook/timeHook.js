@@ -10,7 +10,18 @@ export default function useTime() {
     }
     return dayjs(date).fromNow()
   }
+
+  function formatTime(date) {
+    if (typeof date === 'number') {
+      if (date < 1e11) {
+        date = date * 1000
+      }
+    }
+    return dayjs(date).format('YYYY-MM-DD HH:mm:ss')
+  }
+
   return {
     fromNow,
+    formatTime,
   }
 }

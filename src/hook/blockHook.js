@@ -14,7 +14,7 @@ export default function useTime() {
         .toNumber() / 100
     )
   }
-  function getBaseFeePerGas(block, unit = 'eth') {
+  function getBaseFee(block, unit = 'ether') {
     return utils
       .formatUnits(
         BigNumber.from(block.baseFeePerGas).mul(BigNumber.from(block.gasUsed)),
@@ -22,10 +22,25 @@ export default function useTime() {
       )
       .toString()
   }
+  function getBaseFeePerGas(block, unit = 'ether') {
+    return utils
+      .formatUnits(BigNumber.from(block.baseFeePerGas), unit)
+      .toString()
+  }
+  function getBurntFees(block, unit = 'ether') {
+    return utils.formatUnits(
+      BigNumber.from(block.baseFeePerGas)
+        .mul(BigNumber.from(block.gasUsed))
+        .toString(),
+      unit
+    )
+  }
   return {
     getGasUsed,
     getGasLimit,
     getGasUsePecent,
     getBaseFeePerGas,
+    getBaseFee,
+    getBurntFees,
   }
 }

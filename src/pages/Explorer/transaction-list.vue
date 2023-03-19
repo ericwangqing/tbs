@@ -2,64 +2,49 @@
   <div class="px-48px pt-12px pb-48px h-100%">
     <div class="text-white text-36px">
       <span>Transactions</span>
-      <span class="text-white text-16px ml-8px" v-if="blockNumber">
-        For Block
-        <router-link :to="`/explorer-block/${blockNumber}`">{{
-          blockNumber
-        }}</router-link>
-      </span>
     </div>
     <div class="bg-white px-8px">
-      <div v-if="blockNumber" class="h-36px lh-36px">
-        A total of {{ transactions.length }} transactions found
+      <div class="h-36px lh-36px flex">
+        A total of {{ txs.length }} transactions found<block-change
+          class="ml-32px"
+          :blockNumber="currentBlock"
+          :routerAble="true"
+          @changeBlockNumber="changeBlockNumber"
+        ></block-change>
       </div>
-      <a-table
-        :dataSource="transactions"
-        :columns="columns"
-        rowKey="hash"
+      <TransactionTable
+        :txs="txs"
+        scrollY="calc(100vh - 290px)"
         :loading="loading"
-        :scroll="{ y: 'calc(100vh - 340px)' }"
-      >
-        <template #bodyCell="{ column, record }"> </template>
-      </a-table>
+      ></TransactionTable>
     </div>
   </div>
 </template>
 <script setup>
 import { inject, onMounted, computed, ref, watchEffect } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import BlockChange from '@/pages/explorer/components/block-change.vue'
+import TransactionTable from '@/pages/explorer/components/transactions-table.vue'
 const TBSApi = inject('TBSApi')
 const route = useRoute()
+const router = useRouter()
 const loading = ref(false)
-const block = ref(null)
-const current = ref(1)
-const pageSize = ref(2)
+const currentBlock = ref(1)
 const txs = ref([])
+const blockStart = ref(0)
 
-onMounted(async () => {})
-
-const blockNumber = computed(() => {
-  return route.query.block - 0
-})
-
-const transactions = computed(() => {
-  if (blockNumber.value) {
-    return (block.value && block.value.transactions) || []
-  } else {
-    return txs.value
-  }
+onMounted(async () => {
+  blockStart.value = await TBSApi.getBlockNumber()
+  currentBlock.value = route.query.block
+    ? route.query.block - 0
+    : blockStart.value
 })
 
 watchEffect(async () => {
   loading.value = true
   try {
-    if (blockNumber.value) {
-      block.value = await TBSApi.getBlockDetail(blockNumber.value, true)
-    } else {
-      const blockNumber = await TBSApi.getBlockNumber()
-      txs.value = await TBSApi.getTransactionsByBlock(
-        blockNumber - current.value + 1
-      )
+    if (currentBlock.value) {
+      txs.value = await TBSApi.getTransactionsByBlock(currentBlock.value)
     }
   } catch (e) {
   } finally {
@@ -67,38 +52,12 @@ watchEffect(async () => {
   }
 })
 
-const columns = [
-  {
-    title: 'Txn Hash',
-    dataIndex: 'hash',
-  },
-  {
-    title: 'Method',
-    dataIndex: 'blockNumber',
-  },
-  {
-    title: 'Block',
-    dataIndex: 'blockNumber',
-  },
-  {
-    title: 'Age',
-    dataIndex: 'miner',
-  },
-  {
-    title: 'From',
-    dataIndex: 'from',
-  },
-  {
-    title: 'To',
-    dataIndex: 'to',
-  },
-  {
-    title: 'Value',
-    dataIndex: 'baseFeePerGas',
-  },
-  {
-    title: 'Txn Fee',
-    dataIndex: 'Reward',
-  },
-]
+function changeBlockNumber(blockNumber) {
+  router.push({
+    name: route.name,
+    query: {
+      block: blockNumber,
+    },
+  })
+}
 </script>
