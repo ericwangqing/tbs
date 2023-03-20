@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import TBSApi from './api'
+import '@/assets/iconfont/iconfont.css'
 
 import 'uno.css'
 import { BigNumber } from 'ethers'
