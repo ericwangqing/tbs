@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { defineComponent, nextTick, onMounted, ref, watch } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import * as echarts from 'echarts'
 import { controller } from '../composition/controller.js'
 
@@ -39,7 +39,7 @@ export default defineComponent({
         legend: {
           data: legend,
           top: '10%',
-          right: '2.2%',
+          right: '2.5%',
           textStyle: {
             color: '#8c8c8c'
           }

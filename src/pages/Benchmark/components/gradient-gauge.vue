@@ -7,7 +7,7 @@ svg.gradient-gauge(:width="`${diameter}px`" :height="`${diameter}px`" :viewBox="
   circle(v-if="backRingAround" :cx="center" :cy="center" :r="radius + strokeWidth / 2 - backLineStrokeWidth / 2", :stroke-width="backLineStrokeWidth" :stroke="`url(#${id}-gradientDef)`" fill="none" :stroke-dasharray="`${backLinePerimeter} ${backLinePerimeter - backLineArcToDashOffset - 77}`" :stroke-dashoffset="`-${backLineArcToDashOffset}`")
   circle(v-if="backRingAround" :cx="center" :cy="center" :r="radius + strokeWidth / 2 + backRingAroundPadding / 2 + backRingStrokeWidth / 2" :stroke-width="backRingStrokeWidth" stroke="rgba(255, 255, 255, 0.05)" fill="none")
   circle(v-else :cx="center" :cy="center" :r="radius" :stroke-width="strokeWidth" stroke="rgba(255, 255, 255, 0.05)" fill="none")
-  circle(:cx="center" :cy="center" :r="radius" :stroke-width="strokeWidth" :stroke="`url(#${id}-gradientDef)`" fill="none" :stroke-dasharray="strokeDasharray" :stroke-dashoffset="`-${arcToDashOffset}`" stroke-linecap="round")
+  circle(:cx="center" :cy="center" :r="radius" :stroke-width="strokeWidth" :stroke="`url(#${id}-gradientDef)`" fill="none" :stroke-dasharray="strokeDasharray" :stroke-dashoffset="`-${arcToDashOffset}`" :stroke-linecap="`${ percent > 0 ? 'round' : 'unset' }`")
   foreignObject(v-if="!needShadow" x="0" y="0" :width="diameter" :height="diameter")
     body.gauge-content(xmlns="http://www.w3.org/1999/xhtml")
       slot
