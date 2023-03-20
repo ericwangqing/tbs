@@ -1,6 +1,6 @@
 <template lang="pug">
 .instrument-panel-container
-  img.instrument-panel-bg(:src="panelImg", :class="{ 'burning': tps >= 100000 }")
+  InstrumentPanelBg.instrument-panel-bg(:isBurning="tps >= 100000")
   PerformanceChart.performance-chart
   .tps-gauge-wrapper
     .tps-gauge-content(xmlns="http://www.w3.org/1999/xhtml")
@@ -16,6 +16,7 @@ import { computed, defineComponent, ref, watch } from 'vue'
 import GradientGauge from './gradient-gauge.vue'
 import PerformanceChart from './performance-chart.vue'
 import ResourceCharts from './resource-charts.vue'
+import InstrumentPanelBg from './instrument-panel-bg.vue'
 import { thousands } from '../composition/util.js'
 import { controller } from '../composition/controller'
 import logo from '@/assets/logo.svg'
@@ -25,6 +26,7 @@ export default defineComponent({
   name: 'InstrumentPanel',
   components: {
     GradientGauge,
+    InstrumentPanelBg,
     PerformanceChart,
     ResourceCharts,
   },
@@ -80,18 +82,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@keyframes burningBg {
-  0% {
-    filter: drop-shadow(0px 0px 0px #a8e6ff);
-  }
-  50% {
-    filter: drop-shadow(0px 0px 20px #a8e6ff);
-  }
-  100% {
-    filter: drop-shadow(0px 0px 0px #a8e6ff);
-  }
-}
-
 @keyframes burningGauge {
   0% {
     filter: drop-shadow(0px 0px 25px rgba(186, 219, 255, 0.5));
@@ -104,31 +94,14 @@ export default defineComponent({
   }
 }
 
-@keyframes shakeBg {
-  0% {
-    width: 100%;
-    height: 100%;
-  }
-  50% {
-    top: -0.5px;
-    left: -0.5px;
-    width: calc(100% + 1px);
-    height: calc(100% + 1px);
-  }
-  0% {
-    width: 100%;
-    height: 100%;
-  }
-}
-
 .instrument-panel-container {
   position: absolute;
-  bottom: 0;
+  bottom: 12px;
   margin: auto;
   left: 0;
   right: 0;
-  width: 1695px;
-  height: 418px;
+  width: 1661px;
+  height: 390px;
   z-index: 5;
   display: flex;
   justify-content: center;
@@ -136,12 +109,9 @@ export default defineComponent({
     position: absolute;
     top: 0;
     left: 0;
-    &.burning {
-      animation: burningBg ease-in-out infinite 4s, shakeBg ease-in-out infinite 0.04s;
-    }
   }
   .tps-gauge-wrapper {
-    margin-top: 50px;
+    margin-top: 30px;
     width: 356px;
     height: 356px;
     position: relative;

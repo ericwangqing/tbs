@@ -8,49 +8,22 @@
         span （
         i {{ configList.length }}
         span ）
-      AInputSearch
+      AInputSearch(allowClear)
     .config-popup--wrapper-main(ref="cardList", :class="{ needScroll: needScroll }")
-      .config-card(v-for="item in configList", :key="item.id", :class="{ running: item.isRunning }")
-        .config-card--header
-          .config-card--title {{ item.name }}
-          .config-card--dataset {{ item.dataset.name }}
-          .config-card--delete
-        .config-card--main
-          AForm
-            AFormItem(label="Dataset range")
-              div {{ formatTimeRange(item.dataset.timeRange) }}
-            AFormItem(label="Tx count")
-              span(v-if="item.isRunning") {{ formatNumWithUnit(item.txn) }}
-              span(v-if="item.isRunning")  / 
-              span {{ formatNumWithUnit(item.dataset.txCount) }}
-            AFormItem(label="Time used")
-              div(v-if="item.isRunning")
-                span {{ formatTime(item.timeCost) }}
-                span   / 
-                span {{ formatTime(item.dataset.estimated) }}
-              span(v-else) {{ formatDayTimeWithUnit(item.timeCost) }}
-            AFormItem(label="TPS")
-              div {{ thousands(item.tps) }}
-          AForm
-            AFormItem(label="Shards/Nodes")
-              span {{ item.shardCount }}
-              span  / 
-              span {{ item.nodeCount }}
-            AFormItem(label="CPU")
-              span {{ Math.floor(item.cpuUsed * 100) }}%
-            AFormItem(label="Memory")
-              span {{ item.memoryUsed }}MB
-            AFormItem(label="Bandwidth")
-              span {{ item.bandwidthUsed }}KB
+      ConfigCard(v-for="item in configList", :key="item.id", :data="item")
   .config-popup--footer
 </template>
 
 <script>
 import { computed, defineComponent, ref } from 'vue'
-import { formatDayTimeWithUnit, formatTimeRange, formatTime, formatNumWithUnit, thousands } from '../composition/util'
+
+import ConfigCard from './config-card.vue'
 
 export default defineComponent({
   name: 'ConfigPopup',
+  components: {
+    ConfigCard
+  },
   props: {
     visible: {
       type: Boolean,
@@ -111,12 +84,7 @@ export default defineComponent({
     return {
       cardList,
       configList,
-      needScroll,
-      formatNumWithUnit,
-      thousands,
-      formatTime,
-      formatTimeRange,
-      formatDayTimeWithUnit
+      needScroll
     }
   },
 })
@@ -159,7 +127,7 @@ export default defineComponent({
     border-radius: 8px;
     animation: floatOut 0.2s 1;
     transform-origin: right center;
-    padding-bottom: 135px;
+    padding-bottom: 119px;
     display: flex;
     flex-direction: column;
     &-header {
@@ -180,7 +148,7 @@ export default defineComponent({
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      padding: 0 40px;
+      padding: 16px 40px;
       overflow-y: auto;
       &.needScroll {
         padding-right: 20px;
@@ -197,69 +165,13 @@ export default defineComponent({
         background: #4e505d;
       }
     }
-    .config-card {
-      position: relative;
-      width: 840px;
-      height: 290px;
-      padding: 36px 42px 23px 30px;
-      background: rgb(97, 99, 110);
-      border: 2px solid transparent;
-      border-radius: 8px;
-      box-sizing: border-box;
-      margin-bottom: 33px;
-      cursor: pointer;
-      &--header {
-        display: flex;
-        align-items: center;
-        .config-card--title {
-          font-size: 32px;
-          font-weight: bold;
-        }
-        .config-card--dataset {
-          font-size: 24px;
-          margin-left: 20px;
-          color: rgba(255, 255, 255, 0.5);
-        }
-      }
-      &:deep label {
-        color: #fff;
-        font-size: 24px;
-        width: 158px;
-        margin-right: 12px;
-        cursor: pointer;
-      }
-      &:deep .ant-form-item {
-        color: rgba(255, 255, 255, 0.5);
-        margin-bottom: 0;
-        font-size: 24px;
-        line-height: 40px;
-      }
-      &--main {
-        display: flex;
-        align-items: flex-start;
-        font-size: 24px;
-        justify-content: space-between;
-      }
-      &.running {
-        box-shadow: 0px 0px 16px 0px rgba(139, 247, 255, 0.50); 
-        &::before {
-          content: '';
-          position: absolute;
-          top: -2px;
-          left: -2px;
-          bottom: -2px;
-          right: -2px;
-          background: linear-gradient(180deg, #55f2fb, #0a95a2);
-          border-radius: 8px;
-        }
-      }
-    }
   }
   &--footer {
     position: fixed;
     bottom: 0;
     width: 100%;
     height: 135px;
+    z-index: 1;
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.00),  rgba(0, 0, 0, 0.80) 22%,  #000000 66%);
   }
 }

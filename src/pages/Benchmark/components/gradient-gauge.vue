@@ -156,7 +156,7 @@ export default defineComponent({
   height: v-bind('contentDiameter');
   border-radius: 50%;
   z-index: 2;
-  background: linear-gradient(180deg, #000000 24%, #313131);
+  background: rgba(0,0,0,0.20);
   color: #fff;
   display: flex;
   align-items: center;
