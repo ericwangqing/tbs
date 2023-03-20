@@ -72,7 +72,6 @@ export default defineComponent({
       nextTick(() => {
         borderAniToRed1.value.beginElement()
         borderAniToRed2.value.beginElement()
-        borderAniToRed3.value.beginElement()
 
         maskAniToRed1.value.beginElement()
         maskAniToRed2.value.beginElement()

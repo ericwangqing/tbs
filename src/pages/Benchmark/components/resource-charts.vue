@@ -2,13 +2,13 @@
 .resource-charts-container
   .resource-chart(ref="resourceChart")
   .resource-gauges
-    GradientGauge.cpu-gauge(id="cpuGauge", :radius="48", :strokeWidth="10", leftColor="#B85718", rightColor="#FC6E21", :needBackRing="false", :percent="currentCpu", :needShadow="false", :backRingAround="true")
+    GradientGauge.cpu-gauge(id="cpuGauge", :radius="48", :strokeWidth="10", leftColor="#FC6E21", rightColor="#B85718", :needBackRing="false", :percent="currentCpu", :needShadow="false", :backRingAround="true")
       .gauge-count {{Math.floor(currentCpu)}}%
       .gauge-label CPU
-    GradientGauge.memory-gauge(id="memoryGauge", :radius="48", :strokeWidth="10", leftColor="#46B8C0", rightColor="#49DAB0", :needBackRing="false", :percent="currentMemory", :needShadow="false", :backRingAround="true")
+    GradientGauge.memory-gauge(id="memoryGauge", :radius="48", :strokeWidth="10", leftColor="#49DAB0", rightColor="#46B8C0", :needBackRing="false", :percent="currentMemory", :needShadow="false", :backRingAround="true")
       .gauge-count {{Math.floor(currentMemory)}}%
       .gauge-label Memory
-    GradientGauge.bandwidth-gauge(id="bandwidthGauge", :radius="48", :strokeWidth="10", leftColor="#F6BD16", rightColor="#EF8C30", :needBackRing="false", :percent="currentBandwidth", :needShadow="false", :backRingAround="true")
+    GradientGauge.bandwidth-gauge(id="bandwidthGauge", :radius="48", :strokeWidth="10", leftColor="#EF8C30", rightColor="#F6BD16", :needBackRing="false", :percent="currentBandwidth", :needShadow="false", :backRingAround="true")
       .gauge-count {{Math.floor(currentBandwidth)}}%
       .gauge-label Bandwidth
 
@@ -131,9 +131,7 @@ export default defineComponent({
     }
 
     setInterval(() => {
-      setTimeout(() => {
-        redraw()
-      }, 0)
+      redraw()
     }, 1000)
 
     onMounted(() => {

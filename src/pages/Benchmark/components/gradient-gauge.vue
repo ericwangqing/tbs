@@ -1,7 +1,7 @@
 <template lang="pug">
 svg.gradient-gauge(:width="`${diameter}px`" :height="`${diameter}px`" :viewBox="`0 0 ${diameter} ${diameter}`" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink")
   defs
-    linearGradient(x1="1" y1="0" x2="0" y2="0" :id="`${id}-gradientDef`")
+    linearGradient(x1="0" y1="0" x2="1" y2="0" :id="`${id}-gradientDef`")
       stop(offset="0%" :stop-color="leftColor")
       stop(offset="100%" :stop-color="rightColor")
   foreignObject(v-if="!needShadow" x="0" y="0" :width="diameter" :height="diameter")

@@ -3,17 +3,17 @@
   InstrumentPanelBg.instrument-panel-bg(:isBurning="tps >= 100000")
   PerformanceChart.performance-chart
   .tps-gauge-wrapper
+    TpsGauge.tps-gauge(id="tpsGauge", :percent="percent", :percentChangeAnimate="false" :burning="tps >= 100000")
     .tps-gauge-content(xmlns="http://www.w3.org/1999/xhtml")
       .count {{formattedTps}}
       .tps TPS
       img.logo(:src="logo")
-    GradientGauge.tps-gauge(id="tpsGauge", :percent="percent", :percentChangeAnimate="false")
   ResourceCharts.resource-charts-container
 </template>
 
 <script>
 import { computed, defineComponent, ref, watch } from 'vue'
-import GradientGauge from './gradient-gauge.vue'
+import TpsGauge from './tps-gauge.vue'
 import PerformanceChart from './performance-chart.vue'
 import ResourceCharts from './resource-charts.vue'
 import InstrumentPanelBg from './instrument-panel-bg.vue'
@@ -25,7 +25,7 @@ import panelImg from '@/assets/panel-bg.png'
 export default defineComponent({
   name: 'InstrumentPanel',
   components: {
-    GradientGauge,
+    TpsGauge,
     InstrumentPanelBg,
     PerformanceChart,
     ResourceCharts,
@@ -41,7 +41,7 @@ export default defineComponent({
           interval = null
         } else {
           const diff = controller.tps - tps.value
-          const diffEveryTime = Math.abs(diff) > 1000 ? Math.floor(diff / (diff > 0 ? 5 : 10)) : diff
+          const diffEveryTime = Math.abs(diff) > 1000 ? Math.floor(diff / (diff > 0 ? 8 : 12)) : diff
           interval = setInterval(() => {
             if (diff > 0) {
               tps.value += diffEveryTime
@@ -55,7 +55,7 @@ export default defineComponent({
               interval = null
               return
             }
-          }, 32) // set to 16, may cause render conflict, then change the value after 1 period. e.g., 10w -> 100, expect 1s, actually 10w -> 7w -> 100, 2s.
+          }, 16) // set to 16, may cause render conflict, then change the value after 1 period. e.g., 10w -> 100, expect 1s, actually 10w -> 7w -> 100, 2s.
         }
       }
     )
@@ -66,8 +66,8 @@ export default defineComponent({
       else if (tps.value < 1000) return ((tps.value - 100) / 1000) * 5 + 10
       else if (tps.value < 10000) return ((tps.value - 1000) / 10000) * 5 + 15
       else if (tps.value < 100000)
-        return ((tps.value - 10000) / 100000) * 70 + 20
-      else return Math.min(100, ((tps.value - 100000) / 100000) * 10 + 90)
+        return ((tps.value - 10000) / 100000) * 63 + 20
+      else return Math.min(100, ((tps.value - 100000) / 30000) * 17 + 83)
     })
 
     return {
@@ -82,18 +82,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@keyframes burningGauge {
-  0% {
-    filter: drop-shadow(0px 0px 25px rgba(186, 219, 255, 0.5));
-  }
-  50% {
-    filter: drop-shadow(0px 0px 30px rgba(186, 219, 255, 0.5));
-  }
-  100% {
-    filter: drop-shadow(0px 0px 25px rgba(186, 219, 255, 0.5));
-  }
-}
-
 .instrument-panel-container {
   position: absolute;
   bottom: 12px;
@@ -118,10 +106,6 @@ export default defineComponent({
     .tps-gauge {
       position: absolute;
       top: 0;
-      filter: drop-shadow(0px 0px 25px rgba(186, 219, 255, 0.5));
-      &.burning {
-        animation: burningGauge ease-in-out infinite 4s;
-      }
     }
     .tps-gauge-content {
       position: absolute;
@@ -159,7 +143,7 @@ export default defineComponent({
     }
   }
   .performance-chart, .resource-charts-container {
-    margin-top: 110px;
+    margin-top: 90px;
     width: 625px;
     z-index: 1;
   }
