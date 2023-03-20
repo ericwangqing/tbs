@@ -16,18 +16,20 @@
     .count-board-ceil
       .count-board-ceil__label Nodes
       .count-board-ceil__num {{ thousands(controller.nodes) }}
-  StarField()
-  RoadLine()
+  StarField
+  RoadLine
   .footer-shadow
-  InstrumentPanel()
-  RoadMap.road-map-container()
+  InstrumentPanel
+  RoadMap.road-map-container(@configShow="configVisible = true")
+  ConfigPop(v-if="configVisible", @configHide="configVisible = false")
 </template>
 
 <script>
-import { defineComponent, onBeforeMount, onBeforeUnmount } from 'vue'
+import { defineComponent, onBeforeMount, onBeforeUnmount, ref } from 'vue'
 import RoadLine from './components/road-line.vue'
 import StarField from './components/star-field.vue'
 import InstrumentPanel from './components/instrument-panel.vue'
+import ConfigPop from './components/config-popup.vue'
 import RoadMap from './components/road-map.vue'
 import ScannedBox from '@/components/ScannedBox.vue'
 import { thousands } from './composition/util.js'
@@ -40,12 +42,14 @@ export default defineComponent({
     StarField,
     InstrumentPanel,
     RoadMap,
+    ConfigPop,
     ScannedBox
   },
   setup: () => {
     let presetProgress = ''
     let timeout = null
-    
+    const configVisible = ref(false)
+
     const bindKeyEvent = ({key}) => {
       if (key === 'ArrowUp') controller.setSpeed(true)
       if (key === 'ArrowDown') controller.setSpeed(false)
@@ -77,7 +81,8 @@ export default defineComponent({
 
     return {
       thousands,
-      controller
+      controller,
+      configVisible
     }
   }
 })
@@ -91,7 +96,7 @@ export default defineComponent({
   background: #212435;
   .count-board {
     position: absolute;
-    top: 45px;
+    top: 22px;
     left: 0;
     right: 0;
     margin: 0 auto;
@@ -100,18 +105,19 @@ export default defineComponent({
     background: linear-gradient(180deg,rgba(0,0,0,0.50), rgba(0,0,0,0.20));
     border-radius: 4px;
     &-ceil {
-      padding: 16px 66px;
+      padding: 16px 66px 13px;
       position: relative;
       &__label {
         color: #fff;
         white-space: nowrap;
         font-size: 20px;
+        line-height: 23px;
       }
       &__num {
         color: #FFA900;
         font-size: 34px;
         font-weight: bold;
-        margin-top: -10px;
+        line-height: 39px;
       }
       &:not(&:last-child)::after {
         content: '';
@@ -120,11 +126,13 @@ export default defineComponent({
         background: #d0d0d0;
         position: absolute;
         right: 0;
-        top: 50%;
-        transform: translateY(-50%);
+        top: 12px;
       }
-      &:first-child, &:last-child {
-        padding: 16px 50px;
+      &:first-child {
+        padding-left: 50px;
+      }
+      &:last-child {
+        padding-right: 50px;
       }
     }
   }
@@ -137,8 +145,8 @@ export default defineComponent({
   }
   .road-map-container {
     position: absolute;
-    top: 45px;
-    right: 25px;
+    top: 22px;
+    right: 20px;
   }
 }
 </style>

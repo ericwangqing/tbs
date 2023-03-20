@@ -4,17 +4,20 @@ svg.gradient-gauge(:width="`${diameter}px`" :height="`${diameter}px`" :viewBox="
     linearGradient(x1="1" y1="0" x2="0" y2="0" :id="`${id}-gradientDef`")
       stop(offset="0%" :stop-color="leftColor")
       stop(offset="100%" :stop-color="rightColor")
-  circle(v-if="backRingAround" :cx="center" :cy="center" :r="radius + strokeWidth / 2 - backLineStrokeWidth / 2", :stroke-width="backLineStrokeWidth" :stroke="`url(#${id}-gradientDef)`" fill="none" :stroke-dasharray="`${backLinePerimeter} ${backLinePerimeter - backLineArcToDashOffset - 77}`" :stroke-dashoffset="`-${backLineArcToDashOffset}`")
-  circle(v-if="backRingAround" :cx="center" :cy="center" :r="radius + strokeWidth / 2 + backRingAroundPadding / 2 + backRingStrokeWidth / 2" :stroke-width="backRingStrokeWidth" stroke="rgba(255, 255, 255, 0.05)" fill="none")
-  circle(v-else :cx="center" :cy="center" :r="radius" :stroke-width="strokeWidth" stroke="rgba(255, 255, 255, 0.05)" fill="none")
-  circle(:cx="center" :cy="center" :r="radius" :stroke-width="strokeWidth" :stroke="`url(#${id}-gradientDef)`" fill="none" :stroke-dasharray="strokeDasharray" :stroke-dashoffset="`-${arcToDashOffset}`" :stroke-linecap="`${ percent > 0 ? 'round' : 'unset' }`")
   foreignObject(v-if="!needShadow" x="0" y="0" :width="diameter" :height="diameter")
-    body.gauge-content(xmlns="http://www.w3.org/1999/xhtml")
-      slot
+    body.gauge-content-wrapper(xmlns="http://www.w3.org/1999/xhtml")
+      .gauge-content
+        slot
+  g
+    circle(v-if="backRingAround" :cx="center" :cy="center" :r="radius + strokeWidth / 2 - backLineStrokeWidth / 2", :stroke-width="backLineStrokeWidth" :stroke="`url(#${id}-gradientDef)`" fill="none" :stroke-dasharray="`${backLinePerimeter} ${backLinePerimeter - backLineArcToDashOffset - 77}`" :stroke-dashoffset="`-${backLineArcToDashOffset}`")
+    circle(v-if="backRingAround" :cx="center" :cy="center" :r="radius + strokeWidth / 2 + backRingAroundPadding / 2 + backRingStrokeWidth / 2" :stroke-width="backRingStrokeWidth" stroke="rgba(255, 255, 255, 0.05)" fill="none")
+    circle(v-else :cx="center" :cy="center" :r="radius" :stroke-width="strokeWidth" stroke="rgba(255, 255, 255, 0.05)" fill="none")
+  circle(:cx="center" :cy="center" :r="radius" :stroke-width="strokeWidth" :stroke="`url(#${id}-gradientDef)`" fill="none" :stroke-dasharray="strokeDasharray" :stroke-dashoffset="`-${arcToDashOffset}`" :stroke-linecap="`${ percent > 0 ? 'round' : 'unset' }`")
+
 </template>
 
 <script>
-import { defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 
 // gauge with gradient color as left to right.
 export default defineComponent({
@@ -116,21 +119,44 @@ export default defineComponent({
       }
     })
 
+    const contentDiameter = computed(() => {
+      return `calc(100% - ${2 * props.backRingStrokeWidth}px)`
+    })
+
+    const contentPadding = computed(() => {
+      return `calc(${props.backRingStrokeWidth}px)`
+    })
+
     return {
       diameter,
       center,
       strokeDasharray,
       arcToDashOffset,
       backLinePerimeter,
-      backLineArcToDashOffset
+      backLineArcToDashOffset,
+      contentDiameter,
+      contentPadding
     }
   },
 })
 </script>
 
 <style lang="scss" scoped>
-.gauge-content {
+.gauge-content-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
   background: transparent;
+}
+.gauge-content {
+  position: absolute;
+  top: v-bind('contentPadding');
+  left: v-bind('contentPadding');
+  width: v-bind('contentDiameter');
+  height: v-bind('contentDiameter');
+  border-radius: 50%;
+  z-index: 2;
+  background: linear-gradient(180deg, #000000 24%, #313131);
   color: #fff;
   display: flex;
   align-items: center;

@@ -20,12 +20,12 @@
       span /
       .test-plan-txn--total {{ formattedTotalTxn }}
     .test-plan-elapsed-time
-      .text-plan-elapsed-time__text {{ formattedTimeCost }}
-      .text-plan-elapsed-time__icon
+      .test-plan-elapsed-time__text {{ formattedTimeCost }}
+      .test-plan-elapsed-time__icon
     .test-plan-estimated-time Estimated Time: {{ formattedTimeEstimated }}
-  .test-plan-config-btn
-    .text-plan-config-btn__text Config
-    .text-plan-config-btn__icon
+  .test-plan-config-btn(@click="openConfig")
+    .test-plan-config-btn__text Config
+    .test-plan-config-btn__icon
 </template>
 
 <script>
@@ -36,7 +36,7 @@ import { formatNumWithUnit, formatTime } from '../composition/util.js'
 
 export default defineComponent({
   name: 'RoadMap',
-  setup: () => {
+  setup: (props, { emit }) => {
     const startPos = roadCoordinates[0]
 
     const currentPos = ref({
@@ -136,6 +136,10 @@ export default defineComponent({
       return formatTime(controller.testData.estimated)
     })
 
+    const openConfig = () => {
+      emit('configShow')
+    }
+
     return {
       points,
       startLine,
@@ -147,7 +151,8 @@ export default defineComponent({
       formattedCurrentTxn,
       formattedTotalTxn,
       formattedTimeCost,
-      formattedTimeEstimated
+      formattedTimeEstimated,
+      openConfig
     }
   },
 })
@@ -191,13 +196,19 @@ export default defineComponent({
     padding: 12px 45px 10px 16px;
     margin-top: 40px;
     color: #fff;
-    background: linear-gradient(90deg,rgba(0,0,0,0.80) 46%, rgba(0,0,0,0.00));
+    background: linear-gradient(90deg,rgba(0, 0, 0, 0.80) 46%,  rgba(0, 0, 0, 0.00));
+    box-shadow: 0px 0px 20px 0px rgba(179, 195, 255, 0.50);
     font-weight: bold;
     font-style: italic;
     font-size: 20px;
     border-radius: 8px 0px 0px 8px;
     user-select: none;
     cursor: pointer;
+    &__text {
+      background-image:-webkit-linear-gradient(left, #1acd57, #0093c2); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent;
+    }
   }
 }
 </style>

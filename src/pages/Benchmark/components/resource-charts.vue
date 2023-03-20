@@ -10,7 +10,7 @@
       .gauge-label Memory
     GradientGauge.bandwidth-gauge(id="bandwidthGauge", :radius="48", :strokeWidth="10", leftColor="#F6BD16", rightColor="#EF8C30", :needBackRing="false", :percent="currentBandwidth", :needShadow="false", :backRingAround="true")
       .gauge-count {{Math.floor(currentBandwidth)}}%
-      .gauge-label BW
+      .gauge-label Bandwidth
 
 </template>
 
@@ -39,9 +39,9 @@ export default defineComponent({
       chart = echarts.init(resourceChart.value)
       const option = {
         title: {
-          text: 'Node Resource Consumption (avg.)',
-          left: '2.5%',
-          top: '0',
+          text: 'Node Resource Consumption（avg.）',
+          left: '3%',
+          top: '1.5%',
           textStyle: {
             color: '#fff',
             fontWeight: 'bolder',
@@ -53,8 +53,8 @@ export default defineComponent({
         },
         legend: {
           data: ['CPU', 'Memory', 'Bandwidth'],
-          top: '17.5%',
-          left: '2.2%',
+          top: '12%',
+          left: '3.8%',
           selectedMode: false,
           icon: 'path://M 0 0 L 8 0 L 8 2 L 0 2 z',
           itemWidth: 8,
@@ -84,10 +84,10 @@ export default defineComponent({
           },
         },
         grid: {
-          left: '10%',
-          top: '34%',
-          right: '3%',
-          bottom: '10%'
+          left: '9%',
+          top: '35%',
+          right: '6.7%',
+          bottom: '7.5%'
         },
         color: ['#3C7BFD', '#5AD8A6', '#F6BD16'],
         series: [
@@ -154,18 +154,18 @@ export default defineComponent({
   position: relative;
   .resource-chart {
     display: block;
-    height: 305px;
+    height: 270px;
     width: 578px;
   }
   .resource-gauges {
     position: absolute;
-    top: 80px;
-    left: 40px;
+    top: 48px;
+    left: 73px;
     height: 106px;
     display: flex;
     margin: 8px 36px;
     svg:not(:last-child) {
-      margin-right: 64px;
+      margin-right: 66px;
     }
     .gauge-count {
       font-size: 36px;
