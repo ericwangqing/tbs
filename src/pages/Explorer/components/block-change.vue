@@ -1,13 +1,11 @@
-<template>
-  <div>
-    <left-outlined @click="change(1)" /><router-link
-      v-if="routerAble"
-      class="mx-8px"
-      :to="`/explorer-block/${blockNumber}`"
-      >{{ blockNumber }}</router-link
-    ><span v-else class="mx-8px">{{ blockNumber }}</span
-    ><right-outlined @click="change(-1)" />
-  </div>
+<template lang="pug">
+div
+  a-button(type="link", @click="change(1)")
+    left-outlined
+  router-link.mx-8px(v-if="routerAble", :to="`/explorer-block/${blockNumber}`") {{ blockNumber }}
+  span.mx-8px(v-else) {{ blockNumber }}
+  a-button(type="link", @click="change(-1)")
+    right-outlined
 </template>
 <script setup>
 import { RightOutlined, LeftOutlined } from '@ant-design/icons-vue'

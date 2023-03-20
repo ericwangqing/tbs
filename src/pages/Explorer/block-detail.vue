@@ -1,22 +1,17 @@
-<template>
-  <div class="px-48px pt-12px pb-48px h-100% flex flex-col overflow-hidden">
-    <div class="text-white text-36px">
-      <span>Block</span>
-      <span class="text-white text-16px ml-8px" v-if="blockNumber">
-        # {{ blockNumber }}
-      </span>
-    </div>
-    <div class="bg-white px-8px h-0 flex-1">
-      <a-tabs v-model:activeKey="activeKey">
-        <a-tab-pane key="Overview" tab="Overview"
-          ><BlockOverview :block="block"></BlockOverview
-        ></a-tab-pane>
-        <a-tab-pane key="ConsensusInfo" tab="Consensus Info"
-          ><BlockConsensusInfo :block="block"></BlockConsensusInfo
-        ></a-tab-pane>
-      </a-tabs>
-    </div>
-  </div>
+<template lang="pug">
+div.px-48px.pt-12px.pb-48px.h-full.flex.flex-col.overflow-hidden
+  div.text-white.text-36px
+    span Block
+    span(v-if="blockNumber").text-white.text-16px.ml-8px #
+      | {{ blockNumber }}
+  div.bg-white.px-8px.h-0.flex-1
+    a-tabs(v-model:activeKey="activeKey")
+      a-tab-pane(key="Overview", tab="Overview")
+        a-skeleton(:loading="loading")
+          BlockOverview(:block="block")
+      a-tab-pane(key="ConsensusInfo", tab="Consensus Info")
+        a-skeleton(:loading="loading")
+          BlockConsensusInfo(:block="block")  
 </template>
 <script setup>
 import { computed, ref, watchEffect, inject } from 'vue'
@@ -39,11 +34,15 @@ const isHash = computed(() => {
 watchEffect(async () => {
   loading.value = true
   try {
-    if (blockNumber) {
-      block.value = await TBSApi.getBlockDetail(blockNumber.value, true)
+    if (blockNumber.value) {
+      const { blockReward } = await TBSApi.getBlockRward(blockNumber.value)
+      const b = await TBSApi.getBlockDetail(blockNumber.value, true)
+      b.reward = blockReward * Math.pow(10, -18)
+      block.value = b
       console.log(block.value)
     }
   } catch (e) {
+    console.log(e)
   } finally {
     loading.value = false
   }

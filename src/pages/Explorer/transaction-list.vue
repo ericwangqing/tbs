@@ -1,24 +1,14 @@
-<template>
-  <div class="px-48px pt-12px pb-48px h-100%">
-    <div class="text-white text-36px">
-      <span>Transactions</span>
-    </div>
-    <div class="bg-white px-8px">
-      <div class="h-36px lh-36px flex">
-        A total of {{ txs.length }} transactions found<block-change
-          class="ml-32px"
-          :blockNumber="currentBlock"
-          :routerAble="true"
-          @changeBlockNumber="changeBlockNumber"
-        ></block-change>
-      </div>
-      <TransactionTable
-        :txs="txs"
-        scrollY="calc(100vh - 290px)"
-        :loading="loading"
-      ></TransactionTable>
-    </div>
-  </div>
+<template lang="pug">
+div.px-48px.pt-12px.pb-48px.h-full
+  div.text-white.text-36px
+    span Transactions
+  div.bg-white.px-8px
+    div.h-36px.lh-36px.flex A total of
+      | {{ txs.length }}
+      | transactions found
+      block-change(:blockNumber="currentBlock", :routerAble="true", @changeBlockNumber="changeBlockNumber").ml-32px
+    TransactionTable(:txs="txs", :block="block", scrollY="calc(100vh - 290px)", :loading="loading")
+  
 </template>
 <script setup>
 import { inject, onMounted, computed, ref, watchEffect } from 'vue'
@@ -32,12 +22,17 @@ const loading = ref(false)
 const currentBlock = ref(1)
 const txs = ref([])
 const blockStart = ref(0)
+const block = ref(null)
 
 onMounted(async () => {
-  blockStart.value = await TBSApi.getBlockNumber()
-  currentBlock.value = route.query.block
-    ? route.query.block - 0
-    : blockStart.value
+  if (route.query.block) {
+    currentBlock.value = route.query.block - 0
+  } else {
+    blockStart.value = await TBSApi.getBlockNumber()
+    currentBlock.value = blockStart.value
+  }
+  const b = await TBSApi.getBlockDetail(currentBlock.value)
+  block.value = b
 })
 
 watchEffect(async () => {

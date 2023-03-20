@@ -1,13 +1,22 @@
-<template>
-  <a-row class="description-item">
-    <a-col :span="5">
-      <slot name="label"></slot>
-    </a-col>
-    <a-col :span="18">
-      <slot></slot>
-    </a-col>
-  </a-row>
+<template lang="pug">
+a-row.description-item
+  a-col(:span="props.labelSpan")
+    slot(name="label")
+  a-col(:span="props.contentSpan")
+    slot  
 </template>
+<script setup>
+const props = defineProps({
+  labelSpan: {
+    type: Number,
+    default: 5,
+  },
+  contentSpan: {
+    type: Number,
+    default: 18,
+  },
+})
+</script>
 <style lang="scss" scoped>
 .description-item {
   padding: 12px 0px;
