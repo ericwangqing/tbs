@@ -63,6 +63,10 @@ export default defineComponent({
     id: {
       type: String,
       reqiured: true
+    },
+    percentChangeAnimate: {
+      type: Boolean,
+      default: true
     }
   },
   setup: (props) => {
@@ -79,8 +83,9 @@ export default defineComponent({
       center.value += props.backRingAroundPadding + props.backLineStrokeWidth
     }
 
-    const calcStrokeOffset = () => {
-      const val = props.percent / 100 * (perimeter * 0.65) // 0.65 is 1 - 0.425 * 2 / 6.28, arc in circle.
+    const calcStrokeOffset = (percent) => {
+      if (!percent) percent = 0
+      const val = percent / 100 * (perimeter * 0.65) // 0.65 is 1 - 0.425 * 2 / 6.28, arc in circle.
       const maxVal = perimeter - arcToDashOffset
       if (val > maxVal) {
         strokeDasharray.value = `${maxVal} ${arcToDashOffset - val + maxVal}`
@@ -88,9 +93,28 @@ export default defineComponent({
         strokeDasharray.value = `${val} ${perimeter - val}`
       }
     }
-    calcStrokeOffset()
+    calcStrokeOffset(0)
 
-    watch(() => props.percent, calcStrokeOffset)
+    let interval = null
+    watch(() => props.percent, (val, oldVal) => {
+      if (props.percentChangeAnimate) {
+        if (interval) {
+          clearInterval(interval)
+        }
+        const diff = val - oldVal
+        let delta = diff / 5
+        interval = setInterval(() => {
+          calcStrokeOffset(oldVal + delta)
+          delta += diff / 5
+          if (Math.abs(delta) > Math.abs(diff)) {
+            clearInterval(interval)
+            interval = null
+          }
+        }, 50)
+      } else {
+        calcStrokeOffset(val)
+      }
+    })
 
     return {
       diameter,

@@ -40,6 +40,10 @@ export default defineComponent({
           data: legend,
           top: '10%',
           right: '2.5%',
+          selectedMode: false,
+          icon: 'path://M 0 0 L 8 0 L 8 2 L 0 2 z',
+          itemWidth: 8,
+          itemGap: 12,
           textStyle: {
             color: '#8c8c8c'
           }
