@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '@/pages/Home/index.vue'
 import Benchmark from '@/pages/Benchmark/index.vue'
+import BlockChain from '@/pages/Shard/index.vue'
 
 const routes = [
   {
@@ -58,8 +59,11 @@ const routes = [
     name: 'explorer-address-detail',
     component: () => import('@/pages/explorer/address-detail.vue'),
   },
-
-
+  {
+    path: '/blockchain/',
+    name: 'blockchain',
+    component: BlockChain
+  }
 ]
 
 const router = createRouter({
