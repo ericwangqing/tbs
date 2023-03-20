@@ -33,10 +33,16 @@ const formatDayTimeWithUnit = (dayTime) => {
   return '3 years 2 months 1 day'
 }
 
+const randomBetween = (min, max, precision) => {
+  var p = Math.pow(10, precision);
+  return Math.round((min + Math.random() * (max - min)) * p) / p;
+}
+
 export {
   thousands,
   formatNumWithUnit,
   formatTime,
   formatTimeRange,
-  formatDayTimeWithUnit
+  formatDayTimeWithUnit,
+  randomBetween
 }

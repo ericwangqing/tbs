@@ -29,7 +29,7 @@ class Controller {
     this.testData = {
       name: '100K Simulation',
       dataset: 'ETH 2022',
-      txn: 1000000000000,
+      txn: 100000000,
       estimated: 64800 // seconds
     }
     this.shards = floatRandom(100, 20)
@@ -38,7 +38,7 @@ class Controller {
     this.tpsBase = 100
     this.timeCost = 0
     this.isFast = false
-    this.testData.estimated = Math.floor(this.testData.txn / this.tpsBase / this.nodes)
+    this.testData.estimated = Math.floor(this.testData.txn / this.tpsBase)
   }
 
   setSpeed(isFast) {
@@ -46,7 +46,7 @@ class Controller {
     this.tpsBase = this.isFast ? floatRandom(105000, 5000) : floatRandom(100, 10)
     this.setData()
     if (this.testData) {
-      this.testData.estimated = Math.floor(this.testData.txn / (this.isFast ? 100000 : 100) / this.nodes)
+      this.testData.estimated = Math.floor(this.testData.txn / (this.isFast ? 100000 : 100))
     }
   }
 

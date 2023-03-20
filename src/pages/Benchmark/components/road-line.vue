@@ -1,5 +1,6 @@
 <template lang="pug">
 .road-line-container(ref="lineCvs")
+.fire-container(ref="fireCvs")
 </template>
 
 <script>
@@ -7,11 +8,13 @@ import { defineComponent, ref, onMounted, watch } from 'vue'
 import { mountainDistortion, LongRaceDistortion } from '../composition/distortions.js'
 import { RoadLine } from '../composition/road-line.js'
 import { controller } from '../composition/controller.js'
+import { Fire } from '../composition/fire.js'
 
 export default defineComponent({
   name: 'RoadLine',
   setup: () => {
     const lineCvs = ref(null)
+    const fireCvs = ref(null)
     const options = {
       onSpeedUp: (ev) => {					
       },
@@ -77,6 +80,7 @@ export default defineComponent({
     onMounted(() => {
       lineComp = new RoadLine(lineCvs.value, options);
       lineComp.loadAssets().then(lineComp.init)
+      const fire = new Fire(fireCvs.value)
     })
 
     watch(
@@ -87,16 +91,9 @@ export default defineComponent({
       }
     )
 
-    // watch(
-    //   () => controller.running,
-    //   (val) => {
-    //     if (val) lineComp.start()
-    //     else lineComp.stop()
-    //   }
-    // )
-
     return {
-      lineCvs
+      lineCvs,
+      fireCvs
     }
   }
 })
@@ -108,6 +105,16 @@ export default defineComponent({
   top: 0;
   width: 100%;
   height: 100%;
+}
+
+.fire-container {
+  position: absolute;
+  top: 105px;
+  transform: rotate(110deg);
+  right: 175px;
+  width: 40px;
+  height: 40px;
+  z-index: 3;
 }
 </style>
 
