@@ -179,7 +179,7 @@ export default defineComponent({
     &.breathe {
       box-shadow: 0px 0px 20px 0px rgba(179, 195, 255, 0.50);
       .test-plan-config-btn__text {
-        background-image:-webkit-linear-gradient(left, #1acd57, #0093c2); 
+        background-image:-webkit-linear-gradient(left, #FFCB00, #F08B00); 
         -webkit-background-clip: text; 
         -webkit-text-fill-color: transparent;
       }
