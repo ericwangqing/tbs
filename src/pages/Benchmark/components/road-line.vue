@@ -67,8 +67,11 @@ export default defineComponent({
         shoulderLines: 0x212435,
         brokenLines: 0x212435,
         /***  Only these colors can be an array ***/
-        leftCars: [0x9e9b5f, 0xfdf5cf, 0xf7e88d],
-        rightCars: [0xd8ac9b, 0xfbefec, 0xf4c7bb],
+        leftCarsLowSpeedColor: [0x9e9b5f, 0xfdf5cf, 0xf7e88d],
+        rightCarsLowSpeedColor: [0xd8ac9b, 0xfbefec, 0xf4c7bb],
+        leftCarsHighSpeedColor: [0xf49c9c, 0xff5757, 0xe03f3f],
+        rightCarsHighSpeedColor: [0xfaf6da, 0xe3deba, 0xe4d18f],
+
         sticks: 0x212435,
       }
     }

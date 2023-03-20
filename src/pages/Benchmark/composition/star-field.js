@@ -68,10 +68,10 @@ export class StarField {
     // loop through each star
     for (let i = 0; i < this.stars.length; i++) {
       const star = this.stars[i]
-  
+
       // and move it forward dependent on the mouseY position.
       star.position.z += i / 10 * this.speed
-  
+
       // if the particle is too close move it to the back
       if (star.position.z > 1000) star.position.z -= 2000
     }
@@ -80,7 +80,7 @@ export class StarField {
   render() {
     //get the frame
     requestAnimationFrame(() => this.render())
-    if (!this.running) return
+    // if (!this.running) return
     //render the scene
     this.renderer.render(this.scene, this.camera)
     this.animateStars()
@@ -94,6 +94,10 @@ export class StarField {
       this.speed += 2
       this.speed = Math.min(this.speed, 10)
     }, 50)
+    this.stars.map((star) => {
+      star.scale.z = Math.random() * 30 + 15;
+      star.scale.x = star.scale.y = 0.5;
+    })
   }
 
   speedDown() {
@@ -104,6 +108,10 @@ export class StarField {
       this.speed -= 2
       this.speed = Math.max(this.speed, 1)
     }, 50)
+    this.stars.map((star) => {
+      star.scale.z = 1;
+      star.scale.x = star.scale.y = 1.5;
+    })
   }
 
   start() {
