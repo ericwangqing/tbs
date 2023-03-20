@@ -1,6 +1,7 @@
 <template lang="pug">
 .instrument-panel-container
-  PerformanceChart.performance-chart(:isFast="isFast")
+  img.instrument-panel-bg(:src="panelImg", :class="{ 'burning': tps >= 100000 }")
+  PerformanceChart.performance-chart
   .tps-gauge-wrapper
     .tps-gauge-content(xmlns="http://www.w3.org/1999/xhtml")
       .count {{formattedTps}}
@@ -15,24 +16,19 @@ import { computed, defineComponent, ref, watch } from 'vue'
 import GradientGauge from './gradient-gauge.vue'
 import PerformanceChart from './performance-chart.vue'
 import ResourceCharts from './resource-charts.vue'
-import logo from '@/assets/logo.svg'
 import { thousands } from '../composition/util.js'
 import { controller } from '../composition/controller'
+import logo from '@/assets/logo.svg'
+import panelImg from '@/assets/panel-bg.png'
 
 export default defineComponent({
   name: 'InstrumentPanel',
-  props: {
-    isFast: {
-      type: Boolean,
-      default: false,
-    },
-  },
   components: {
     GradientGauge,
     PerformanceChart,
     ResourceCharts,
   },
-  setup: (props) => {
+  setup: () => {
     let interval = null
     const tps = ref(controller.tps)
     watch(
@@ -75,12 +71,55 @@ export default defineComponent({
       percent,
       logo,
       formattedTps,
+      tps,
+      panelImg
     }
   },
 })
 </script>
 
 <style lang="scss" scoped>
+@keyframes burningBg {
+  0% {
+    filter: drop-shadow(0px 0px 0px #a8e6ff);
+  }
+  50% {
+    filter: drop-shadow(0px 0px 20px #a8e6ff);
+  }
+  100% {
+    filter: drop-shadow(0px 0px 0px #a8e6ff);
+  }
+}
+
+@keyframes burningGauge {
+  0% {
+    filter: drop-shadow(0px 0px 25px rgba(186, 219, 255, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0px 0px 30px rgba(186, 219, 255, 0.5));
+  }
+  100% {
+    filter: drop-shadow(0px 0px 25px rgba(186, 219, 255, 0.5));
+  }
+}
+
+@keyframes shakeBg {
+  0% {
+    width: 100%;
+    height: 100%;
+  }
+  50% {
+    top: -0.5px;
+    left: -0.5px;
+    width: calc(100% + 1px);
+    height: calc(100% + 1px);
+  }
+  0% {
+    width: 100%;
+    height: 100%;
+  }
+}
+
 .instrument-panel-container {
   position: absolute;
   bottom: 0;
@@ -89,10 +128,19 @@ export default defineComponent({
   right: 0;
   width: 1658px;
   height: 434px;
-  background-image: url('@/assets/panel-bg.svg');
   // background-color: #fff;
   display: flex;
   justify-content: center;
+  .instrument-panel-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    &.burning {
+      animation: burningBg ease-in-out infinite 4s, shakeBg ease-in-out infinite 0.04s;
+    }
+  }
   .tps-gauge-wrapper {
     margin-top: 23px;
     width: 356px;
@@ -102,6 +150,9 @@ export default defineComponent({
       position: absolute;
       top: 0;
       filter: drop-shadow(0px 0px 25px rgba(186, 219, 255, 0.5));
+      &.burning {
+        animation: burningGauge ease-in-out infinite 4s;
+      }
     }
     .tps-gauge-content {
       position: absolute;
@@ -138,10 +189,10 @@ export default defineComponent({
       }
     }
   }
-  .performance-chart,
-  .resource-charts-container {
+  .performance-chart, .resource-charts-container {
     margin-top: 110px;
-    width: 633px;
+    width: 625px;
+    z-index: 1;
   }
 }
 </style>
