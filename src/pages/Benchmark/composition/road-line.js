@@ -56,14 +56,16 @@ export class RoadLine {
     this.leftCarLights = new CarLights(
       this,
       options,
-      options.colors.leftCars,
+      options.colors.leftCarsLowSpeedColor,
+      options.colors.leftCarsHighSpeedColor,
       options.movingAwaySpeed,
       new THREE.Vector2(0, 1 - options.carLightsFade)
     )
     this.rightCarLights = new CarLights(
       this,
       options,
-      options.colors.rightCars,
+      options.colors.rightCarsLowSpeedColor,
+      options.colors.rightCarsHighSpeedColor,
       options.movingCloserSpeed,
       new THREE.Vector2(1, 0 + options.carLightsFade)
     )
@@ -160,11 +162,15 @@ export class RoadLine {
     if (this.options.onSpeedUp) this.options.onSpeedUp(ev)
     this.fovTarget = this.options.fovSpeedUp
     this.speedUpTarget = this.options.speedUp
+    this.leftCarLights.modifyHighSpeedColor()
+    this.rightCarLights.modifyHighSpeedColor()
   }
   onSlowDown(ev) {
     if (this.options.onSlowDown) this.options.onSlowDown(ev)
     this.fovTarget = this.options.fov
     this.speedUpTarget = 0
+    this.leftCarLights.modifyLowSpeedColor()
+    this.rightCarLights.modifyLowSpeedColor()
     // this.speedupLerp = 0.1;
   }
   update(delta) {
@@ -286,14 +292,15 @@ function lerp(current, target, speed = 0.1, limit = 0.001) {
   return change
 }
 class CarLights {
-  constructor(webgl, options, colors, speed, fade) {
+  constructor(webgl, options, lowSpeedcolors, highSpeedColors, speed, fade) {
     this.webgl = webgl
     this.options = options
-    this.colors = colors
+    this.lowSpeedcolors = lowSpeedcolors
+    this.highSpeedColors = highSpeedColors
     this.speed = speed
     this.fade = fade
   }
-  init() {
+  init(color) {
     const options = this.options
     // Curve with length 1
     let curve = new THREE.LineCurve3(
@@ -311,7 +318,7 @@ class CarLights {
     let aMetrics = []
     let aColor = []
 
-    let colors = this.colors
+    let colors = JSON.parse(JSON.stringify(color || this.lowSpeedcolors))
     if (Array.isArray(colors)) {
       colors = colors.map((c) => new THREE.Color(c))
     } else {
@@ -402,6 +409,36 @@ class CarLights {
   }
   update(time) {
     this.mesh.material.uniforms.uTime.value = time
+  }
+
+  setColor(c) {
+    let aColor = []
+    for (let i = 0; i < this.options.lightPairsPerRoadWay; i++) {
+      let colors = JSON.parse(JSON.stringify(c))
+      if (Array.isArray(colors)) {
+        colors = colors.map((c) => new THREE.Color(c))
+      } else {
+        colors = new THREE.Color(colors)
+      }
+
+      let color = pickRandom(colors)
+      aColor.push(color.r)
+      aColor.push(color.g)
+      aColor.push(color.b)
+
+      aColor.push(color.r)
+      aColor.push(color.g)
+      aColor.push(color.b)
+    }
+    this.mesh.geometry.setAttribute('aColor', new THREE.InstancedBufferAttribute(new Float32Array(aColor), 3))
+  }
+
+  modifyHighSpeedColor() {
+    this.setColor(this.highSpeedColors)
+  }
+
+  modifyLowSpeedColor() {
+    this.setColor(this.lowSpeedcolors)
   }
 }
 

@@ -4,8 +4,8 @@
   PerformanceChart.performance-chart
   .tps-gauge-wrapper
     TpsGauge.tps-gauge(id="tpsGauge", :percent="percent", :percentChangeAnimate="false" :burning="tps >= 100000")
-    .tps-gauge-content(xmlns="http://www.w3.org/1999/xhtml")
-      .count {{formattedTps}}
+    .tps-gauge-content
+      .count(:class="{ burning: tps >= 100000 }") {{formattedTps}}
       .tps TPS
       img.logo(:src="logo")
   ResourceCharts.resource-charts-container
@@ -129,6 +129,10 @@ export default defineComponent({
         font-style: italic;
         line-height: 72px;
         text-shadow: 0px 6px 4px #0d2964;
+        transition: text-shadow 0.3s ease-in-out;
+        &.burning {
+          text-shadow: 0 6px 4px #64240d;
+        }
       }
       .tps {
         font-size: 24px;

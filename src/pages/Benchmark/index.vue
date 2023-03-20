@@ -1,5 +1,5 @@
 <template lang="pug">
-.cockpit
+.cockpit(:class="{ burning: controller.tps >= 100000 }")
   ScannedBox.count-board
     .count-board-ceil
       .count-board-ceil__label TPS
@@ -94,6 +94,9 @@ export default defineComponent({
   height: 100%;
   position: relative;
   background: #212435;
+  &.burning {
+    background: radial-gradient(#212435, #212435, #3e2929);
+  }
   .count-board {
     position: absolute;
     top: 22px;
