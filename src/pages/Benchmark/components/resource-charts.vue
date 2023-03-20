@@ -36,7 +36,7 @@ export default defineComponent({
     const currentBandwidth = ref(0)
 
     const initChart = () => {
-      chart = echarts.init(resourceChart.value, null, { renderer: 'svg' })
+      chart = echarts.init(resourceChart.value)
       const option = {
         title: {
           text: 'Node Resource Consumption (avg.)',
@@ -55,6 +55,10 @@ export default defineComponent({
           data: ['CPU', 'Memory', 'Bandwidth'],
           top: '17.5%',
           left: '2.2%',
+          selectedMode: false,
+          icon: 'path://M 0 0 L 8 0 L 8 2 L 0 2 z',
+          itemWidth: 8,
+          itemGap: 12,
           textStyle: {
             color: '#8c8c8c'
           }

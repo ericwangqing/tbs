@@ -3,15 +3,15 @@
   svg(width="238px" height="229px" viewBox="-20 -20 238 229" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="filter: drop-shadow(0px 0px 4px 0px rgba(0, 0, 0, 0.3));")
     defs
     linearGradient(x1="0" y1="0" x2="0" y2="1" id="gradient1")
-      stop(offset="0%" stop-color="#6fb2ff")
-      stop(offset="100%" stop-color="#3c7bfd")
+      stop(offset="0%" stop-color="#FFCB00")
+      stop(offset="100%" stop-color="#F08B00")
     g(stroke-width="5" fill="none" fill-rule="evenodd")
       polygon(:points="points" stroke="url(#gradient1)")
       polygon(:points="startLine" stroke="#fff")
       polygon(:points="points" stroke="#fff" stroke-width="5" fill="none" fill-rule="evenodd" :stroke-dasharray="strokeDasharray" :stroke-dashoffset="strokeDashoffset")
     g
       polygon(style="fill: #fff; stroke: #fff; stroke-width: 4", stroke-linejoin="round" :points="triangleBackPoints" )
-      polygon(style="fill: #1acd57; stroke: #1acd57; stroke-width: 4", stroke-linejoin="round" :points="trianglePoints" )
+      polygon(style="fill: #FD693C; stroke: #FD693C; stroke-width: 4", stroke-linejoin="round" :points="trianglePoints" )
 
   .test-plan-info
     .test-plan-name {{ controller.testData?.name || 'Not Running' }}
@@ -32,6 +32,7 @@
 import { computed, defineComponent, ref, watch } from 'vue'
 import roadCoordinates from '@/assets/road-coordinates.json'
 import { controller } from '../composition/controller.js'
+import { formatNumWithUnit, formatTime } from '../composition/util.js'
 
 export default defineComponent({
   name: 'RoadMap',
@@ -117,24 +118,6 @@ export default defineComponent({
       calcTrianglePoints()
     })
 
-    const formatNumWithUnit = (num) => {
-      if (num < 10000) return `${num}`
-      else if (num < 10000000) return `${Math.floor(num / 1000)}K`
-      else if (num < 10000000000) return `${Math.floor(num / 1000000)}M`
-      else if (num < 10000000000000) return `${Math.floor(num / 1000000000)}G`
-      else if (num < 10000000000000000) return `${Math.floor(num / 1000000000000)}T`
-    }
-
-    const formatTime = (num) => {
-      const hour = Math.floor(num / 60 / 24)
-      const minute = Math.floor(num % (60 * 24) / 60)
-      const second = num % (60 * 24) % 60
-      const hourStr = `${hour}`.padStart(2, '0')
-      const minuteStr = `${minute}`.padStart(2, '0')
-      const secondStr = `${second}`.padStart(2, '0')
-      return `${hourStr}:${minuteStr}.${secondStr}`
-    }
-
     const formattedCurrentTxn = computed(() => {
       return formatNumWithUnit(controller.txCount)
     })
@@ -193,7 +176,7 @@ export default defineComponent({
         color: #fff;
       }
       &--current {
-        color: #3c7bfd;
+        color: #FFD300;
       }
     }
     .test-plan-elapsed-time {

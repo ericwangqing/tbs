@@ -58,7 +58,7 @@ class Controller {
   setData() {
     this.tps = floatRandom(this.tpsBase, 10)
     this.txCount += this.tps * this.nodes
-    this.percent = this.txCount / this.testData.txn
+    if (this.testData) this.percent = this.txCount / this.testData.txn
     this.timeCost++
     if (this.blockCollected === 0) this.nextBlockNeed = floatRandom(100, 10)
     this.blockCollected += this.tps * this.nodes

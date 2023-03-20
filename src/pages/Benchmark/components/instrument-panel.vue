@@ -7,7 +7,7 @@
       .count {{formattedTps}}
       .tps TPS
       img.logo(:src="logo")
-    GradientGauge.tps-gauge(id="tpsGauge", :percent="percent")
+    GradientGauge.tps-gauge(id="tpsGauge", :percent="percent", :percentChangeAnimate="false")
   ResourceCharts.resource-charts-container
 </template>
 
@@ -39,7 +39,7 @@ export default defineComponent({
           interval = null
         } else {
           const diff = controller.tps - tps.value
-          const diffEveryTime = Math.abs(diff) > 1000 ? Math.floor(diff / (diff > 0 ? 15 : 30)) : diff
+          const diffEveryTime = Math.abs(diff) > 1000 ? Math.floor(diff / (diff > 0 ? 5 : 10)) : diff
           interval = setInterval(() => {
             if (diff > 0) {
               tps.value += diffEveryTime
@@ -53,10 +53,11 @@ export default defineComponent({
               interval = null
               return
             }
-          }, 16)
+          }, 32) // set to 16, may cause render conflict, then change the value after 1 period. e.g., 10w -> 100, expect 1s, actually 10w -> 7w -> 100, 2s.
         }
       }
     )
+
     const formattedTps = computed(() => thousands(tps.value))
     const percent = computed(() => {
       if (tps.value < 100) return (tps.value / 100) * 10
