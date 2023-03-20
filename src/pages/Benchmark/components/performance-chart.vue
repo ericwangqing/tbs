@@ -105,9 +105,7 @@ export default defineComponent({
     }
 
     setInterval(() => {
-      setTimeout(() => {
-        redraw()
-      }, 0)
+      redraw()
     }, 1000)
 
     onMounted(() => {
