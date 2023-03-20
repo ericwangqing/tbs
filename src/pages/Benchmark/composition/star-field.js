@@ -20,7 +20,7 @@ export class StarField {
       1000
     )
     this.camera.position.z = 5
-    this.camera.position.y = -200
+    this.camera.position.y = -600
     this.camera.rotateX(0.5);
   
     //scene

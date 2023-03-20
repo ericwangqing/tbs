@@ -148,8 +148,8 @@ export default defineComponent({
   }
   .road-map-container {
     position: absolute;
-    top: 22px;
-    right: 20px;
+    top: 35px;
+    right: 35px;
   }
 }
 </style>
