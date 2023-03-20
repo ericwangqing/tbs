@@ -1,19 +1,13 @@
-<template>
-  <a-card :loading="props.loading" :bodyStyle="{ padding: 0 }">
-    <a-list :data-source="props.datasource">
-      <template #renderItem="{ item, index }">
-        <a-list-item>
-          <slot :item="item"></slot>
-        </a-list-item>
-      </template>
-    </a-list>
-    <template #title>
-      <div class="font-bold">{{ props.headerTitle }}</div>
-    </template>
-    <template #actions>
-      <div @click="$emit('viewMore')">{{ props.footerTitle }}</div>
-    </template>
-  </a-card>
+<template lang="pug">
+a-card(:loading="props.loading", :bodyStyle="{ padding: 0 }")
+  a-list(:data-source="props.datasource")
+    template(#renderItem="{ item, index }")
+      a-list-item
+        slot(:item="item")
+  template(#title)
+    div.font-bold {{ props.headerTitle }}
+  template(#actions)
+    div(@click="$emit('viewMore')") {{ props.footerTitle }}  
 </template>
 <script setup>
 import { defineProps, computed } from 'vue'

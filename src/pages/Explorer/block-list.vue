@@ -1,71 +1,63 @@
-<template>
-  <div class="px-48px pt-12px pb-48px h-100%">
-    <div class="text-white text-36px">Blocks</div>
-    <div class="bg-white px-8px">
-      <div class="h-36px lh-36px">
-        {{
-          `Block #${fromBlockNumber} to #${toBlockNumber}(Total of ${
-            blockStart + 1
-          } blocks)`
-        }}
-      </div>
-      <a-table
-        :dataSource="blocks"
-        :columns="columns"
-        rowKey="number"
-        :pagination="pagination"
-        :loading="loading"
-        :scroll="{ y: 'calc(100vh - 350px)' }"
-        @change="tableChange"
-      >
-        <template #bodyCell="{ column, record, text, index }">
-          <template v-if="column.dataIndex === 'number'">
-            <router-link :to="`/explorer-block/${record.number}`">{{
-              text
-            }}</router-link>
-          </template>
-          <template v-if="column.dataIndex === 'timestamp'">
-            <span>{{ fromNow(text) }}</span>
-          </template>
-          <template v-else-if="column.dataIndex === 'transactions'">
-            <router-link
-              :to="`/explorer-transaction-list?block=${record.number}`"
-              >{{ text.length }}</router-link
-            >
-          </template>
-          <template v-else-if="column.dataIndex === 'miner'">
-            <router-link :to="`/explorer-address/${record.miner}`">{{
-              text
-            }}</router-link>
-          </template>
-          <template v-else-if="column.dataIndex === 'gasUsed'">
-            <div>
-              <div>
-                <span>{{ getGasUsed(record) }}</span>
-                <span>({{ getGasUsePecent(record) }}%)</span>
-              </div>
-              <a-progress
-                :strokeWidth="2"
-                :showInfo="false"
-                :percent="getGasUsePecent(record)"
-              />
-            </div>
-          </template>
-          <template v-else-if="column.dataIndex === 'gasLimit'">
-            <span>{{ getGasLimit(record) }}</span>
-          </template>
-          <template v-else-if="column.dataIndex === 'baseFee'">
-            <!-- <span>{{ Number(getBaseFee(record)).toFixed(2) + 'Gwei' }}</span> -->
-            待定
-          </template>
-          <template v-else-if="column.dataIndex === 'Reward'"> 待定 </template>
-          <template v-else-if="column.dataIndex === 'Burnt'">{{
-            getBurntFees(record)
-          }}</template>
-        </template>
-      </a-table>
-    </div>
-  </div>
+<template lang="pug">
+div.px-48px.pt-12px.pb-48px.h-full
+  div.text-white.text-36px Blocks
+  div.bg-white.px-8px
+    div.h-36px.lh-36px
+      | {{
+      | `Block #${fromBlockNumber} to #${toBlockNumber}(Total of ${
+      | blockStart + 1
+      | } blocks)`
+      | }}
+    a-table(:dataSource="blocks", :columns="columns", rowKey="number", :pagination="pagination", :loading="loading", :scroll="{ y: 'calc(100vh - 350px)' }", @change="tableChange")
+      template(#bodyCell="{ column, record, text, index }")
+        template(v-if="column.dataIndex === 'number'")
+          router-link(:to="`/explorer-block/${record.number}`")
+            | {{
+            | text
+            | }}
+        template(v-if="column.dataIndex === 'timestamp'")
+          span {{ fromNow(text) }}
+        template(v-else-if="column.dataIndex === 'transactions'")
+          router-link(:to="`/explorer-transaction-list?block=${record.number}`") {{ text.length }}
+        template(v-else-if="column.dataIndex === 'miner'")
+          router-link(:to="`/explorer-address/${record.miner}`").truncate.max-w-200px.inline-block {{ text }}
+        template(v-else-if="column.dataIndex === 'gasUsed'")
+          div
+            div
+              span {{ getGasUsed(record) }}
+              span (
+                | {{ getGasUsePecent(record) }}
+                | %)
+            a-progress(:strokeWidth="2", :showInfo="false", :percent="getGasUsePecent(record)")
+        template(v-else-if="column.dataIndex === 'gasLimit'")
+          span {{ getGasLimit(record) }}
+        template(v-else-if="column.dataIndex === 'baseFee'")
+          span {{ getBaseFeePerGas(record, 'gwei') + ' Gwei' }}
+        template(v-else-if="column.dataIndex === 'Reward'") 待定
+        template(v-else-if="column.dataIndex === 'Burnt'")
+          | {{
+          | getBurntFees(record)
+          | }}
+
+      card(@viewMore="gotoAllTransactionList", :datasource="transactions", headerTitle="Latest Transactions", footerTitle="View All Transactions", :loading="loading")
+        template(v-slot="{ item }")
+          div.flex.w-full.px-12px.justify-between
+            div.flex
+              div.tx.mr-8px TX
+              div
+                router-link(:to="`/explorer-transaction/${item.hash}`").truncate.max-w-200px.inline-block.h-16px {{ item.hash }}
+                div {{ fromNow(transactionBlock.timestamp) }}
+            div.w-400px
+              div From
+                router-link(:to="`/explorer-address/${item.from}`").truncate.max-w-200px.inline-block.h-16px {{ item.from }}
+              div To
+                router-link(:to="`/explorer-address/${item.to}`").truncate.max-w-200px.inline-block.h-16px {{ item.to }}
+            div
+              a-tooltip
+                | {{
+                | Number(utils.formatUnits(BigNumber.from(item.value).toString())).toFixed(4) + ' ETH'
+                | }}
+                template(#title) Amount  
 </template>
 <script setup>
 import { inject, onMounted, computed, ref, watchEffect } from 'vue'

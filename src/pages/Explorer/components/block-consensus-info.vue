@@ -1,29 +1,11 @@
-<template>
-  <div v-if="props.block">
-    <div>
-      <description-item
-        v-for="description of descriptions"
-        :key="description.label"
-      >
-        <template #label
-          ><a-tooltip
-            ><template #title>{{ description.tooltip }}</template
-            ><question-circle-outlined class="mr-4px" /></a-tooltip
-          >{{ description.label }}:</template
-        >
-        <template v-if="description.label === 'Status'"></template>
-        <template v-else-if="description.label === 'Transactions'">
-          <RouterLink
-            :to="`/explorer-transaction-list?block=${props.block.number}`"
-            >{{ props.block.transactions.length }} transactions</RouterLink
-          >
-        </template>
-        <template v-else>
-          {{ description.content }}
-        </template>
-      </description-item>
-    </div>
-  </div>
+<template lang="pug">
+div(v-if="props.block")
+  div
+    description-item(v-for="description of descriptions", :key="description.label")
+      template(#label)
+      template(v-if="description.label === 'Status'")
+      template(v-else-if="description.label === 'Transactions'")
+      template(v-else)
 </template>
 <script setup>
 import { inject, onMounted, computed, ref, watchEffect, toRefs } from 'vue'

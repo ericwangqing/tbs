@@ -1,49 +1,36 @@
-<template>
-  <div v-if="props.block">
-    <div>
-      <description-item
-        v-for="description of descriptions"
-        :key="description.label"
-      >
-        <template #label
-          ><a-tooltip
-            ><template #title>{{ description.tooltip }}</template
-            ><question-circle-outlined class="mr-4px" /></a-tooltip
-          >{{ description.label }}:</template
-        >
-        <template v-if="description.label === 'BlockHeight'">
-          <block-change
-            @changeBlockNumber="changeBlockNumber"
-            :blockNumber="props.block.number"
-          ></block-change>
-        </template>
-        <template v-else-if="description.label === 'Status'">待实现</template>
-        <template v-else-if="description.label === 'Transactions'">
-          <RouterLink
-            :to="`/explorer-transaction-list?block=${props.block.number}`"
-            >{{ props.block.transactions.length }} transactions</RouterLink
-          >
-          in this block
-        </template>
-        <template v-else-if="description.label === 'Fee Recipient'">
-          <RouterLink :to="`/explorer-address/${props.block.miner}`">{{
-            props.block.miner
-          }}</RouterLink>
-        </template>
-        <template v-else-if="description.label === 'Gas Used'">
-          {{ getGasUsed(props.block) }}({{ getGasUsePecent(props.block) }}%)
-        </template>
-        <template v-else-if="description.label === 'Parent Hash'">
-          <RouterLink :to="`/explorer-block/${props.block.number - 1}`">{{
-            props.block.parentHash
-          }}</RouterLink>
-        </template>
-        <template v-else>
-          {{ description.content }}
-        </template>
-      </description-item>
-    </div>
-  </div>
+<template lang="pug">
+div(v-if="props.block")
+  div
+    description-item(v-for="description of descriptions", :key="description.label")
+      template(#label)
+        a-tooltip
+          template(#title) {{ description.tooltip }}
+          question-circle-outlined.mr-4px
+        | {{ description.label }}
+        | :
+      template(v-if="description.label === 'BlockHeight'")
+        block-change(@changeBlockNumber="changeBlockNumber", :blockNumber="props.block.number")
+      template(v-else-if="description.label === 'Status'") 待实现
+      template(v-else-if="description.label === 'Transactions'")
+        RouterLink(:to="`/explorer-transaction-list?block=${props.block.number}`") {{ props.block.transactions.length }}
+          | transactions
+        | in this block
+      template(v-else-if="description.label === 'Fee Recipient'")
+        RouterLink(:to="`/explorer-address/${props.block.miner}`")
+          | {{
+          | props.block.miner
+          | }}
+      template(v-else-if="description.label === 'Gas Used'") {{ getGasUsed(props.block) }}
+        | (
+        | {{ getGasUsePecent(props.block) }}
+        | %)
+      template(v-else-if="description.label === 'Parent Hash'")
+        RouterLink(:to="`/explorer-block/${props.block.number - 1}`")
+          | {{
+          | props.block.parentHash
+          | }}
+      template(v-else) {{ description.content }}
+
 </template>
 <script setup>
 import { inject, onMounted, computed, ref, watchEffect, toRefs } from 'vue'
@@ -59,6 +46,7 @@ const {
   getGasUsePecent,
   getBaseFeePerGas,
   getBurntFees,
+  getReward,
 } = useBlock()
 const { fromNow, formatTime } = useTime()
 const route = useRoute()
@@ -100,18 +88,18 @@ const descriptions = computed(() => {
       },
       {
         label: 'Block Reward',
-        content: '待实现',
+        content: props.block.reward + ' Ether',
         tooltip:
           'For each block,the block producer iw rewarded with a finite amount of Ether on top of the fees paid for all transactions in the block.',
       },
       {
         label: 'Total Difficulty',
-        content: '待实现',
+        content: props.block.totalDifficulty,
         tooltip: 'Total difficulty of the chain until the block',
       },
       {
         label: 'Size',
-        content: '待实现',
+        content: props.block.size + ' bytes',
         tooltip:
           "The block size is actually determined by the block's gas limit",
       },
@@ -155,7 +143,7 @@ const descriptions = computed(() => {
       },
       {
         label: 'StateRoot',
-        content: '待实现',
+        content: props.block.stateRoot,
         tooltip: 'The root of the state trie',
       },
       {

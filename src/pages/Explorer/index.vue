@@ -1,118 +1,51 @@
-<template>
-  <div class="overflow-hidden px-48px pt-24px pb-48px h-100%">
-    <a-row :gutter="16" class="h-100%">
-      <a-col :span="12" class="h-100%">
-        <card
-          @viewMore="gotoAllBlockList"
-          :datasource="blocks"
-          headerTitle="Latest Blocks"
-          footerTitle="View All Blocks"
-          :loading="loading"
-        >
-          <template v-slot="{ item }">
-            <div class="flex px-12px justify-between w-100%">
-              <div class="flex w-200px">
-                <div class="bk mr-8px">Bk</div>
-                <div @click="gotoBlockDetail(item.number)">
-                  <router-link :to="`/explorer-block/${item.number}`">{{
-                    item.number
-                  }}</router-link>
-                  <div>{{ fromNow(item.timestamp) }}</div>
-                </div>
-              </div>
-
-              <div class="w-400px">
-                <div>
-                  Fee Recipient
-                  <router-link
-                    :to="`/explorer-address/${item.miner}`"
-                    class="truncate max-w-200px inline-block h-16px"
-                    >{{ item.miner }}</router-link
-                  >
-                </div>
-                <div>
-                  <a-tooltip
-                    ><router-link
-                      :to="`/explorer-transaction-list?block=${item.number}`"
-                      >{{ item.transactions.length + ' txns ' }}</router-link
-                    ><template #title
-                      >Transactions in this Block</template
-                    ></a-tooltip
-                  >
-                  {{
-                    `in ${
-                      item.timestamp -
-                      (nextPageBlock && nextPageBlock.timestamp)
-                    } secs`
-                  }}
-                </div>
-              </div>
-              <div>
-                <a-tooltip
-                  >Reward计算方式待研究<template #title
-                    >Block Reward</template
-                  ></a-tooltip
-                >
-              </div>
-            </div>
-          </template>
-        </card>
-      </a-col>
-      <a-col :span="12" class="h-100%">
-        <card
-          @viewMore="gotoAllTransactionList"
-          :datasource="transactions"
-          headerTitle="Latest Transactions"
-          footerTitle="View All Transactions"
-          :loading="loading"
-        >
-          <template v-slot="{ item }">
-            <div class="flex w-100% px-12px justify-between">
-              <div class="flex">
-                <div class="tx mr-8px">TX</div>
-                <div>
-                  <router-link
-                    :to="`/explorer-transaction/${item.hash}`"
-                    class="truncate max-w-200px inline-block h-16px"
-                    >{{ item.hash }}</router-link
-                  >
-                  <div>{{ fromNow(transactionBlock.timestamp) }}</div>
-                </div>
-              </div>
-
-              <div class="w-400px">
-                <div>
-                  From
-                  <router-link
-                    class="truncate max-w-200px inline-block h-16px"
-                    :to="`/explorer-address/${item.from}`"
-                    >{{ item.from }}</router-link
-                  >
-                </div>
-                <div>
-                  To
-                  <router-link
-                    class="truncate max-w-200px inline-block h-16px"
-                    :to="`/explorer-address/${item.to}`"
-                    >{{ item.to }}</router-link
-                  >
-                </div>
-              </div>
-              <div>
-                <a-tooltip
-                  >{{
-                    Number(
-                      utils.formatUnits(BigNumber.from(item.value).toString())
-                    ).toFixed(4) + ' ETH'
-                  }}<template #title>Amount</template></a-tooltip
-                >
-              </div>
-            </div>
-          </template>
-        </card>
-      </a-col>
-    </a-row>
-  </div>
+<template lang="pug">
+div.overflow-hidden.px-48px.pt-24px.pb-48px.h-full
+  a-row(:gutter="16").h-full
+    a-col(:span="12").h-full
+      card(@viewMore="gotoAllBlockList", :datasource="blocks", headerTitle="Latest Blocks", footerTitle="View All Blocks", :loading="loading")
+        template(v-slot="{ item }")
+          div.flex.px-12px.justify-between.w-full
+            div.flex.w-200px
+              div.bk.mr-8px Bk
+              div
+                router-link(:to="`/explorer-block/${item.number}`")
+                  | {{
+                  | item.number
+                  | }}
+                div {{ fromNow(item.timestamp) }}
+            div.w-400px
+              div Fee Recipient 
+                router-link(:to="`/explorer-address/${item.miner}`").truncate.max-w-200px.inline-block.h-16px {{ item.miner }}
+              div
+                a-tooltip
+                  router-link(:to="`/explorer-transaction-list?block=${item.number}`") {{ item.transactions.length + ' txns ' }}
+                  template(#title) Transactions in this Block
+                | {{
+                | `in ${item.timestamp -(nextPageBlock && nextPageBlock.timestamp)} secs`
+                | }}
+            div
+              a-tooltip Reward计算方式待研究
+                template(#title) Block Reward
+    a-col(:span="12").h-full
+      card(@viewMore="gotoAllTransactionList", :datasource="transactions", headerTitle="Latest Transactions", footerTitle="View All Transactions", :loading="loading")
+        template(v-slot="{ item }")
+          div.flex.w-full.px-12px.justify-between
+            div.flex
+              div.tx.mr-8px TX
+              div
+                router-link(:to="`/explorer-transaction/${item.hash}`").truncate.max-w-200px.inline-block.h-16px {{ item.hash }}
+                div {{ fromNow(transactionBlock.timestamp) }}
+            div.w-400px
+              div From 
+                router-link(:to="`/explorer-address/${item.from}`").truncate.max-w-200px.inline-block.h-16px {{ item.from }}
+              div To 
+                router-link(:to="`/explorer-address/${item.to}`").truncate.max-w-200px.inline-block.h-16px {{ item.to }}
+            div
+              a-tooltip
+                template(#title) Amount
+                | {{
+                | Number(utils.formatUnits(BigNumber.from(item.value).toString())).toFixed(4) + ' ETH'
+                | }}
 </template>
 <script setup>
 import card from '@/pages/explorer/components/card.vue'
@@ -162,8 +95,6 @@ function gotoAllTransactionList() {
     name: 'explorer-transaction-list',
   })
 }
-
-function gotoBlockDetail() {}
 </script>
 <style lang="scss" scoped>
 .bk,

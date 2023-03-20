@@ -3,6 +3,9 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 export default function useTime() {
   function fromNow(date) {
+    if (!Number.isNaN(date - 0)) {
+      date = date - 0
+    }
     if (typeof date === 'number') {
       if (date < 1e11) {
         date = date * 1000

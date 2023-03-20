@@ -1,15 +1,22 @@
-import { ethers } from 'ethers'
-const { providers } = ethers
+import { init, pickChainUrl } from 'etherscan-api'
+import axios from 'axios'
+import { BigNumber } from 'ethers'
 const ETHERSCAN_APIKEY = import.meta.env.VITE_ETHERSCAN_APIKEY
-import { blockList } from './mock.js'
 class TBSApi {
   constructor(network = 'homestead') {
-    this.provider = new providers.EtherscanProvider(network, ETHERSCAN_APIKEY)
+    // const chain = pickChainUrl(network)
+    // console.log(chain)
+    // const client = axios.create({
+    //   baseURL: chain,
+    //   timeout: 10000,
+    // })
+    this.api = init(ETHERSCAN_APIKEY, network, 10000)
   }
 
   // 获取最新区块
   async getBlockNumber() {
-    return await this.provider.getBlockNumber()
+    const result = await this.api.proxy.eth_blockNumber()
+    return BigNumber.from(result.result).toNumber()
   }
 
   // 获取区块列表，同时第一个区块返回交易详情列表
@@ -55,19 +62,36 @@ class TBSApi {
       try {
         retry--
         if (withTransactions) {
-          blocks = await this.provider.getBlockWithTransactions(blockNumber)
+          blocks = await this.api.proxy.eth_getBlockByNumber(
+            BigNumber.from(blockNumber).toHexString().replace(/^0x0+/, '0x')
+          )
         } else {
-          blocks = await this.provider.getBlock(blockNumber)
+          blocks = await this.api.proxy.eth_getBlockByNumber(
+            BigNumber.from(blockNumber).toHexString().replace(/^0x0+/, '0x')
+          )
         }
       } catch (e) {
         await this.sleep()
       }
     }
     if (blocks) {
-      return blocks
+      blocks.result.transactions.map((tx) => {
+        return this.hex2Number(tx, ['blockNumber', 'timestamp'])
+      })
+      return this.hex2Number(
+        blocks.result,
+        ['number', 'timestamp'],
+        ['totalDifficulty', 'size']
+      )
     } else {
       throw Error('get block error')
     }
+  }
+
+  // 获取区块奖励
+  async getBlockRward(blockNumber) {
+    const { result } = await this.api.block.getblockreward(null, blockNumber)
+    return result
   }
 
   // 根据区块获取该区块的交易列表详情
@@ -75,18 +99,68 @@ class TBSApi {
     if (!blockNumber) {
       blockNumber = await this.getBlockNumber()
     }
-    const blocks = await this.provider.getBlockWithTransactions(blockNumber)
+    const blocks = await this.getBlockDetail(blockNumber)
     console.log(blocks.transactions)
     return blocks.transactions
   }
 
   // 根据hash获取某个交易详情
   async getTransaction(hash) {
-    return await this.provider.getTransaction(hash)
+    const result = await this.api.proxy.eth_getTransactionByHash(hash)
+    return this.hex2Number(result.result, [
+      'timestamp',
+      'blockNumber',
+      'type',
+      'nonce',
+      'transactionIndex',
+    ])
   }
 
+  // 获取交易收据
   async getTransactionReceipt(hash) {
-    return await this.provider.getTransactionReceipt(hash)
+    const result = await this.api.proxy.eth_getTransactionReceipt(hash)
+    return this.hex2Number(result.result, [
+      'timestamp',
+      'blockNumber',
+      'status',
+    ])
+  }
+
+  // 获取账户余额
+  async getAccountBalance(address) {
+    const { result } = await this.api.account.balance(address)
+    return result
+  }
+
+  // 获取某个账户的交易列表
+  async getTransactionsByAddress(
+    { address, startblock, endblock, page, offset, sort } = {
+      endblock: 'latest',
+      startblock: 1,
+      page: 1,
+      offset: 10,
+      sort: 'asc',
+    }
+  ) {
+    const { result } = await this.api.account.txlist(
+      address,
+      startblock,
+      endblock,
+      page,
+      offset,
+      sort
+    )
+    return result
+  }
+
+  hex2Number(data, properties, propertiesOfNumberString = []) {
+    properties.map((p) => {
+      data[p] && (data[p] = BigNumber.from(data[p]).toNumber())
+    })
+    propertiesOfNumberString.map((p) => {
+      data[p] && (data[p] = BigNumber.from(data[p]).toString())
+    })
+    return data
   }
 }
 

@@ -1,5 +1,5 @@
 import { BigNumber, utils } from 'ethers'
-export default function useTime() {
+export default function useBlock() {
   function getGasUsed(block) {
     return BigNumber.from(block.gasUsed).toString()
   }
@@ -35,6 +35,9 @@ export default function useTime() {
       unit
     )
   }
+  function getReward() {
+    return BigNumber.from()
+  }
   return {
     getGasUsed,
     getGasLimit,
@@ -42,5 +45,6 @@ export default function useTime() {
     getBaseFeePerGas,
     getBaseFee,
     getBurntFees,
+    getReward
   }
 }
