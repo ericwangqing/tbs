@@ -127,23 +127,21 @@ export default defineComponent({
   margin: auto;
   left: 0;
   right: 0;
-  width: 1658px;
-  height: 434px;
-  // background-color: #fff;
+  width: 1695px;
+  height: 418px;
+  z-index: 5;
   display: flex;
   justify-content: center;
   .instrument-panel-bg {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
     &.burning {
       animation: burningBg ease-in-out infinite 4s, shakeBg ease-in-out infinite 0.04s;
     }
   }
   .tps-gauge-wrapper {
-    margin-top: 23px;
+    margin-top: 50px;
     width: 356px;
     height: 356px;
     position: relative;

@@ -20,8 +20,23 @@ const formatTime = (num) => {
   return `${hourStr}:${minuteStr}.${secondStr}`
 }
 
+const formatTimeRange = (range) => {
+  return formatDayTime(range[0]) +  ' ~ ' + formatDayTime(range[1])
+}
+
+const formatDayTime = (timestamp) => {
+  return 'Jan/01/2022'
+}
+
+// keep three units, e.g.: 3 years 2 months 1 day, 2 days 3 hours 52 minutes.
+const formatDayTimeWithUnit = (dayTime) => {
+  return '3 years 2 months 1 day'
+}
+
 export {
   thousands,
   formatNumWithUnit,
-  formatTime
+  formatTime,
+  formatTimeRange,
+  formatDayTimeWithUnit
 }
