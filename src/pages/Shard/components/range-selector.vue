@@ -1,9 +1,9 @@
 <template lang="pug">
 .range-selector-container
   .range-selector-wrapper
-    input.range-selector-input(placeholder="#" v-model="startInput" @keyup.enter="onConfirm")
+    a-input.range-selector-input(placeholder="#" v-model:value="startInput" @keyup.enter="onConfirm")
     .range-selecotr-sep
-    input.range-selector-input(placeholder="#" v-model="endInput" @keyup.enter="onConfirm")
+    a-input.range-selector-input(placeholder="#" v-model="endInput" @keyup.enter="onConfirm")
     .range-selector-ok-btn(@click="onConfirm")
 </template>
 
@@ -96,21 +96,10 @@ export default defineComponent({
     .range-selector-input {
       width: 124px;
       height: 30px;
-      border: 1px solid rgba(255,255,255,0.45);
-      border-radius: 4px;
-      color: #ffffff;
       font-size: 14px;
       line-height: 30px;
       padding-left: 16px;
       padding-right: 28px;
-      outline: none;
-      background: transparent;
-      &:focus {
-        border: 1px solid rgba(255,255,255,0.8);
-      }
-      ::placeholder {
-        color: rgba(255, 255, 255, 0.3);
-      }
     }
     .range-selector-ok-btn {
       position: relative;

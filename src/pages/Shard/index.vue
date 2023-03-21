@@ -46,8 +46,8 @@
         .blockchain-more
           .blocklist-btn
             EllipsisOutlined
-    .blockchain-overview-footer(v-if="!loading")
-      Pagination(
+    .blockchain-overview-footer
+      a-pagination(
         size="small"
         v-model:current="currentPage"
         show-size-changer
@@ -63,12 +63,11 @@ import {defineComponent, onMounted, reactive, ref, watch, inject, watchEffect} f
 import Blockchain from './components/blockchain.vue'
 import RangeSelector from './components/range-selector.vue'
 import BlockchainSkeleton from './components/blockchain-skeleton.vue'
-import Pagination from './components/pagination.vue'
 import { EllipsisOutlined } from '@ant-design/icons-vue'
 import {random, range} from "lodash";
 export default defineComponent({
   name: 'ShardOverview',
-  components: {Blockchain, EllipsisOutlined, RangeSelector, BlockchainSkeleton, Pagination},
+  components: {Blockchain, EllipsisOutlined, RangeSelector, BlockchainSkeleton},
   setup: () => {
     const TBSApi = inject('TBSApi')
     const timeBeaconChain = reactive([]) // 信标链
