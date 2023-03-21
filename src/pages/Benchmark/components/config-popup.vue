@@ -10,7 +10,10 @@
         span ）
       AInputSearch(allowClear)
     .config-popup--wrapper-main(ref="cardList", :class="{ needScroll: needScroll }")
-      ConfigCard(v-for="item in configList", :key="item.id", :data="item")
+      ConfigCard(
+        v-for="item in configList", :key="item.id", :data="item", :selectedId="selectedConfigId"
+        @select="selectedConfigId = item.id"
+      )
   .config-popup--footer
 </template>
 
@@ -32,6 +35,7 @@ export default defineComponent({
   },
   setup: () => {
     const cardList = ref(null)
+    const selectedConfigId = ref('')
     const configList = ref([
       {
         name: '持续展示',
@@ -84,7 +88,8 @@ export default defineComponent({
     return {
       cardList,
       configList,
-      needScroll
+      needScroll,
+      selectedConfigId
     }
   },
 })
