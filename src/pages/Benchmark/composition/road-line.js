@@ -6,6 +6,7 @@ export class RoadLine {
   constructor(container, options = {}) {
     // Init ThreeJS Basics
     this.options = options
+    this.frameId = ''
 
     if (this.options.distortion == null) {
       this.options.distortion = {
@@ -224,7 +225,7 @@ export class RoadLine {
   }
   tick() {
     if (this.disposed || !this) return
-    requestAnimationFrame(this.tick)
+    this.frameId = requestAnimationFrame(this.tick)
     // if (!this.running) return
     if (resizeRendererToDisplaySize(this.renderer, this.setSize)) {
       const canvas = this.renderer.domElement
@@ -246,6 +247,10 @@ export class RoadLine {
     this.running = false
     // this.clock.running = false
     this.clock.stop()
+  }
+
+  dispose() {
+    if (this.frameId) cancelAnimationFrame(this.frameId)
   }
 }
 

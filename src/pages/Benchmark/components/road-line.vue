@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted, watch } from 'vue'
+import { defineComponent, ref, onMounted, onBeforeMount, watch } from 'vue'
 import { mountainDistortion, LongRaceDistortion } from '../composition/distortions.js'
 import { RoadLine } from '../composition/road-line.js'
 import { controller } from '../composition/controller.js'
@@ -79,7 +79,15 @@ export default defineComponent({
     let lineComp
     onMounted(() => {
       lineComp = new RoadLine(lineCvs.value, options);
-      lineComp.loadAssets().then(lineComp.init)
+      lineComp.loadAssets().then(() => {
+        lineComp.init()
+        if (controller.isFast) lineComp.onSpeedUp()
+        if (controller.completed) lineComp.stop()
+      })
+    })
+
+    onBeforeUnmount(() => {
+      lineComp.dispose()
     })
 
     watch(

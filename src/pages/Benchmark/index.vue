@@ -68,10 +68,12 @@ export default defineComponent({
 
     onBeforeUnmount(() => {
       document.removeEventListener('keydown', bindKeyEvent)
+      if (fireworks) fireworks.dispose()
     })
 
     onMounted(() => {
       fireworks = new Fireworks(fireworksContainer.value)
+      if (controller.completed) fireworks.start()
     })
 
     watch(() => controller.completed, (val) => {
