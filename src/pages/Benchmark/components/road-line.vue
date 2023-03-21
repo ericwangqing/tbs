@@ -1,6 +1,5 @@
 <template lang="pug">
-.road-line-container(ref="lineCvs" :class="{ started: started }")
-  //- .road-line-mask(v-if="started")
+.road-line-container(ref="lineCvs" :class="{ started: started, alreadyStart: alreadyStart }")
 </template>
 
 <script>
@@ -14,6 +13,7 @@ export default defineComponent({
   setup: () => {
     const lineCvs = ref(null)
     const started = ref(false)
+    const alreadyStart = ref(false)
     const options = {
       onSpeedUp: (ev) => {					
       },
@@ -83,12 +83,14 @@ export default defineComponent({
       lineComp.loadAssets().then(() => {
         lineComp.init()
         if (controller.isFast) lineComp.onSpeedUp()
+        if (controller.started) alreadyStart.value = true
+        if (controller.running) lineComp.start()
         if (controller.completed) lineComp.stop()
       })
     })
 
     onBeforeUnmount(() => {
-      lineComp.dispose()
+      if (lineComp) lineComp.dispose()
     })
 
     watch(
@@ -113,13 +115,9 @@ export default defineComponent({
       else if (!controller.runningByStart && controller.started) lineComp.start()
     })
 
-    // watch(() => controller.completed, (val) => {
-    //   if (val) lineComp.stop()
-    //   else lineComp.start()
-    // })
-
     return {
       lineCvs,
+      alreadyStart,
       started
     }
   }
@@ -127,17 +125,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@keyframes startAnimation {
+@keyframes roadlineStartOpacity {
   0% {
-    top: 7%;
     opacity: 0;
-    transform: scale(1.68, 1.68);
-  }
-  50% {
-    transform: scale(1.34, 1);
   }
   100% {
     opacity: 1;
+  }
+}
+@keyframes roadlineStartAnimation {
+  0% {
+    top: 7%;
+    transform: scale(1, 1.68);
+  }
+  100% {
     top: 0;
     transform: scale(1, 1);
   }
@@ -151,14 +152,36 @@ export default defineComponent({
   transform-origin: 50% 0;
   opacity: 1;
   &.started {
-    animation: startAnimation 1 2s forwards;
+    animation: roadlineStartAnimation 1 1s forwards, roadlineStartOpacity 1 0.5s forwards;
+  }
+  &.alreadyStart {
+    top: 0;
+    opacity: 1;
+    transform: scale(1);
   }
 }
 </style>
 
 <style lang="scss">
+@keyframes roadlineStartAnimationCvs {
+  0% {
+    transform: scale(1.68, 1);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
 .road-line-container canvas {
   width: 100%;
   height: 100%;
+  transform: scale(1.68, 1);
+}
+
+.road-line-container.started canvas {
+  animation: roadlineStartAnimationCvs 1 2s forwards;
+}
+
+.road-line-container.alreadyStart canvas {
+  transform: scale(1);
 }
 </style>
