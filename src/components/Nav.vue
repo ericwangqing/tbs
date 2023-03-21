@@ -22,6 +22,7 @@ ALayout
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Logo from '@/assets/logo.png'
+const benchmarkPageList = ['benchmark', 'blockchain', 'explorer', 'explorer-block-list', 'explorer-transaction-list', 'explorer-block-detail', 'explorer-transaction-detail']
 
 export default defineComponent({
   name: 'Nav',
@@ -38,7 +39,10 @@ export default defineComponent({
     watch(
       () => route.name,
       () => {
-        if (route.name) selectedRoute.value = [String(route.name)]
+        if (route.name) {
+          if (benchmarkPageList.find((name) => name === String(route.name))) selectedRoute.value = ['benchmark']
+          else selectedRoute.value = [String(route.name)]
+        }
       }
     )
 
