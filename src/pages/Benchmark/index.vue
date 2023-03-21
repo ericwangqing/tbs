@@ -19,21 +19,24 @@
   StarField
   RoadLine
   .footer-shadow
+  .fireworks-container(ref="fireworksContainer")
   InstrumentPanel
   RoadMap.road-map-container(@configShow="configVisible = true")
   ConfigPop(v-if="configVisible", @configHide="configVisible = false")
+  .finish-modal(v-if="controller.completed") {{controller.testData.name}} finished!
 </template>
 
 <script>
-import { defineComponent, onBeforeMount, onBeforeUnmount, ref } from 'vue'
+import { defineComponent, onBeforeMount, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import RoadLine from './components/road-line.vue'
 import StarField from './components/star-field.vue'
 import InstrumentPanel from './components/instrument-panel.vue'
 import ConfigPop from './components/config-popup.vue'
-import RoadMap from './components/road-map.vue'
 import ScannedBox from '@/components/ScannedBox.vue'
+import RoadMap from './components/road-map.vue'
 import { thousands } from './composition/util.js'
 import { controller } from './composition/controller.js'
+import { Fireworks } from './composition/firework'
 
 export default defineComponent({
   name: 'Cockpit',
@@ -49,6 +52,8 @@ export default defineComponent({
     let presetProgress = ''
     let timeout = null
     const configVisible = ref(false)
+    const fireworksContainer = ref(null)
+    let fireworks
 
     const bindKeyEvent = ({key}) => {
       if (key === 'ArrowUp') controller.setSpeed(true)
@@ -79,10 +84,20 @@ export default defineComponent({
       document.removeEventListener('keydown', bindKeyEvent)
     })
 
+    onMounted(() => {
+      fireworks = new Fireworks(fireworksContainer.value)
+    })
+
+    watch(() => controller.completed, (val) => {
+      if (val) fireworks.start()
+      else fireworks?.stop()
+    })
+
     return {
       thousands,
       controller,
-      configVisible
+      configVisible,
+      fireworksContainer
     }
   }
 })
@@ -151,6 +166,30 @@ export default defineComponent({
     top: 35px;
     right: 35px;
   }
+  .fireworks-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  .finish-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: min-content;
+    height: min-content;
+    padding: 24px 80px;
+    font-size: 40px;
+    white-space: nowrap;
+    background: linear-gradient(180deg,rgba(0,0,0,0.50), rgba(0,0,0,0.20));
+    border-radius: 12px;
+    border: #000;
+    color: #fff;
+    transform: translateY(-140px);
+  }
 }
 </style>
-  

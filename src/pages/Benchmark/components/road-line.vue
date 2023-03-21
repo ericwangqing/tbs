@@ -90,6 +90,11 @@ export default defineComponent({
       }
     )
 
+    watch(() => controller.completed, (val) => {
+      if (val) lineComp.stop()
+      else lineComp.start()
+    })
+
     return {
       lineCvs
     }
