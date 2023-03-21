@@ -1,5 +1,5 @@
 <template lang="pug">
-.star-field-container(ref="starFieldCvs" :class="{ started: started, alreadyStart: alreadyStart }")
+.star-field-container(ref="starFieldCvs" :class="{ started: started, alreadyStart: alreadyStart, completed: controller.completed }")
 </template>
 
 <script>
@@ -53,9 +53,14 @@ export default defineComponent({
       if (starField) starField.dispose()
     })
 
+    watch(() => controller.completed, (val) => {
+      if (val) started.value = alreadyStart.value = false
+    })
+
     return {
       starFieldCvs,
       alreadyStart,
+      controller,
       started
     }
   },
@@ -76,10 +81,6 @@ export default defineComponent({
     top: 7%;
     transform: scale(1, 1.68);
   }
-  50% {
-    top: 0;
-    transform: scale(1, 1);
-  }
   100% {
     top: 0;
     transform: scale(1, 1);
@@ -96,7 +97,7 @@ export default defineComponent({
   &.started {
     animation: starfieldStartAnimation 1 1s forwards, starfieldStartOpacity 1 0.5s forwards;
   }
-  &.alreadyStart {
+  &.alreadyStart, &.completed {
     top: 0;
     opacity: 1;
     transform: scale(1);

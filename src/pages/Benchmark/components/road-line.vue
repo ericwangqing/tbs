@@ -1,5 +1,5 @@
 <template lang="pug">
-.road-line-container(ref="lineCvs" :class="{ started: started, alreadyStart: alreadyStart }")
+.road-line-container(ref="lineCvs" :class="{ started: started, alreadyStart: alreadyStart, completed: controller.completed }")
 </template>
 
 <script>
@@ -82,10 +82,10 @@ export default defineComponent({
       lineComp = new RoadLine(lineCvs.value, options);
       lineComp.loadAssets().then(() => {
         lineComp.init()
-        if (controller.isFast) lineComp.onSpeedUp()
         if (controller.started) alreadyStart.value = true
         if (controller.running) lineComp.start()
         if (controller.completed) lineComp.stop()
+        if (controller.isFast) lineComp.onSpeedUp()
       })
     })
 
@@ -115,9 +115,14 @@ export default defineComponent({
       else if (!controller.runningByStart && controller.started) lineComp.start()
     })
 
+    watch(() => controller.completed, (val) => {
+      if (val) started.value = alreadyStart.value = false
+    })
+
     return {
       lineCvs,
       alreadyStart,
+      controller,
       started
     }
   }
@@ -154,7 +159,7 @@ export default defineComponent({
   &.started {
     animation: roadlineStartAnimation 1 1s forwards, roadlineStartOpacity 1 0.5s forwards;
   }
-  &.alreadyStart {
+  &.alreadyStart, &.completed {
     top: 0;
     opacity: 1;
     transform: scale(1);
