@@ -313,7 +313,7 @@ export default defineComponent({
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      padding: 16px 40px;
+      padding: 0 40px;
       overflow-y: auto;
       &.needScroll {
         padding-right: 20px;

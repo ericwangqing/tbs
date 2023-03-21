@@ -7,7 +7,7 @@
   InstrumentPanel
   RoadMap.road-map-container
   ConfigPop(@playback="handlePlayback", @execute="handleExecute")
-  .finish-modal(v-if="controller.completed") {{controller.testData.name}} finished!
+  FinishModal(@playback="handlePlayback")
   BenchmarkHeader.benchmark-header(category="cockpit", @change-category="gotoChain")
   Countdown(v-if="toStart")
 </template>
@@ -21,6 +21,7 @@ import InstrumentPanel from './components/instrument-panel.vue'
 import ConfigPop from './components/config-popup.vue'
 import RoadMap from './components/road-map.vue'
 import Countdown from './components/count-down.vue'
+import FinishModal from './components/finish-modal.vue'
 import { controller } from './composition/controller.js'
 import { Fireworks } from './composition/firework'
 
@@ -32,7 +33,8 @@ export default defineComponent({
     InstrumentPanel,
     RoadMap,
     ConfigPop,
-    Countdown
+    Countdown,
+    FinishModal
   },
   setup: () => {
     let presetProgress = ''
@@ -112,6 +114,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/theme/mixin.scss';
 .cockpit {
   width: 100%;
   height: 100%;
@@ -139,24 +142,6 @@ export default defineComponent({
     left: 0;
     right: 0;
     bottom: 0;
-  }
-  .finish-modal {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-    width: min-content;
-    height: min-content;
-    padding: 24px 80px;
-    font-size: 40px;
-    white-space: nowrap;
-    background: linear-gradient(180deg,rgba(0,0,0,0.50), rgba(0,0,0,0.20));
-    border-radius: 12px;
-    border: #000;
-    color: #fff;
-    transform: translateY(-140px);
   }
 }
 </style>

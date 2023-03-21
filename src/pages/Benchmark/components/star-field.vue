@@ -94,13 +94,17 @@ export default defineComponent({
   transform: scale(1.68);
   transform-origin: 50% 0;
   opacity: 0;
+  transition: opacity 0.3s ease-in-out;
   &.started {
     animation: starfieldStartAnimation 1 1s forwards, starfieldStartOpacity 1 0.5s forwards;
   }
-  &.alreadyStart, &.completed {
+  &.alreadyStart {
     top: 0;
     opacity: 1;
     transform: scale(1);
+  }
+  &.completed {
+    opacity: 0;
   }
 }
 </style>
