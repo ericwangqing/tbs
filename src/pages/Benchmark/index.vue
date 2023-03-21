@@ -6,9 +6,10 @@
   .fireworks-container(ref="fireworksContainer")
   InstrumentPanel
   RoadMap.road-map-container
-  ConfigPop
+  ConfigPop(@playback="handlePlayback", @execute="handleExecute")
   .finish-modal(v-if="controller.completed") {{controller.testData.name}} finished!
   BenchmarkHeader.benchmark-header(category="cockpit", @change-category="gotoChain")
+  Countdown(v-if="toStart")
 </template>
 
 <script>
@@ -19,6 +20,7 @@ import StarField from './components/star-field.vue'
 import InstrumentPanel from './components/instrument-panel.vue'
 import ConfigPop from './components/config-popup.vue'
 import RoadMap from './components/road-map.vue'
+import Countdown from './components/count-down.vue'
 import { controller } from './composition/controller.js'
 import { Fireworks } from './composition/firework'
 
@@ -29,7 +31,8 @@ export default defineComponent({
     StarField,
     InstrumentPanel,
     RoadMap,
-    ConfigPop
+    ConfigPop,
+    Countdown
   },
   setup: () => {
     let presetProgress = ''
@@ -37,6 +40,7 @@ export default defineComponent({
     const fireworksContainer = ref(null)
     let fireworks
     const router = useRouter()
+    const toStart = ref(false)
 
     const bindKeyEvent = ({key}) => {
       if (key === 'ArrowUp') controller.setSpeed(true)
@@ -82,10 +86,26 @@ export default defineComponent({
       router.push({ name: 'blockchain' })
     }
 
+    const handlePlayback = (id) => {
+      // TODO not execute, playback the results, and speedup playback.
+      handleExecute()
+    }
+
+    const handleExecute = (id) => {
+      toStart.value = true
+      setTimeout(() => {
+        toStart.value = false
+        controller.startOrStop()
+      }, 5200);
+    }
+
     return {
       controller,
       fireworksContainer,
-      gotoChain
+      toStart,
+      gotoChain,
+      handlePlayback,
+      handleExecute
     }
   }
 })

@@ -25,7 +25,7 @@
           AButton.playback-btn(@click="handlePlayback") Playback
           .btn-wrapper.playback-btn-wrapper
         ABadge.config-btn--badged(count="?" :title="'Re execute'" :offset="[3, -12]")
-          AButton.execute-btn(@click="handleRun") Execute
+          AButton.execute-btn(@click="handleExecute") Execute
           .btn-wrapper
       ASpace(:size="40")
         AButton.download-btn(type="text" @click="handleDownload")
@@ -66,6 +66,7 @@ export default defineComponent({
       default: '510px'
     }
   },
+  emits: ['playback', 'execute'],
   setup: (props, { emit }) => {
     const cardList = ref(null)
     const selectedConfigId = ref('')
@@ -124,11 +125,13 @@ export default defineComponent({
     }
 
     const handlePlayback = () => {
-      
+      emit('playback', selectedConfigId.value)
+      handleBack()
     }
 
-    const handleRun = () => {
-      
+    const handleExecute = () => {
+      emit('execute', selectedConfigId.value)
+      handleBack()
     }
 
     const handleDownload = () => {
@@ -161,7 +164,7 @@ export default defineComponent({
       controller,
       handleCreate,
       handlePlayback,
-      handleRun,
+      handleExecute,
       handleDownload,
       handleContrast,
       handleEdit,
