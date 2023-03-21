@@ -12,3 +12,4 @@ public/*
 # temp
 ~*
 src/theme/dark/*.css
+src/theme/*.css

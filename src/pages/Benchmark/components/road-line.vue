@@ -106,7 +106,7 @@ export default defineComponent({
         started.value = true
         setTimeout(() => {
           lineComp.start()
-        }, 2200)
+        }, 0)
       }
     })
 
@@ -148,6 +148,14 @@ export default defineComponent({
     transform: scale(1, 1);
   }
 }
+@keyframes roadlineBlurFilter {
+  0% {
+    filter: blur(0);
+  }
+  100% {
+    filter: blur(10px);
+  }
+}
 .road-line-container {
   position: absolute;
   top: 7%;
@@ -163,6 +171,9 @@ export default defineComponent({
     top: 0;
     opacity: 1;
     transform: scale(1);
+  }
+  &.completed {
+    animation: roadlineBlurFilter 1 0.3s forwards ease-in-out;
   }
 }
 </style>

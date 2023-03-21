@@ -1,14 +1,14 @@
 <template lang="pug">
-.config-card-wrapper(:key="data.id" :class="{ running: data.isRunning, selected: data && data.id === selectedId }" @click="handleClick")
-  .config-card-border
-  .config-card-bg
-  .config-card-hover-mask
-  .config-card
-    .config-card--header
+.config-card(:key="data.id" :class="{ running: data.isRunning, selected: data && data.id === selectedId }" @click="handleClick")
+  .config-card--border
+  .config-card--bg
+  .config-card--mask
+  .config-card--content
+    .config-card--content-header
       .config-card--title {{ data.name }}
       .config-card--dataset {{ data.dataset.name }}
       .config-card--delete
-    .config-card--main
+    .config-card--content-main
       AForm
         AFormItem(label="Dataset range")
           div {{ formatTimeRange(data.dataset.timeRange) }}
@@ -76,44 +76,26 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@mixin cardSize($borderWidth) {
-  position: absolute;
-  top: #{$borderWidth}px;
-  left: #{$borderWidth}px;
-  width: calc(840px - #{$borderWidth}px - #{$borderWidth}px);
-  height: calc(290px - #{$borderWidth}px - #{$borderWidth}px);
-  border: solid transparent #{$borderWidth}px;
-}
+@import '@/theme/mixin.scss';
 
-.config-card-wrapper {
-  position: relative;
-  width: 840px;
-  height: 290px;
+$--config-card-width: 840px;
+$--config-card-height: 290px;
+$--config-card-border-width: 2;
+$--config-card-border-radius: 8;
+$--config-card-bg: rgb(97, 99, 110);
+$--config-card-selected-border-color: linear-gradient(90deg, #FFCB00, #F08B00);
+$--config-card-executing-bg: linear-gradient(90deg, #FFCB00, #F08B00);
+$--config-card-hover-mask: rgba(#fff, 0.1);
+
+.config-card {
+  @include linearGradientRadiusBorder($--config-card-width, $--config-card-height, $--config-card-border-width, $--config-card-border-radius, $--config-card-bg, $--config-card-bg);
   margin-bottom: 33px;
-  .config-card-border {
-    @include cardSize(0);
-    background: rgb(97, 99, 110);
-    border-radius: 8px;
-  }
-  .config-card-bg {
-    @include cardSize(2);
-    background: rgb(97, 99, 110);
-    border-radius: 8px;
-  }
-  .config-card-hover-mask {
-    @include cardSize(0);
-    border-radius: 8px;
-  }
-  .config-card {
-    @include cardSize(0);
+  &--content {
     padding: 36px 26px 23px;
-    background: transparent;
-    border-radius: 8px;
     cursor: pointer;
     box-sizing: border-box;
     outline: transparent 2px solid;
-    z-index: 1;
-    &--header {
+    &-header {
       display: flex;
       align-items: center;
       .config-card--title {
@@ -139,7 +121,7 @@ export default defineComponent({
       font-size: 24px;
       line-height: 40px;
     }
-    &--main {
+    &-main {
       display: flex;
       align-items: flex-start;
       font-size: 24px;
@@ -159,39 +141,30 @@ export default defineComponent({
       }
     }
   }
-  &.running {
-    color: #000;
-    .config-card--dataset, &:deep .ant-form-item {
-      color: rgba(0, 0, 0, 0.5);
-    }
-    :deep label {
-      color: #000;
-    }
-  }
   &.running:not(.selected) {
-    .config-card-border {
-      background: linear-gradient(90deg, #FFCB00, #F08B00);
+    .config-card--border {
+      background: $--config-card-executing-bg;
     }
-    .config-card-bg {
+    .config-card--bg {
       background: transparent;
     }
   }
   &.selected {
-    .config-card-border {
-      background: linear-gradient(90deg, #FFCB00, #F08B00);
+    .config-card--border {
+      background: $--config-card-selected-border-color;
     }
   }
   &.running.selected {
-    .config-card-bg {
-      background: linear-gradient(90deg, #FFCB00, #F08B00);
+    .config-card--bg {
+      background: $--config-card-executing-bg;
       border: none;
     }
   }
-  &:hover .config-card-hover-mask {
-    background: rgba(#fff, 0.1);
+  &:hover .config-card--mask {
+    background: $--config-card-hover-mask;
   }
-  &:hover.selected .config-card-hover-mask {
-    @include cardSize(2);
+  &:hover.selected .config-card--mask {
+    @include basicCard($--config-card-width, $--config-card-height, 0, $--config-card-border-radius, $--config-card-hover-mask);
   }
 }
 </style>
