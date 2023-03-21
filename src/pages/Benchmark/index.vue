@@ -5,8 +5,8 @@
   .footer-shadow
   .fireworks-container(ref="fireworksContainer")
   InstrumentPanel
-  RoadMap.road-map-container(@configShow="configVisible = true")
-  ConfigPop(v-if="configVisible", @configHide="configVisible = false")
+  RoadMap.road-map-container
+  ConfigPop
   .finish-modal(v-if="controller.completed") {{controller.testData.name}} finished!
   BenchmarkHeader.benchmark-header(category="cockpit", @change-category="gotoChain")
 </template>
@@ -19,7 +19,6 @@ import StarField from './components/star-field.vue'
 import InstrumentPanel from './components/instrument-panel.vue'
 import ConfigPop from './components/config-popup.vue'
 import RoadMap from './components/road-map.vue'
-import BenchmarkHeader from '@/components/BenchmarkHeader.vue'
 import { controller } from './composition/controller.js'
 import { Fireworks } from './composition/firework'
 
@@ -30,13 +29,11 @@ export default defineComponent({
     StarField,
     InstrumentPanel,
     RoadMap,
-    ConfigPop,
-    BenchmarkHeader
+    ConfigPop
   },
   setup: () => {
     let presetProgress = ''
     let timeout = null
-    const configVisible = ref(false)
     const fireworksContainer = ref(null)
     let fireworks
     const router = useRouter()
@@ -87,7 +84,6 @@ export default defineComponent({
 
     return {
       controller,
-      configVisible,
       fireworksContainer,
       gotoChain
     }
@@ -101,6 +97,7 @@ export default defineComponent({
   height: 100%;
   position: relative;
   background: #212435;
+  overflow: hidden;
   &.burning {
     background: radial-gradient(#212435, #212435, #3e2929);
   }
@@ -113,7 +110,7 @@ export default defineComponent({
   }
   .road-map-container {
     position: absolute;
-    top: 35px;
+    top: 22px;
     right: 35px;
   }
   .fireworks-container {

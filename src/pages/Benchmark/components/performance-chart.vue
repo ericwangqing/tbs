@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
 import { controller } from '../composition/controller.js'
 
@@ -79,38 +79,24 @@ export default defineComponent({
       chart.setOption(option)
     }
 
-    const redraw = () => {
-      if(!controller.running) return
-      if (!chart) return
-      const now = Date.now()
-      const LINE_CHART_X_RANGE = 40 // datas in ${x}s per page
-
-      const departureMessagesLastSec = controller.tps
-      const arrivalMessagesLastSec = Math.round(departureMessagesLastSec * (0.9 + Math.random() * 0.2))
-
-      if (performanceChartOutboundData.value.length > LINE_CHART_X_RANGE)
-        performanceChartOutboundData.value.shift()
-      if (performanceChartInboundData.value.length > LINE_CHART_X_RANGE)
-        performanceChartInboundData.value.shift()
-
-      performanceChartOutboundData.value.push({ name: now.toString(), value: [new Date(), departureMessagesLastSec] })
-      performanceChartInboundData.value.push({ name: now.toString(), value: [new Date(), arrivalMessagesLastSec] })
-
-      const series = [
-        { type: 'line', data: performanceChartInboundData.value },
-        { type: 'line', data: performanceChartOutboundData.value },
-      ];
-
-      chart && chart.setOption({ series })
+    const setPerformanceData = () => {
+      if (controller.performanceData.inAll && controller.performanceData.inAll.length) {
+        chart && chart.setOption({
+          series: [
+            { type: 'line', data: controller.performanceData.inAll },
+            { type: 'line', data: controller.performanceData.outAll },
+          ],
+        })
+      }
     }
 
-    setInterval(() => {
-      redraw()
-    }, 1000)
+    watch(() => controller.performanceData, setPerformanceData, { deep: true })
 
     onMounted(() => {
       initChart()
+      setPerformanceData()
     })
+
     return {
       performanceChart,
     }

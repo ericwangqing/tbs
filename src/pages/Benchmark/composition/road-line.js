@@ -30,10 +30,6 @@ export class RoadLine {
       0.1,
       10000
     )
-    this.camera.position.z = -5
-    this.camera.position.y = 8
-    this.camera.position.x = 0
-    // this.camera.rotateX(-0.4);
     this.scene = new THREE.Scene()
 
     let fog = new THREE.Fog(
@@ -48,7 +44,8 @@ export class RoadLine {
       fogFar: { type: 'f', value: fog.far },
     }
     this.clock = new THREE.Clock()
-    // if (!this.running) this.clock.stop()
+    if (!this.running) this.clock.stop()
+    this.resetCameraAndRoadPos()
     this.assets = {}
     this.disposed = false
 
@@ -84,6 +81,30 @@ export class RoadLine {
     this.setSize = this.setSize.bind(this)
     this.onSpeedUp = this.onSpeedUp.bind(this)
     this.onSlowDown = this.onSlowDown.bind(this)
+  }
+  // initCameraAnimation() {
+  //   // this.camera.position.z = -5
+  //   // this.camera.position.y = 8
+  //   // this.camera.position.x = 0
+  //   this.camera.lookAt(new THREE.Vector3(1.3247481664087957, 8.505851934257876, -10))
+  //   let count = 0
+  //   let interval = null
+  //   interval = setInterval(() => {
+  //     if (count >= 20) clearInterval(interval)
+  //     else {
+  //       console.log(this.camera.position.y)
+  //       this.camera.position.y -= 1
+  //       this.camera.lookAt(new THREE.Vector3(1.3247481664087957, this.camera.position.y + 0.505851934257876, -10))
+  //       count++
+  //     }
+  //   }, 16)
+  // }
+  resetCameraAndRoadPos() {
+    this.camera.position.z = -5
+    this.camera.position.y = 8
+    this.camera.position.x = 0
+    this.camera.lookAt(new THREE.Vector3(1.3247481664087957, 8.505851934257876, -10))
+    this.clock.elapsedTime = 0.95
   }
   initPasses() {
     this.renderPass = new POSTPROCESSING.RenderPass(this.scene, this.camera)
@@ -198,9 +219,8 @@ export class RoadLine {
       updateCamera = true
     }
 
-    if (this.options.distortion.getJS) {
+    if (this.options.distortion.getJS && this.running) {
       const distortion = this.options.distortion.getJS(0.025, time)
-
       this.camera.lookAt(
         new THREE.Vector3(
           this.camera.position.x + distortion.x,
@@ -239,13 +259,13 @@ export class RoadLine {
 
   start() {
     this.running = true
-    this.clock.getDelta()
-    this.clock.running = true
+    const elapsedTime = this.clock.elapsedTime
+    this.clock.start()
+    this.clock.elapsedTime = elapsedTime
   }
 
   stop() {
     this.running = false
-    // this.clock.running = false
     this.clock.stop()
   }
 

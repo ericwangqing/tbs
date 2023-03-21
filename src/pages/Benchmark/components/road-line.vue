@@ -1,9 +1,10 @@
 <template lang="pug">
-.road-line-container(ref="lineCvs")
+.road-line-container(ref="lineCvs" :class="{ started: started }")
+  //- .road-line-mask(v-if="started")
 </template>
 
 <script>
-import { defineComponent, ref, onMounted, onBeforeMount, watch } from 'vue'
+import { defineComponent, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { mountainDistortion, LongRaceDistortion } from '../composition/distortions.js'
 import { RoadLine } from '../composition/road-line.js'
 import { controller } from '../composition/controller.js'
@@ -12,6 +13,7 @@ export default defineComponent({
   name: 'RoadLine',
   setup: () => {
     const lineCvs = ref(null)
+    const started = ref(false)
     const options = {
       onSpeedUp: (ev) => {					
       },
@@ -71,7 +73,6 @@ export default defineComponent({
         rightCarsLowSpeedColor: [0xd8ac9b, 0xfbefec, 0xf4c7bb],
         leftCarsHighSpeedColor: [0xf49c9c, 0xff5757, 0xe03f3f],
         rightCarsHighSpeedColor: [0xfaf6da, 0xe3deba, 0xe4d18f],
-
         sticks: 0x212435,
       }
     }
@@ -97,25 +98,61 @@ export default defineComponent({
         else lineComp.onSlowDown()
       }
     )
-
-    watch(() => controller.completed, (val) => {
-      if (val) lineComp.stop()
-      else lineComp.start()
+    
+    watch(() => controller.started, (val) => {
+      if (val) {
+        started.value = true
+        setTimeout(() => {
+          lineComp.start()
+        }, 2200)
+      }
     })
 
+    watch(() => controller.running, (val) => {
+      if (!val) lineComp.stop()
+      else if (!controller.runningByStart && controller.started) lineComp.start()
+    })
+
+    // watch(() => controller.completed, (val) => {
+    //   if (val) lineComp.stop()
+    //   else lineComp.start()
+    // })
+
     return {
-      lineCvs
+      lineCvs,
+      started
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
+@keyframes startAnimation {
+  0% {
+    top: 7%;
+    opacity: 0;
+    transform: scale(1.68, 1.68);
+  }
+  50% {
+    transform: scale(1.34, 1);
+  }
+  100% {
+    opacity: 1;
+    top: 0;
+    transform: scale(1, 1);
+  }
+}
 .road-line-container {
   position: absolute;
-  top: 0;
+  top: 7%;
   width: 100%;
   height: 100%;
+  transform: scale(1.68);
+  transform-origin: 50% 0;
+  opacity: 1;
+  &.started {
+    animation: startAnimation 1 2s forwards;
+  }
 }
 </style>
 

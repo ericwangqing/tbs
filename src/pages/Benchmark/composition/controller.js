@@ -1,4 +1,5 @@
 import { reactive } from 'vue';
+const LINE_CHART_X_RANGE = 40
 
 const floatRandom = (base, num) => {
   return Math.floor((Math.random() - 0.5) * num) + base
@@ -18,6 +19,19 @@ class Controller {
   blockCollected = 0
   nextBlockNeed = 0
   completed = false
+  started = false
+  runningByStart = false
+  performanceData = {
+    inAll: [],
+    outAll: []
+  }
+  resourceData = {
+    cpu: [],
+    memory: [],
+    bandwidth: []
+  }
+  mode = ''
+  playbackSpeed = 1
   constructor() {
 
   }
@@ -33,6 +47,15 @@ class Controller {
       txn: 2500000,
       estimated: 64800 // seconds
     }
+    this.performanceData = {
+      inAll: [],
+      outAll: []
+    }
+    this.resourceData = {
+      cpu: [],
+      memory: [],
+      bandwidth: []
+    }
     this.shards = floatRandom(100, 20)
     this.nodes = floatRandom(this.shards * 10, this.shards)
     this.tps = floatRandom(100, 10)
@@ -42,7 +65,11 @@ class Controller {
     this.completed = false
     this.percent = 0
     this.txCount = 0
+    this.started = true
+    this.runningByStart = true
     this.testData.estimated = Math.floor(this.testData.txn / this.tpsBase)
+    this.mode = 'Playback'
+    this.playbackSpeed = 1.5
   }
 
   setSpeed(isFast) {
@@ -59,6 +86,33 @@ class Controller {
     this.refreshData()
   }
 
+  clearDataOutOfDate(data) {
+    if (data && data.length >= LINE_CHART_X_RANGE) data.shift()
+  }
+
+  setPerformanceAndResourceData(timestamp) {
+    const now = timestamp || Date.now()
+    const departureMessagesLastSec = this.tps
+    const arrivalMessagesLastSec = Math.round(departureMessagesLastSec * (0.9 + Math.random() * 0.2))
+
+    const cpu = 10 * Math.random();
+    const memory = 10 + 10 * Math.random();
+    const bandwidth = 20 + 10 * Math.random();
+
+    this.clearDataOutOfDate(this.performanceData.inAll)
+    this.clearDataOutOfDate(this.performanceData.outAll)
+    this.clearDataOutOfDate(this.resourceData.cpu)
+    this.clearDataOutOfDate(this.resourceData.memory)
+    this.clearDataOutOfDate(this.resourceData.bandwidth)
+
+    this.performanceData.outAll.push({ name: now.toString(), value: [new Date(now), departureMessagesLastSec] })
+    this.performanceData.inAll.push({ name: now.toString(), value: [new Date(now), arrivalMessagesLastSec] })
+
+    this.resourceData.cpu.push({ name: now.toString(), value: [new Date(now), cpu] })
+    this.resourceData.memory.push({ name: now.toString(), value: [new Date(now), memory] })
+    this.resourceData.bandwidth.push({ name: now.toString(), value: [new Date(now), bandwidth] })
+  }
+
   setData() {
     this.tps = floatRandom(this.tpsBase, 10)
     this.txCount += this.tps
@@ -71,6 +125,7 @@ class Controller {
       this.blockCollected = this.blockCollected % this.nextBlockNeed
       this.nextBlockNeed = floatRandom(100, 10)
     }
+    this.setPerformanceAndResourceData()
   }
 
   refreshData() {
@@ -86,6 +141,7 @@ class Controller {
       this.percent = 1
       clearInterval(this.interval)
       this.interval = null
+      this.started = false
     }
   }
 
@@ -97,6 +153,11 @@ class Controller {
       this.blockHeight = floatRandom(standardBlock, standardBlock / 10)
       this.timeCost = Math.floor(this.testData.estimated * progress / 100)
       this.percent = progress / 100
+      // set progress, no need to mock performance and resource data.
+      // const performanceAndResourceDataLength = Math.min(LINE_CHART_X_RANGE, this.timeCost)
+      // for (let i = 0; i < performanceAndResourceDataLength; i++) {
+      //   this.setPerformanceAndResourceData(Date.now() - i * 1000)
+      // }
     }, 0)
   }
 
@@ -104,6 +165,7 @@ class Controller {
     if (this.interval) {
       clearInterval(this.interval)
       this.interval = null
+      this.runningByStart = false
     }
   }
 
