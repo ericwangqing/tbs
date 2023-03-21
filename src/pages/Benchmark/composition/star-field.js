@@ -80,7 +80,7 @@ export class StarField {
   render() {
     //get the frame
     requestAnimationFrame(() => this.render())
-    // if (!this.running) return
+    if (!this.running) return
     //render the scene
     this.renderer.render(this.scene, this.camera)
     this.animateStars()

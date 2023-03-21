@@ -17,6 +17,7 @@ class Controller {
   tpsBase = 0
   blockCollected = 0
   nextBlockNeed = 0
+  completed = false
   constructor() {
 
   }
@@ -29,7 +30,7 @@ class Controller {
     this.testData = {
       name: '100K Simulation',
       dataset: 'ETH 2022',
-      txn: 100000000,
+      txn: 2500000,
       estimated: 64800 // seconds
     }
     this.shards = floatRandom(100, 20)
@@ -38,6 +39,9 @@ class Controller {
     this.tpsBase = 100
     this.timeCost = 0
     this.isFast = false
+    this.completed = false
+    this.percent = 0
+    this.txCount = 0
     this.testData.estimated = Math.floor(this.testData.txn / this.tpsBase)
   }
 
@@ -51,7 +55,7 @@ class Controller {
   }
 
   start() {
-    if(!this.testData) this.initData()
+    if(!this.testData || this.completed) this.initData()
     this.refreshData()
   }
 
@@ -72,11 +76,21 @@ class Controller {
   refreshData() {
     this.interval = setInterval(() => {
       this.setData()
+      this.judgeCompleted()
     }, 1000)
   }
 
+  judgeCompleted() {
+    if (this.txCount >= this.testData.txn) {
+      this.completed = true
+      this.percent = 1
+      clearInterval(this.interval)
+      this.interval = null
+    }
+  }
+
   setProgress(progress) {
-    if(!this.testData) this.initData()
+    if(!this.testData || this.completed) this.initData()
     setTimeout(() => {
       this.txCount = this.testData.txn * progress / 100
       const standardBlock = this.txCount / 100
