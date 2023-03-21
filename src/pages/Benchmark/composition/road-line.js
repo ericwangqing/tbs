@@ -219,7 +219,7 @@ export class RoadLine {
       updateCamera = true
     }
 
-    if (this.options.distortion.getJS && this.running) {
+    if (this.options.distortion.getJS) {
       const distortion = this.options.distortion.getJS(0.025, time)
       this.camera.lookAt(
         new THREE.Vector3(
