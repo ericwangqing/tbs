@@ -20,11 +20,12 @@ export class Fireworks {
     this.renderer.sortObjects = true
     this.fireworks = []
     this.renderer.setSize(width, height)
+    this.frameId = ''
     container.append(this.renderer.domElement)
   }
 
   draw() {
-    requestAnimationFrame(() => this.draw())
+    this.frameId = requestAnimationFrame(() => this.draw())
     if (!this.running) return
 
     // add fireworks
@@ -53,6 +54,10 @@ export class Fireworks {
     this.running = false
     this.fireworks.map((firework) => firework.reset())
     this.fireworks = []
+  }
+
+  dispose() {
+    if (this.frameId) cancelAnimationFrame(this.frameId)
   }
 }
 

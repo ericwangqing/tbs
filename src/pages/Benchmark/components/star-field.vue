@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { defineComponent, nextTick, onMounted, ref, watch } from 'vue'
+import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { StarField } from '../composition/star-field.js'
 import { controller } from '../composition/controller.js'
 
@@ -16,6 +16,8 @@ export default defineComponent({
     onMounted(() => {
       starField.init(starFieldCvs.value)
       starField.render()
+      if (controller.running) starField.start()
+      if (controller.isFast) starField.speedUp()
     })
 
     watch(
@@ -33,6 +35,11 @@ export default defineComponent({
         else starField.stop()
       }
     )
+
+    onBeforeUnmount(() => {
+      if (starField) starField.dispose()
+    })
+
     return {
       starFieldCvs,
     }

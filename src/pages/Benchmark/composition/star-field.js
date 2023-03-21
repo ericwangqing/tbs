@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-//Declare three.js variables
 export class StarField {
   constructor(option) {
     this.camera = []
@@ -10,6 +9,7 @@ export class StarField {
     this.speed = 1
     this.speedInterval = null
     this.running = false
+    this.frameId = ''
   }
 
   init(container) {
@@ -79,7 +79,7 @@ export class StarField {
 
   render() {
     //get the frame
-    requestAnimationFrame(() => this.render())
+    this.frameId = requestAnimationFrame(() => this.render())
     if (!this.running) return
     //render the scene
     this.renderer.render(this.scene, this.camera)
@@ -120,5 +120,9 @@ export class StarField {
 
   stop() {
     this.running = false
+  }
+
+  dispose() {
+    if (this.frameId) cancelAnimationFrame(this.frameId)
   }
 }
