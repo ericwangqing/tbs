@@ -1,73 +1,79 @@
 <template lang="pug">
-.blockchain
-  .blockchain-overview-container
-    .blockchain-overview-header
-      .blockchain-title Time Beacon Chain
-      a-progress(v-if="!loading" type="circle" :percent="percent" :width="20" :strokeWidth="10" :format="() => ''" strokeColor="#ffffff" trailColor="#373948")
-    .blockchain-overview-content
-      .blockchain-item
-        .blockchain-info
-          span(v-if="!loading") ETH
-        .blockchain-detail
-          .blockchain-linkline
-          BlockchainSkeleton(v-if="loading")
-          Blockchain.chain(v-else :blocks="timeBeaconChain")
-          .left-fade-mask
-          .right-fade-mask
-        .blockchain-more
-          .blocklist-btn(@click="")
-            EllipsisOutlined
-  .blockchain-overview-container
-    .blockchain-overview-header
-      .blockchain-title
-        span Sharding Chain&nbsp
-        span(v-if="!loading") ({{filterShardChainNum}})
-      .blockchain-interface(v-if="!loading")
-        RangeSelector(:min="0" :max="shardChainNum - 1" @confirm="filterBlockchain" style="margin-right: 30px")
-        a-progress(type="circle" :percent="percent" :width="20" :strokeWidth="10" :format="() => ''" strokeColor="#ffffff" trailColor="#373948")
-    .blockchain-overview-content
-      .blockchain-item(v-for="i in [0, 1, 2, 3, 4]" :key="i" v-if="loading")
-        .blockchain-info
-        .blockchain-detail
-          .blockchain-linkline
-          BlockchainSkeleton
-          .left-fade-mask
-          .right-fade-mask
-        .blockchain-more
-          .blocklist-btn
-            EllipsisOutlined
-      .blockchain-item(v-for="(blockchain) in shardChains" :key="blockchain[0].shard" v-else)
-        .blockchain-info S-{{`${blockchain[0].shard}`.padStart(3, '0')}}
-        .blockchain-detail
-          .blockchain-linkline
-          Blockchain.chain(:blocks="blockchain")
-          .left-fade-mask
-          .right-fade-mask
-        .blockchain-more
-          .blocklist-btn
-            EllipsisOutlined
-    .blockchain-overview-footer
-      a-pagination(
-        size="small"
-        v-model:current="currentPage"
-        show-size-changer
-        show-quick-jumper
-        :total="filterShardChainNum"
-        v-model:pageSize="pageSize"
-        :pageSizeOptions="['5', '10']"
-      )
+.blockchain-page-container
+  BenchmarkHeader.benchmark-header(category="chain" @change-category="gotoCockpit")
+  ConfigPop(@configHide="configVisible = false" v-if="configVisible")
+  .blockchain-page-content
+    .blockchain-overview-container
+      .blockchain-overview-header
+        .blockchain-title Time Beacon Chain
+        a-progress(v-if="!loading" type="circle" :percent="percent" :width="20" :strokeWidth="10" :format="() => ''" strokeColor="#ffffff" trailColor="#373948")
+      .blockchain-overview-content
+        .blockchain-item
+          .blockchain-info
+            span(v-if="!loading") ETH
+          .blockchain-detail
+            .blockchain-linkline
+            BlockchainSkeleton(v-if="loading")
+            Blockchain.chain(v-else :blocks="timeBeaconChain")
+            .left-fade-mask
+            .right-fade-mask
+          .blockchain-more
+            .blocklist-btn(@click="")
+              EllipsisOutlined
+    .blockchain-overview-container
+      .blockchain-overview-header
+        .blockchain-title
+          span Sharding Chain&nbsp
+          span(v-if="!loading") ({{filterShardChainNum}})
+        .blockchain-interface(v-if="!loading")
+          RangeSelector(:min="0" :max="shardChainNum - 1" @confirm="filterBlockchain" style="margin-right: 30px")
+          a-progress(type="circle" :percent="percent" :width="20" :strokeWidth="10" :format="() => ''" strokeColor="#ffffff" trailColor="#373948")
+      .blockchain-overview-content
+        .blockchain-item(v-for="i in [0, 1, 2, 3, 4]" :key="i" v-if="loading")
+          .blockchain-info
+          .blockchain-detail
+            .blockchain-linkline
+            BlockchainSkeleton
+            .left-fade-mask
+            .right-fade-mask
+          .blockchain-more
+            .blocklist-btn
+              EllipsisOutlined
+        .blockchain-item(v-for="(blockchain) in shardChains" :key="blockchain[0].shard" v-else)
+          .blockchain-info S-{{`${blockchain[0].shard}`.padStart(3, '0')}}
+          .blockchain-detail
+            .blockchain-linkline
+            Blockchain.chain(:blocks="blockchain")
+            .left-fade-mask
+            .right-fade-mask
+          .blockchain-more
+            .blocklist-btn
+              EllipsisOutlined
+      .blockchain-overview-footer
+        a-pagination(
+          size="small"
+          v-model:current="currentPage"
+          show-size-changer
+          show-quick-jumper
+          :total="filterShardChainNum"
+          v-model:pageSize="pageSize"
+          :pageSizeOptions="['5', '10']"
+        )
 </template>
 
 <script>
 import {defineComponent, onMounted, reactive, ref, watch, inject, watchEffect} from 'vue'
+import { useRouter } from 'vue-router'
 import Blockchain from './components/blockchain.vue'
 import RangeSelector from './components/range-selector.vue'
 import BlockchainSkeleton from './components/blockchain-skeleton.vue'
 import { EllipsisOutlined } from '@ant-design/icons-vue'
-import {random, range} from "lodash";
+import ConfigPop from '@/pages/Benchmark/components/config-popup.vue'
+import {random, range} from 'lodash'
+
 export default defineComponent({
   name: 'ShardOverview',
-  components: {Blockchain, EllipsisOutlined, RangeSelector, BlockchainSkeleton},
+  components: {Blockchain, EllipsisOutlined, RangeSelector, BlockchainSkeleton, ConfigPop},
   setup: () => {
     const TBSApi = inject('TBSApi')
     const timeBeaconChain = reactive([]) // 信标链
@@ -80,6 +86,8 @@ export default defineComponent({
     const filterShardChainNum = ref(shardChainNum.value) // 分页显示的分片链数量
     const allPageShards = reactive(range(shardChainNum.value)) // 全部分片链序号
     const loading = ref(true)
+    const router = useRouter()
+    const configVisible = ref(false)
 
     const syncLatestBeaconBlocks = async () => {
       // 获取最新几个信标链区块
@@ -242,6 +250,10 @@ export default defineComponent({
       setTimeout(() => handleBeaconBlockFinalizedEvent({number: slot, slot, txn: random(500), tbs: 229, state: 'finalized', timestamp: Date.now()}), 10500)
     }
 
+    const gotoCockpit = () => {
+      router.push({name: 'benchmark'})
+    }
+
     onMounted(async () => {
       watch(pageSize, () => {
         currentPage.value = 1
@@ -280,17 +292,27 @@ export default defineComponent({
       shardChainNum,
       filterShardChainNum,
       filterBlockchain,
-      loading
+      loading,
+      gotoCockpit,
+      configVisible
     }
   }
 })
 </script>
 
 <style scoped lang="scss">
-.blockchain {
+.blockchain-page-container {
+  position: relative;
+  overflow: auto;
   height: 100%;
-  overflow-y: auto;
 }
+
+.blockchain-page-content {
+  position: relative;
+  top: 156px;
+  padding-bottom: 77px;
+}
+
 .blockchain-overview-container {
   width: 1320px;
   height: fit-content;

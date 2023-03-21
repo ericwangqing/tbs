@@ -115,9 +115,8 @@ export default defineComponent({
       &::after {
         content: "OK";
         font-size: 16px;
-        font-family: Helvetica, Helvetica-Regular;
-        font-weight: 400;
-        text-align: center;
+        font-style: italic;
+        font-weight: bold;
         color: #000000;
       }
       &:active::before {
