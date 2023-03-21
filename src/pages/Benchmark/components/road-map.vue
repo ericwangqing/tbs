@@ -1,5 +1,8 @@
 <template lang="pug">
 .road-map-container
+  .test-plan-state
+    span(v-if="controller.mode === 'Playback'") {{ controller.playbackSpeed }}X 
+    span {{ controller.mode }}
   svg(width="218px" height="209px" viewBox="-10 -10 218 209" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="filter: drop-shadow(0px 0px 4px 0px rgba(0, 0, 0, 0.3));")
     defs
     linearGradient(x1="0" y1="0" x2="0" y2="1" id="gradient1")
@@ -24,9 +27,6 @@
       span.test-plan-elapsed-time__text {{ formattedTimeCost }}
       i.iconfont.icon-jishi.test-plan-elapsed-time__icon
     .test-plan-estimated-time Estimated Time: {{ formattedTimeEstimated }}
-  .test-plan-config-btn(@click="openConfig", :class="{ breathe: !controller.running }")
-    .test-plan-config-btn__text Config
-    CaretRightOutlined.test-plan-config-btn__icon
 </template>
 
 <script>
@@ -34,13 +34,9 @@ import { computed, defineComponent, ref, watch } from 'vue'
 import roadCoordinates from '@/assets/road-coordinates.json'
 import { controller } from '../composition/controller.js'
 import { formatNumWithUnit, formatTime } from '../composition/util.js'
-import { CaretRightOutlined } from '@ant-design/icons-vue'
 
 export default defineComponent({
   name: 'RoadMap',
-  components: {
-    CaretRightOutlined
-  },
   setup: (props, { emit }) => {
     const startPos = roadCoordinates[0]
     const triangleSize = { width: 14, height: 16 }
@@ -116,10 +112,6 @@ export default defineComponent({
       return formatTime(controller.testData.estimated)
     })
 
-    const openConfig = () => {
-      emit('configShow')
-    }
-
     return {
       points,
       triangleSize,
@@ -134,8 +126,7 @@ export default defineComponent({
       formattedTotalTxn,
       formattedTimeCost,
       formattedTimeEstimated,
-      triggerColor,
-      openConfig
+      triggerColor
     }
   },
 })
@@ -143,6 +134,21 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .road-map-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  .test-plan-state {
+    height: 24px;
+    font-size: 20px;
+    line-height: 24px;
+    color: #fff;
+    font-style: italic;
+    font-style: italic;
+    font-weight: bold;
+    font-family: Helvetica;
+    letter-spacing: 1px;
+    padding-right: 5px;
+  }
   .test-plan-info {
     display: flex;
     flex-direction: column;
@@ -153,7 +159,6 @@ export default defineComponent({
     .test-plan-name {
       font-size: 30px;
       line-height: 42px;
-      margin-top: -6px;
     }
     .test-plan-txn, .test-plan-estimated-time {
       font-size: 16px;
@@ -184,35 +189,6 @@ export default defineComponent({
         font-size: 24px;
         line-height: 24px;
       }
-    }
-  }
-  .test-plan-config-btn {
-    position: fixed;
-    right: 0;
-    padding: 12px 46px 10px 16px;
-    margin-top: 38px;
-    color: #fff;
-    font-weight: bold;
-    font-style: italic;
-    font-size: 20px;
-    line-height: 24px;
-    border-radius: 8px 0px 0px 8px;
-    user-select: none;
-    cursor: pointer;
-    background: linear-gradient(90deg,rgba(0, 0, 0, 0.80) 46%,  rgba(0, 0, 0, 0.00));
-    display: flex;
-    align-items: center;
-    &.breathe {
-      box-shadow: 0px 0px 20px 0px rgba(179, 195, 255, 0.50);
-      .test-plan-config-btn__text {
-        background-image:-webkit-linear-gradient(left, #FFCB00, #F08B00); 
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-    }
-    &__icon {
-      margin-left: 35px;
     }
   }
 }

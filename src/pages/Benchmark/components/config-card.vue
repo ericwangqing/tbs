@@ -35,6 +35,8 @@
           span {{ data.memoryUsed }}MB
         AFormItem(label="Bandwidth")
           span {{ data.bandwidthUsed }}KB
+    .delete-btn(@click="handleDelete")
+      i.iconfont.icon-shanchu
 </template>
 
 <script>
@@ -57,13 +59,17 @@ export default defineComponent({
     const handleClick = () => {
       emit('select')
     }
+    const handleDelete = () => {
+      emit('delete')
+    }
     return {
       formatNumWithUnit,
       thousands,
       formatTime,
       formatTimeRange,
       formatDayTimeWithUnit,
-      handleClick
+      handleClick,
+      handleDelete
     }
   }
 })
@@ -125,7 +131,6 @@ export default defineComponent({
       font-size: 24px;
       width: 158px;
       margin-right: 12px;
-      font-weight: bold;
       cursor: pointer;
     }
     &:deep .ant-form-item {
@@ -139,6 +144,19 @@ export default defineComponent({
       align-items: flex-start;
       font-size: 24px;
       justify-content: space-between;
+    }
+    .delete-btn {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      i {
+        font-size: 24px;
+        line-height: 24px;
+        color: rgba(#fff, 0.3);
+      }
     }
   }
   &.running {

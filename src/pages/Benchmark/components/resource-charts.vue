@@ -8,7 +8,7 @@
     GradientGauge.memory-gauge(id="memoryGauge", :radius="48", :strokeWidth="10", leftColor="#49DAB0", rightColor="#46B8C0", :needBackRing="false", :percent="currentMemory", :needShadow="false", :backRingAround="true")
       .gauge-count {{Math.floor(currentMemory)}}%
       .gauge-label Memory
-    GradientGauge.bandwidth-gauge(id="bandwidthGauge", :radius="48", :strokeWidth="10", leftColor="#EF8C30", rightColor="#F6BD16", :needBackRing="false", :percent="currentBandwidth", :needShadow="false", :backRingAround="true")
+    GradientGauge.bandwidth-gauge(id="bandwidthGauge", :radius="48", :strokeWidth="10", leftColor="#F6BD16", rightColor="#EF8C30", :needBackRing="false", :percent="currentBandwidth", :needShadow="false", :backRingAround="true")
       .gauge-count {{Math.floor(currentBandwidth)}}%
       .gauge-label Bandwidth
 
@@ -99,44 +99,29 @@ export default defineComponent({
       chart.setOption(option)
     }
 
-    const redraw = () => {
-      if(!controller.running) return
-      const now = Date.now()
-      const LINE_CHART_X_RANGE = 40 // datas in ${x}s per page
-      
-      currentCpu.value = 10 * Math.random();
-      currentMemory.value = 10 + 10 * Math.random();
-      currentBandwidth.value = 20 + 10 * Math.random();
-
-      if (cpuData.value.length > LINE_CHART_X_RANGE) cpuData.value.shift()
-      if (memoryData.value.length > LINE_CHART_X_RANGE) memoryData.value.shift()
-      if (bandwidthData.value.length > LINE_CHART_X_RANGE) bandwidthData.value.shift()
-
-      cpuData.value.push({ name: now.toString(), value: [new Date(), currentCpu.value] })
-      memoryData.value.push({
-        name: now.toString(),
-        value: [new Date(), currentMemory.value],
-      })
-      bandwidthData.value.push({
-        name: now.toString(),
-        value: [new Date(), currentBandwidth.value],
-      })
-      chart && chart.setOption({
-        series: [
-          { data: cpuData.value },
-          { data: memoryData.value },
-          { data: bandwidthData.value },
-        ],
-      })
+    const setResourceData = () => {
+      if (controller.resourceData.cpu && controller.resourceData.cpu.length) {
+        chart && chart.setOption({
+          series: [
+            { data: controller.resourceData.cpu },
+            { data: controller.resourceData.memory },
+            { data: controller.resourceData.bandwidth },
+          ],
+        })
+        currentCpu.value = controller.resourceData.cpu[controller.resourceData.cpu.length - 1].value[1]
+        currentMemory.value = controller.resourceData.memory[controller.resourceData.memory.length - 1].value[1]
+        currentBandwidth.value = controller.resourceData.bandwidth[controller.resourceData.bandwidth.length - 1].value[1]
+      }
     }
 
-    setInterval(() => {
-      redraw()
-    }, 1000)
+    watch(() => controller.resourceData, setResourceData, { deep: true })
 
     onMounted(() => {
       initChart()
+      setResourceData()
     })
+
+
     return {
       resourceChart,
       currentCpu,
