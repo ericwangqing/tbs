@@ -1,21 +1,5 @@
 <template lang="pug">
 .cockpit(:class="{ burning: controller.tps >= 100000 }")
-  ScannedBox.count-board
-    .count-board-ceil
-      .count-board-ceil__label TPS
-      .count-board-ceil__num {{ thousands(controller.tps) }}
-    .count-board-ceil
-      .count-board-ceil__label Total transactions
-      .count-board-ceil__num {{ thousands(controller.txCount) }}
-    .count-board-ceil
-      .count-board-ceil__label W3 chain height
-      .count-board-ceil__num {{ thousands(controller.blockHeight) }}
-    .count-board-ceil
-      .count-board-ceil__label Shards
-      .count-board-ceil__num {{ thousands(controller.shards) }}
-    .count-board-ceil
-      .count-board-ceil__label Nodes
-      .count-board-ceil__num {{ thousands(controller.nodes) }}
   StarField
   RoadLine
   .footer-shadow
@@ -24,17 +8,18 @@
   RoadMap.road-map-container(@configShow="configVisible = true")
   ConfigPop(v-if="configVisible", @configHide="configVisible = false")
   .finish-modal(v-if="controller.completed") {{controller.testData.name}} finished!
+  BenchmarkHeader.benchmark-header(category="cockpit", @change-category="gotoChain")
 </template>
 
 <script>
 import { defineComponent, onBeforeMount, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import RoadLine from './components/road-line.vue'
 import StarField from './components/star-field.vue'
 import InstrumentPanel from './components/instrument-panel.vue'
 import ConfigPop from './components/config-popup.vue'
-import ScannedBox from '@/components/ScannedBox.vue'
 import RoadMap from './components/road-map.vue'
-import { thousands } from './composition/util.js'
+import BenchmarkHeader from '@/components/BenchmarkHeader.vue'
 import { controller } from './composition/controller.js'
 import { Fireworks } from './composition/firework'
 
@@ -46,7 +31,7 @@ export default defineComponent({
     InstrumentPanel,
     RoadMap,
     ConfigPop,
-    ScannedBox
+    BenchmarkHeader
   },
   setup: () => {
     let presetProgress = ''
@@ -54,6 +39,7 @@ export default defineComponent({
     const configVisible = ref(false)
     const fireworksContainer = ref(null)
     let fireworks
+    const router = useRouter()
 
     const bindKeyEvent = ({key}) => {
       if (key === 'ArrowUp') controller.setSpeed(true)
@@ -93,11 +79,15 @@ export default defineComponent({
       else fireworks?.stop()
     })
 
+    const gotoChain = () => {
+      router.push({ name: 'blockchain' })
+    }
+
     return {
-      thousands,
       controller,
       configVisible,
-      fireworksContainer
+      fireworksContainer,
+      gotoChain
     }
   }
 })
@@ -111,48 +101,6 @@ export default defineComponent({
   background: #212435;
   &.burning {
     background: radial-gradient(#212435, #212435, #3e2929);
-  }
-  .count-board {
-    position: absolute;
-    top: 22px;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    display: flex;
-    width: min-content;
-    background: linear-gradient(180deg,rgba(0,0,0,0.50), rgba(0,0,0,0.20));
-    border-radius: 4px;
-    &-ceil {
-      padding: 16px 66px 13px;
-      position: relative;
-      &__label {
-        color: #fff;
-        white-space: nowrap;
-        font-size: 20px;
-        line-height: 23px;
-      }
-      &__num {
-        color: #FFA900;
-        font-size: 34px;
-        font-weight: bold;
-        line-height: 39px;
-      }
-      &:not(&:last-child)::after {
-        content: '';
-        height: 62px;
-        width: 1px;
-        background: #d0d0d0;
-        position: absolute;
-        right: 0;
-        top: 12px;
-      }
-      &:first-child {
-        padding-left: 50px;
-      }
-      &:last-child {
-        padding-right: 50px;
-      }
-    }
   }
   .footer-shadow {
     position: fixed;
