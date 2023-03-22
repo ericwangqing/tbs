@@ -57,6 +57,7 @@ import { computed, defineComponent, ref } from 'vue'
 import BackSvg from '@/assets/back-icon.svg'
 import { controller } from '../composition/controller.js'
 import { CaretRightOutlined } from '@ant-design/icons-vue'
+import { useRoute } from 'vue-router'
 
 import ConfigCard from './config-card.vue'
 
@@ -74,6 +75,7 @@ export default defineComponent({
   },
   emits: ['playback', 'execute'],
   setup: (props, { emit }) => {
+    const route = useRoute()
     const cardList = ref(null)
     const selectedConfigId = ref('1')
     const visible = ref(false)
@@ -87,10 +89,12 @@ export default defineComponent({
 
     }
 
+    const jumpPageBeforeStart = String(route.name) === 'blockchain'
+
     const handlePlayback = () => {
       emit('playback', selectedConfigId.value)
       controller.stop()
-      controller.start('Playback', selectedConfigId.value)
+      controller.start('Playback', selectedConfigId.value, jumpPageBeforeStart)
       handleBack()
     }
 
@@ -98,7 +102,7 @@ export default defineComponent({
       emit('execute', selectedConfigId.value)
       // TODO This operation need to confirm second time.
       controller.stop()
-      controller.start('Executing', selectedConfigId.value)
+      controller.start('Executing', selectedConfigId.value, jumpPageBeforeStart)
       handleBack()
     }
 

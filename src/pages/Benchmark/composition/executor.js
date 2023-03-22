@@ -28,13 +28,13 @@ class Executor {
     this.visibleShards = visibleShards
     this.running = true
 
-    this.tpsBase = 500
+    this.slot = 0
+    this.tpsBase = 2000
     this.txCount = 0
     this.chainHeight = 0
     this.timeSpent = 0
     this.running = true
     this.updateNetworkInfoInterval()
-    // this.generateBlockInterval()
   }
 
   setSpeed(tpsBase) {
@@ -67,7 +67,7 @@ class Executor {
       })
       setTimeout(() => {
         let max = 0
-        for (let i = 0; i < this.visibleShards.length; i++) {
+        for (let i = 0; i < 10; i++) {
           const base = tps * SLOT_TIME / shards
           const currentBlockTxn = randomBetween(base * 0.95, base * 1.05)
           max = Math.max(max, this.generateBlock(i, currentBlockTxn))
@@ -97,7 +97,6 @@ class Executor {
   }
 
   generateBlock(i, txn) {
-    const shard = this.visibleShards[i]
     const slot = this.slot
     const collectBase = SLOT_TIME * COLLECT_PERCENT * 1000
     const assestBase = SLOT_TIME * ASSEST_PERCENT * 1000
@@ -105,12 +104,20 @@ class Executor {
     const collectCost = randomBetween(collectBase * 0.9, collectBase * 1.1)
     const attestCost = randomBetween(assestBase * 0.9, assestBase * 1.1)
     const finalizedCost = randomBetween(finalizeBase * 0.9, finalizeBase * 1.1)
-    const miner = getAddressKeyString()
-    const hash = getPublicKeyString()
-    setTimeout(() => this.events.emit('generateBlock', { number: slot, slot, shard, state: 'collect', timestamp: Date.now() }), 0)
-    setTimeout(() => this.events.emit('updateBlockState', { number: slot, slot, shard, state: 'attest', timestamp: Date.now() }), collectCost)
-    setTimeout(() => this.events.emit('updateBlockState', { number: slot, slot, shard, state: 'unfinalized', txn, miner, hash, timestamp: Date.now() }), collectCost + attestCost)
-    setTimeout(() => this.events.emit('updateBlockState', { number: slot, slot, shard, state: 'finalized', txn, miner, hash, timestamp: Date.now() }), collectCost + attestCost + finalizedCost)
+    const miner = util.getAddressKeyString()
+    const hash = util.getPublicKeyString()
+    setTimeout(() => {
+      if (this.visibleShards[i] !== undefined) this.events.emit('generateBlock', { number: slot, slot, shard: this.visibleShards[i], state: 'collect', timestamp: Date.now() })
+    }, 0)
+    setTimeout(() => {
+      if (this.visibleShards[i] !== undefined) this.events.emit('updateBlockState', { number: slot, slot, shard: this.visibleShards[i], state: 'attest', timestamp: Date.now() })
+    }, collectCost)
+    setTimeout(() => {
+      if (this.visibleShards[i] !== undefined) this.events.emit('updateBlockState', { number: slot, slot, shard: this.visibleShards[i], state: 'unfinalized', txn, miner, hash, timestamp: Date.now() })
+    }, collectCost + attestCost)
+    setTimeout(() => {
+      if (this.visibleShards[i] !== undefined) this.events.emit('updateBlockState', { number: slot, slot, shard: this.visibleShards[i], state: 'finalized', txn, miner, hash, timestamp: Date.now() })
+    }, collectCost + attestCost + finalizedCost)
 
     return collectCost + attestCost + finalizedCost
   }
@@ -126,6 +133,10 @@ class Executor {
   stop() {
     if (this.interval) clearInterval(this.interval)
     this.interval = null
+  }
+
+  setVisibleShards(visibleShards) {
+    this.visibleShards = visibleShards
   }
 }
 

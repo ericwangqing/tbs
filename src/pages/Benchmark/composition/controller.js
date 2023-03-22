@@ -3,6 +3,8 @@ import { reactive } from 'vue'
 import { Executor } from './executor.js'
 import { randomBetween } from './util.js'
 import testList from './test-list.json'
+import { getAddressKeyString, getPublicKeyString } from './util.js'
+
 const LINE_CHART_X_RANGE = 40
 const VISIBLE_BLOCK_COUNT = 6
 const PREPARING_TIME = 5300 // start a test, cockpit's prepare animation cost.
@@ -90,8 +92,8 @@ class Controller {
       this.visibleShards = [0, 1, 2, 3, 4]
       this.visibleLatestShardBlocks = [[], [], [], [], []]
     }
-    this.visibleLatestShardBlocks.map((shardBlocks) => {
-      shardBlocks = []
+    this.visibleShards.map((item, index) => {
+      this.visibleLatestShardBlocks[index] = []
     })
     this.visibleLatestTbBlocks = []
     this.timeSpent = 0
@@ -102,30 +104,32 @@ class Controller {
     this.resourceData.bandwidth = []
   }
 
-  start(mode, testId) {
+  start(mode, testId, needPageJumpDelay = false) {
     if (mode !== 'Executing' && mode !== 'Playback') throw new Error(`mode error: must be \`Executing\` or \`Playback\`, current: ${mode}!`)
     if (this.state !== 'stopped') throw new Error(`State error: need stopped, current: ${this.state}, cannot start!`)
     const testData = this.testList.find((data) => data.id === testId)
     if (!testData) throw new Error(`Could find test with id ${testId}!`)
     if (mode === 'Playback' && !testData.result) throw new Error(`${testData.name} hasn't yet executed, cannot playback!`)
-    this.testData = testData
-    this.resetBasicNetworkInfo()
-    this.mode = mode
-    this.shards = testData.shards
-    this.nodes = testData.nodes
-    this.state = 'preparing'
-    if (this.interval) clearInterval(this.interval)
     setTimeout(() => {
-      this.state = 'running'
-      if (mode === 'Playback') {
-        // TODO run record directly, currrent use the executor to create playback data.
-        this.initEvents()
-        this.executor.start(this.testData, this.visibleShards)
-      } else {
-        this.initEvents()
-        this.executor.start(this.testData, this.visibleShards)
-      }
-    }, PREPARING_TIME)
+      this.testData = testData
+      this.resetBasicNetworkInfo()
+      this.mode = mode
+      this.shards = testData.shards
+      this.nodes = testData.nodes
+      this.state = 'preparing'
+      if (this.interval) clearInterval(this.interval)
+      setTimeout(() => {
+        this.state = 'running'
+        if (mode === 'Playback') {
+          // TODO run record directly, currrent use the executor to create playback data.
+          this.initEvents()
+          this.executor.start(this.testData, this.visibleShards)
+        } else {
+          this.initEvents()
+          this.executor.start(this.testData, this.visibleShards)
+        }
+      }, PREPARING_TIME)
+    }, needPageJumpDelay ? 500 : 0) // from blockchain to cockpit, give a time to redraw page.
   }
 
   stop() {
@@ -220,16 +224,33 @@ class Controller {
   }
 
   setVisibleShards({ page, perpage, key }) {
-    if (key) this.visibleShards = [key]
+    if (key) this.visibleShards = key
     else {
       this.visibleShards = []
       for (let i = (page - 1) * perpage; i < page * perpage; i++) {
         this.visibleShards.push(i)
       }
     }
-    this.visibleLatestShardBlocks = []
-    this.visibleShards.map(s => this.visibleLatestShardBlocks.push([]))
-    // TODO return the existed visibleLatestShardBlocks and visibleLatestTbBlocks
+    this.executor.setVisibleShards(this.visibleShards)
+    if (this.visibleLatestShardBlocks[0] && this.visibleLatestShardBlocks[0].length) {
+      const history = JSON.parse(JSON.stringify(this.visibleLatestShardBlocks))
+      this.visibleLatestShardBlocks = []
+      this.visibleShards.map((s, i) => {
+        const blocks = JSON.parse(JSON.stringify(history[0])).map((block) => {
+          block.shard = s
+          if (block.txn) block.txn = randomBetween(block.txn * 0.9, block.txn * 1.1)
+          if (block.miner) block.miner = getAddressKeyString()
+          if (block.hash) block.hash = getPublicKeyString()
+          return block
+        })
+        this.visibleLatestShardBlocks.push(blocks)
+      })
+    } else {
+      this.visibleLatestShardBlocks = []
+      this.visibleShards.map((s, i) => {
+        this.visibleLatestShardBlocks.push([])
+      })
+    }
   }
 
   handleCompleted() {
