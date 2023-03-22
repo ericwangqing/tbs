@@ -6,7 +6,7 @@
       .title
         i Config
         span （
-        i {{ configList.length }}
+        i {{ controller.testList.length }}
         span ）
       ASpace(:size="40")
         AButton.create-btn(@click="handleCreate")
@@ -15,7 +15,7 @@
         AInputSearch(allowClear)
     .config-popup--wrapper-main(ref="cardList", :class="{ needScroll: needScroll }")
       ConfigCard(
-        v-for="item in configList", :key="item.id", :data="item", :selectedId="selectedConfigId"
+        v-for="item in controller.testList", :key="item.id", :data="item", :selectedId="selectedConfigId"
         @select="selectedConfigId = item.id"
       )
   .config-popup--footer
@@ -71,49 +71,6 @@ export default defineComponent({
     const cardList = ref(null)
     const selectedConfigId = ref('1')
     const visible = ref(false)
-    const configList = ref([
-      {
-        name: '持续展示',
-        id: '1',
-        isRunning: true,
-        txn: 1000000,
-        tps: 100000,
-        dataset: {
-          name: 'ETH',
-          timeRange: [1640966400, 1672502399],
-          txCount: 1000000000000,
-          estimated: 64800 // seconds
-        },
-        timeCost: 1000,
-        shardCount: 3,
-        nodeCount: 30,
-        cpuUsed: 0.05,
-        memoryUsed: 286, // MB
-        bandwidthUsed: 500 // KB, maybe TODO calc unit.
-      },
-      {
-        name: '100K测试',
-        id: '2',
-        isRunning: false,
-        txn: 1000000000000,
-        tps: 100000,
-        dataset: {
-          name: 'ETH',
-          timeRange: [1648742400, 1664553599],
-          txCount: 1000000000000,
-          estimated: 64800 // seconds
-        },
-        timeCost: 1000,
-        shardCount: 100,
-        nodeCount: 1000,
-        cpuUsed: 0.1,
-        memoryUsed: 332, // MB
-        bandwidthUsed: 450 // KB, maybe TODO calc unit.
-      }
-    ])
-    for (let i = 3; i < 20; i++) {
-      configList.value.push(Object.assign({}, JSON.parse(JSON.stringify(configList.value[1])), {id: `${i}`}))
-    }
 
     const needScroll = computed(() => {
       if (!cardList.value) return false;
@@ -156,12 +113,11 @@ export default defineComponent({
 
     return {
       cardList,
-      configList,
+      controller,
       needScroll,
       selectedConfigId,
       BackSvg,
       visible,
-      controller,
       handleCreate,
       handlePlayback,
       handleExecute,

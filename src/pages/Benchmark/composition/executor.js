@@ -2,6 +2,11 @@ import EventEmitter2 from 'eventemitter2'
 import { randomBetween } from './util.js'
 import { getAddressKeyString, getPublicKeyString } from './util.js'
 
+const SLOT_TIME = 12
+const COLLECT_PERCENT = 5 / 12
+const ASSEST_PERCENT = 3 / 12
+const FINALIZE_PERCENT = 2 / 12
+
 class Executor {
   tpsBase = 0 // tps waved based on tpsBase, doesn't need in real situation.
   testData = null
@@ -40,13 +45,13 @@ class Executor {
     this.interval = setInterval(() => {
       if (!this.running) return
       const tps = randomBetween(this.tpsBase * 0.95, this.tpsBase * 1.05)
-      this.txCount += tps * 12
+      this.txCount += tps * SLOT_TIME
       if (this.txCount >= this.testData.dataset.txCount) {
         this.txCount = this.testData.dataset.txCount
         setTimeout(() => this.events.emit('complete'), 0)
       }
       this.chainHeight += this.testData.shards
-      this.timeSpent += 12
+      this.timeSpent += SLOT_TIME
       const shards = this.testData.shards
       const performance = this.getPerformance(tps)
       const resource = this.getResource()
@@ -63,17 +68,17 @@ class Executor {
       setTimeout(() => {
         let max = 0
         for (let i = 0; i < this.visibleShards.length; i++) {
-          const base = tps * 12 / shards
+          const base = tps * SLOT_TIME / shards
           const currentBlockTxn = randomBetween(base * 0.95, base * 1.05)
           max = Math.max(max, this.generateBlock(i, currentBlockTxn))
         }
         const txn = randomBetween(100, 200)
         const slot = this.slot
         setTimeout(() => this.events.emit('generateTbBlock', { number: slot, slot, state: 'collect', timestamp: Date.now() }), 0)
-        setTimeout(() => this.events.emit('updateTbBlockState', { number: slot, slot, txn, tbs: shards, state: 'finalized', timestamp: Date.now() }), max + 500)
+        setTimeout(() => this.events.emit('updateTbBlockState', { number: slot, slot, txn, tbs: shards, state: 'finalized', timestamp: Date.now() }), max + SLOT_TIME * 40)
       }, 0)
       this.slot++
-    }, 12000)
+    }, SLOT_TIME * 1000)
   }
 
   getPerformance(tps) {
@@ -94,9 +99,12 @@ class Executor {
   generateBlock(i, txn) {
     const shard = this.visibleShards[i]
     const slot = this.slot
-    const collectCost = randomBetween(4500, 5400)
-    const attestCost = randomBetween(2500, 3400)
-    const finalizedCost = randomBetween(1500, 2400)
+    const collectBase = SLOT_TIME * COLLECT_PERCENT * 1000
+    const assestBase = SLOT_TIME * ASSEST_PERCENT * 1000
+    const finalizeBase = SLOT_TIME * FINALIZE_PERCENT * 1000
+    const collectCost = randomBetween(collectBase * 0.9, collectBase * 1.1)
+    const attestCost = randomBetween(assestBase * 0.9, assestBase * 1.1)
+    const finalizedCost = randomBetween(finalizeBase * 0.9, finalizeBase * 1.1)
     const miner = getAddressKeyString()
     const hash = getPublicKeyString()
     setTimeout(() => this.events.emit('generateBlock', { number: slot, slot, shard, state: 'collect', timestamp: Date.now() }), 0)
