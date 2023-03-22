@@ -33,9 +33,21 @@ const formatDayTimeWithUnit = (dayTime) => {
   return '3 years 2 months 1 day'
 }
 
-const randomBetween = (min, max, precision) => {
-  var p = Math.pow(10, precision);
-  return Math.round((min + Math.random() * (max - min)) * p) / p;
+const randomBetween = (min, max, precision = 0) => {
+  const p = Math.pow(10, precision)
+  return Math.round((min + Math.random() * (max - min)) * p) / p
+}
+
+const getRandomHex = (size) => {
+  return [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('')
+}
+
+const getPublicKeyString = () => {
+  return '0x' + getRandomHex(128)
+}
+
+const getAddressKeyString = () => {
+  return '0x' + getRandomHex(32)
 }
 
 export {
@@ -44,5 +56,7 @@ export {
   formatTime,
   formatTimeRange,
   formatDayTimeWithUnit,
-  randomBetween
+  randomBetween,
+  getPublicKeyString,
+  getAddressKeyString
 }
