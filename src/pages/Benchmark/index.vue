@@ -4,15 +4,16 @@
   RoadLine
   .footer-shadow
   .fireworks-container(ref="fireworksContainer")
-  InstrumentPanel
   RoadMap.road-map-container
-  ConfigPop(@playback="handlePlayback", @execute="handleExecute")
-  FinishModal(@playback="handlePlayback")
   BenchmarkHeader.benchmark-header(category="cockpit", @change-category="gotoChain")
   Countdown(v-if="controller.state === 'preparing'")
   .cockpit-play-controller(v-if="controller.state === 'pausing' || controller.state === 'running'" @click="pauseOrRun")
     i.iconfont.icon-play(v-if="controller.state === 'pausing'")
     i.iconfont.icon-stop(v-if="controller.state === 'running'")
+  InstrumentPanel
+  FinishModal(@playback="handlePlayback")
+  ConfigPop(@playback="handlePlayback", @execute="handleExecute")
+
 </template>
 
 <script>
@@ -150,7 +151,7 @@ export default defineComponent({
     right: 0;
     bottom: 0;
   }
-  
+
   .cockpit-play-controller {
     position: fixed;
     bottom: 0;
