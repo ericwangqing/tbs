@@ -82,23 +82,6 @@ export class RoadLine {
     this.onSpeedUp = this.onSpeedUp.bind(this)
     this.onSlowDown = this.onSlowDown.bind(this)
   }
-  // initCameraAnimation() {
-  //   // this.camera.position.z = -5
-  //   // this.camera.position.y = 8
-  //   // this.camera.position.x = 0
-  //   this.camera.lookAt(new THREE.Vector3(1.3247481664087957, 8.505851934257876, -10))
-  //   let count = 0
-  //   let interval = null
-  //   interval = setInterval(() => {
-  //     if (count >= 20) clearInterval(interval)
-  //     else {
-  //       console.log(this.camera.position.y)
-  //       this.camera.position.y -= 1
-  //       this.camera.lookAt(new THREE.Vector3(1.3247481664087957, this.camera.position.y + 0.505851934257876, -10))
-  //       count++
-  //     }
-  //   }, 16)
-  // }
   resetCameraAndRoadPos() {
     this.camera.position.z = -5
     this.camera.position.y = 8

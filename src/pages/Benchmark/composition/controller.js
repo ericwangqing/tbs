@@ -131,6 +131,7 @@ class Controller {
   stop() {
     this.state = 'stopped'
     if (this.mode === 'execute') this.executor.stop()
+    else this.executor.stop() // TODO now, plaayback need executor, delete in future.
     this.mode = ''
     this.disposeEvents()
   }
@@ -138,12 +139,14 @@ class Controller {
   pause() {
     this.state = 'pausing'
     if (this.mode === 'execute') this.executor.pause()
+    else this.executor.pause() // TODO now, plaayback need executor, delete in future.
   }
 
   resume() {
     if (this.state !== 'pausing') throw new Error(`State error: need pausing, current: ${this.state}, cannot resume!`)
     this.state = 'running'
     if (this.mode === 'execute') this.executor.resume()
+    else this.executor.resume() // TODO now, plaayback need executor, delete in future.
   }
 
   updateNetworkInfo({ tps, txCount, chainHeight, shards, nodes, timeSpent, performance, resource }) {

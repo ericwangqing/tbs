@@ -161,7 +161,7 @@ export default defineComponent({
   &.startAnimate {
     animation: roadlineStartAnimation 1 1s forwards, roadlineStartOpacity 1 0.5s forwards;
   }
-  &.running, &.completed {
+  &.running, &.pausing, &.completed {
     top: 0;
     opacity: 1;
     transform: scale(1);
@@ -191,7 +191,7 @@ export default defineComponent({
   animation: roadlineStartAnimationCvs 1 2s forwards;
 }
 
-.road-line-container.running canvas {
+.road-line-container.running canvas, .road-line-container.pausing canvas {
   transform: scale(1);
 }
 </style>
