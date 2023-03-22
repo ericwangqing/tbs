@@ -21,12 +21,18 @@
   .config-popup--footer
     ASpace(:size="140")
       ASpace(:size="50")
-        ABadge.config-btn--badged(count="?" :title="'Replays the records generated when the configuration was last executed'" :offset="[3, -12]")
-          AButton.playback-btn(@click="handlePlayback") Playback
-          .btn-wrapper.playback-btn-wrapper
         ABadge.config-btn--badged(count="?" :title="'Re execute'" :offset="[3, -12]")
-          AButton.execute-btn(@click="handleExecute") Execute
+          AButton.execute-btn(@click="handleExecute")
+            i.iconfont.icon-Execute
+            span Execute
+          .btn-wrapper.execute-btn-wrapper
+        ABadge.config-btn--badged(count="?" :title="'Replays the records generated when this test configuration was last executed'" :offset="[3, -12]")
+          AButton.playback-btn(@click="handlePlayback")
+            i.iconfont.icon-zhongzhi
+            span Playback
           .btn-wrapper
+          ATooltip(v-if="!selectedTest.result" title="This test configuration has not yet executed, cannot playback!")
+            .btn-disabled-wrapper
       ASpace(:size="40")
         AButton.download-btn(type="text" @click="handleDownload")
           i.iconfont.icon-download
@@ -111,6 +117,10 @@ export default defineComponent({
       visible.value = true
     }
 
+    const selectedTest = computed(() => {
+      return controller.testList.find((test) => test.id === selectedConfigId.value)
+    })
+
     return {
       cardList,
       controller,
@@ -118,6 +128,7 @@ export default defineComponent({
       selectedConfigId,
       BackSvg,
       visible,
+      selectedTest,
       handleCreate,
       handlePlayback,
       handleExecute,
@@ -323,7 +334,7 @@ export default defineComponent({
         @include btnSize;
         background: #fff;
         transition: all 0.3s ease-in-out;
-        &.playback-btn-wrapper {
+        &.execute-btn-wrapper {
           background: linear-gradient(90deg,#ffcb00 3%, #f08b00 96%);
         }
       }
@@ -334,6 +345,9 @@ export default defineComponent({
         font-style: italic;
         background: transparent;
         border: none;
+        i {
+          margin-right: 6px;
+        }
         &:hover, &:active {
           & + .btn-wrapper {
             height: 48px;
@@ -350,6 +364,16 @@ export default defineComponent({
         &::after {
           display: none;
         }
+      }
+      .btn-disabled-wrapper {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        background: rgba(255, 255, 255, 0.3);
+        @include btnSize;
+        cursor: not-allowed;
       }
     }
     .ant-btn-text {

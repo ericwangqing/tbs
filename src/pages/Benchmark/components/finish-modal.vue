@@ -1,5 +1,5 @@
 <template lang="pug">
-.finish-modal--global-mask
+.finish-modal--global-mask(v-if="controller.state === 'completed'")
 .finish-modal(v-if="controller.state === 'completed'")
   .finish-modal--border
   .finish-modal--bg
@@ -20,6 +20,7 @@ import { controller } from '../composition/controller.js'
 
 export default defineComponent({
   name: 'FinishModal',
+  emits: ['playback'],
   setup: (props, { emit }) => {
     const handleDownload = () => {
       // TODO
