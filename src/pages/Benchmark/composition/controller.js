@@ -219,16 +219,17 @@ class Controller {
     this.clearDataOutOfRange(this.resourceData.bandwidth)
   }
 
-  setVisibleShards({ page, count, key }) {
+  setVisibleShards({ page, perpage, key }) {
     if (key) this.visibleShards = [key]
     else {
       this.visibleShards = []
-      for (let i = (page - 1) * count; i < page * count; i++) {
+      for (let i = (page - 1) * perpage; i < page * perpage; i++) {
         this.visibleShards.push(i)
       }
     }
     this.visibleLatestShardBlocks = []
     this.visibleShards.map(s => this.visibleLatestShardBlocks.push([]))
+    // TODO return the existed visibleLatestShardBlocks and visibleLatestTbBlocks
   }
 
   handleCompleted() {

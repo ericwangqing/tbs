@@ -93,15 +93,11 @@ export default defineComponent({
 
     const handlePlayback = (id) => {
       if (id) currentTestId.value = id
-      controller.stop()
-      controller.start('Playback', id || currentTestId.value)
+      else controller.start('Playback', currentTestId.value)
     }
 
     const handleExecute = (id) => {
       if (id) currentTestId.value = id
-      // TODO This operation need to confirm second time.
-      controller.stop()
-      controller.start('Executing', id || currentTestId.value)
     }
 
     const pauseOrRun = () => {
