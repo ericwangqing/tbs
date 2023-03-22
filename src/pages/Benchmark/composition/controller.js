@@ -82,6 +82,26 @@ class Controller {
     this.disposeEvents()
   }
 
+  resetBasicNetworkInfo() {
+    this.tps = 0
+    this.txCount = 0
+    this.chainHeight = 0
+    if (this.visibleShards.length === 0) {
+      this.visibleShards = [0, 1, 2, 3, 4]
+      this.visibleLatestShardBlocks = [[], [], [], [], []]
+    }
+    this.visibleLatestShardBlocks.map((shardBlocks) => {
+      shardBlocks = []
+    })
+    this.visibleLatestTbBlocks = []
+    this.timeSpent = 0
+    this.performanceData.inAll = []
+    this.performanceData.outAll = []
+    this.resourceData.cpu = []
+    this.resourceData.memory = []
+    this.resourceData.bandwidth = []
+  }
+
   start(mode, testId) {
     if (mode !== 'Executing' && mode !== 'Playback') throw new Error(`mode error: must be \`Executing\` or \`Playback\`, current: ${mode}!`)
     if (this.state !== 'stopped') throw new Error(`State error: need stopped, current: ${this.state}, cannot start!`)
@@ -89,11 +109,10 @@ class Controller {
     if (!testData) throw new Error(`Could find test with id ${testId}!`)
     if (mode === 'Playback' && !testData.result) throw new Error(`${testData.name} hasn't yet executed, cannot playback!`)
     this.testData = testData
-    if (this.visibleShards.length === 0) {
-      this.visibleShards = [0, 1, 2, 3, 4]
-      this.visibleLatestShardBlocks = [[], [], [], [], []]
-    }
+    this.resetBasicNetworkInfo()
     this.mode = mode
+    this.shards = testData.shards
+    this.nodes = testData.nodes
     this.state = 'preparing'
     if (this.interval) clearInterval(this.interval)
     setTimeout(() => {
@@ -134,7 +153,6 @@ class Controller {
     this.shards = shards
     this.nodes = nodes
     this.timeSpent = timeSpent
-    console.log(this.tps, this.txCount)
     const now = Date.now()
     this.performanceData.outAll.push({ name: now.toString(), value: [new Date(now), performance.out] })
     this.performanceData.inAll.push({ name: now.toString(), value: [new Date(now), performance.in] })
@@ -216,7 +234,7 @@ class Controller {
   }
 
   setSpeed(isFast) {
-    const tpsBase = isFast ? randomBetween(100000, 110000) : randomBetween(90, 110)
+    const tpsBase = isFast ? randomBetween(106000, 116000) : randomBetween(90, 110)
     this.executor.setSpeed(tpsBase)
   }
 

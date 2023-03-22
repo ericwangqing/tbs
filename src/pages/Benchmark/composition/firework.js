@@ -52,8 +52,14 @@ export class Fireworks {
 
   stop() {
     this.running = false
-    this.fireworks.map((firework) => firework.reset())
-    this.fireworks = []
+    for (let i = this.fireworks.length - 1; i >= 0; i--) {
+      const firework = this.fireworks[i]
+      firework.material.opacity = 0
+      firework.material.needsUpdate = true
+      firework.reset()
+      this.fireworks.splice(i, 1)
+    }
+    this.renderer.render(this.scene, this.camera)
   }
 
   dispose() {

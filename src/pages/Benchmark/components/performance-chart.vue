@@ -80,7 +80,7 @@ export default defineComponent({
     }
 
     const setPerformanceData = () => {
-      if (controller.performanceData.inAll && controller.performanceData.inAll.length) {
+      if (controller.performanceData.inAll) {
         chart && chart.setOption({
           series: [
             { type: 'line', data: controller.performanceData.inAll },
