@@ -89,7 +89,7 @@ export default defineComponent({
   &.startAnimate {
     animation: starfieldStartAnimation 1 1s 5.2s forwards, starfieldStartOpacity 1 0.5s 5.2s forwards;
   }
-  &.running {
+  &.running, &.pausing {
     top: 0;
     opacity: 1;
     transform: scale(1);
@@ -120,7 +120,7 @@ export default defineComponent({
   animation: starfieldStartAnimationCvs 1 2s 5.2s forwards;
 }
 
-.star-field-container.running canvas {
+.star-field-container.running canvas, .star-field-container.pausing canvas {
   transform: scale(1);
 }
 </style>
