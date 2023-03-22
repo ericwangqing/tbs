@@ -1,13 +1,17 @@
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
+dayjs.extend(duration)
+
 const thousands = (num) => {
-  return num.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,')
+  return num.toString().split('.')[0].replace(/(\d)(?=(?:\d{3})+$)/g, '$1,')
 }
 
 const formatNumWithUnit = (num) => {
   if (num < 10000) return `${num}`
-  else if (num < 100000000) return `${Math.floor(num / 1000)}K`
-  else if (num < 100000000000) return `${Math.floor(num / 1000000)}M`
-  else if (num < 100000000000000) return `${Math.floor(num / 1000000000)}G`
-  else if (num < 100000000000000000) return `${Math.floor(num / 1000000000000)}T`
+  else if (num < 10000000) return `${Math.floor(num / 100) / 10}K`
+  else if (num < 10000000000) return `${Math.floor(num / 100000) / 10}M`
+  else if (num < 10000000000000) return `${Math.floor(num / 100000000) / 10}G`
+  else if (num < 10000000000000000) return `${Math.floor(num / 100000000000) / 10}T`
 }
 
 const formatTime = (num) => {
@@ -25,12 +29,27 @@ const formatTimeRange = (range) => {
 }
 
 const formatDayTime = (timestamp) => {
-  return 'Jan/01/2022'
+  return dayjs(timestamp).format('MM/DD/YYYY')
 }
 
 // keep three units, e.g.: 3 years 2 months 1 day, 2 days 3 hours 52 minutes.
 const formatDayTimeWithUnit = (dayTime) => {
-  return '3 years 2 months 1 day'
+  const duration = dayjs.duration(dayTime, 's')
+  const timeUnits = ['years', 'months', 'days', 'hours', 'minutes', 'seconds']
+  let res = ''
+  let t = 0
+  for (let i = 0; i < timeUnits.length; i++) {
+    const val = duration[`${timeUnits[i]}`]()
+    if (val) {
+      res += val + timeUnits[i]
+      t++
+    }
+    if (val === 1) res.substring(0, res.length - 1)
+    res += ' '
+    if (t === 3) break
+  }
+  res.substring(0, res.length - 1)
+  return res
 }
 
 const randomBetween = (min, max, precision = 0) => {

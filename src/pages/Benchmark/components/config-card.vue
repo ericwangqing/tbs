@@ -1,5 +1,5 @@
 <template lang="pug">
-.config-card(:key="data.id" :class="{ running: data.isRunning, selected: data && data.id === selectedId }" @click="handleClick")
+.config-card(:key="data.id" :class="{ running: isRunning, selected: data && data.id === selectedId }" @click="handleClick")
   .config-card--border
   .config-card--bg
   .config-card--mask
@@ -13,35 +13,40 @@
         AFormItem(label="Dataset range")
           div {{ formatTimeRange(data.dataset.timeRange) }}
         AFormItem(label="Tx count")
-          span(v-if="data.isRunning") {{ formatNumWithUnit(data.txn) }}
-          span(v-if="data.isRunning")  / 
+          template(v-if="isRunning")
+            span {{ formatNumWithUnit(controller.txCount) }}
+            span  / 
           span {{ formatNumWithUnit(data.dataset.txCount) }}
         AFormItem(label="Time used")
-          div(v-if="data.isRunning")
-            span {{ formatTime(data.timeCost) }}
-            span   / 
-            span {{ formatTime(data.dataset.estimated) }}
-          span(v-else) {{ formatDayTimeWithUnit(data.timeCost) }}
+          span(v-if="isExecuting") {{ formattedTimeCost }}
+          div(v-else-if="isPlayback")
+            span {{ formattedTimeCost }}
+            span  / 
+            span {{ formatTime(data.result.timeUsed) }}
+          span(v-else-if="data.result") {{ formatDayTimeWithUnit(data.result.timeUsed) }}
+          
         AFormItem(label="TPS")
-          div {{ thousands(data.tps) }}
+          div(v-if="isRunning") {{ thousands(controller.tps) }}
+          div(v-else-if="data.result") {{ thousands(data.dataset.txCount / data.result.timeUsed) }}
       AForm
         AFormItem(label="Shards/Nodes")
-          span {{ data.shardCount }}
+          span {{ data.shards }}
           span  / 
-          span {{ data.nodeCount }}
+          span {{ data.nodes }}
         AFormItem(label="CPU")
-          span {{ Math.floor(data.cpuUsed * 100) }}%
+          span {{ cpuData }}
         AFormItem(label="Memory")
-          span {{ data.memoryUsed }}MB
+          span {{ memoryData }}
         AFormItem(label="Bandwidth")
-          span {{ data.bandwidthUsed }}KB
+          span {{ bandwidthData }}
     .delete-btn(@click="handleDelete")
       i.iconfont.icon-shanchu
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { formatDayTimeWithUnit, formatTimeRange, formatTime, formatNumWithUnit, thousands } from '../composition/util'
+import { controller } from '../composition/controller.js'
 
 export default defineComponent({
   name: 'ConfigCard',
@@ -62,7 +67,74 @@ export default defineComponent({
     const handleDelete = () => {
       emit('delete')
     }
+
+    const isRunning = computed(() => {
+      if (!controller.testData) return false
+      return props.data.id === controller.testData.id
+    })
+
+    const isPlayback = computed(() => {
+      return isRunning.value && controller.mode === 'Playback'
+    })
+
+    const isExecuting = computed(() => {
+      return isRunning.value && controller.mode === 'Executing'
+    })
+
+    const cpuData = computed(() => {
+      if (!isRunning.value) return props.data.result ? props.data.result.cpu + '%' : ''
+      const cpu = controller.resourceData.cpu.length ? Math.floor(controller.resourceData.cpu[controller.resourceData.cpu.length - 1].value[1]) : '-'
+      return cpu + '%'
+    })
+
+    const memoryData = computed(() => {
+      if (!isRunning.value) return props.data.result ? formatNumWithUnit(props.data.result.memory) + 'B' : ''
+      // TODO in POC cockpit, memory is a percent data. Here is byte. How to transfer?
+      const memory = controller.resourceData.memory[controller.resourceData.memory.length - 1]
+      return '256MB'
+    })
+
+    const bandwidthData = computed(() => {
+      if (!isRunning.value) return props.data.result ? formatNumWithUnit(props.data.result.bandwidth) + 'B' : ''
+      // TODO in POC cockpit, bandwidth is a percent data. Here is byte. How to transfer?
+      const bandwidth = controller.resourceData.bandwidth[controller.resourceData.bandwidth.length - 1]
+      return '450KB'
+    })
+
+    const now = ref(0)
+    let interval = null
+    const addTime = () => {
+      interval = setInterval(() => {
+        now.value += 1
+      }, 1000)
+    }
+    watch(() => controller.state, (val) => {
+      if (val === 'running') addTime()
+      else clearInterval(interval)
+      if (val === 'stopped') now.value = 0
+    })
+
+    watch(() => controller.timeSpent, (val) => {
+      if (val) {
+        now.value = val
+        clearInterval(interval)
+        addTime()
+      }
+    })
+
+    const formattedTimeCost = computed(() => {
+      return formatTime(now.value)
+    })
+
     return {
+      isRunning,
+      isPlayback,
+      isExecuting,
+      cpuData,
+      memoryData,
+      bandwidthData,
+      controller,
+      formattedTimeCost,
       formatNumWithUnit,
       thousands,
       formatTime,

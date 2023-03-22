@@ -98,26 +98,26 @@ export default defineComponent({
       return formatNumWithUnit(controller.testData.dataset.txCount)
     })
 
+
     const now = ref(0)
     let interval = null
+    const addTime = () => {
+      interval = setInterval(() => {
+        now.value += 1
+      }, 1000)
+    }
+
     watch(() => controller.state, (val) => {
-      if (val === 'running') {
-        interval = setInterval(() => {
-          now.value += 1
-        }, 1000)
-      } else {
-        console.log('!!!')
-        clearInterval(interval)
-      }
+      if (val === 'running') addTime()
+      else clearInterval(interval)
+      if (val === 'stopped') now.value = 0
     })
 
     watch(() => controller.timeSpent, (val) => {
       if (val) {
         now.value = val
         clearInterval(interval)
-        interval = setInterval(() => {
-          now.value += 1
-        }, 1000)
+        addTime()
       }
     })
 
