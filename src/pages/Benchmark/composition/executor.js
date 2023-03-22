@@ -1,6 +1,6 @@
 import EventEmitter2 from 'eventemitter2'
 import { randomBetween } from './util.js'
-import { getPublicKeyString, getAddressKeyString } from './util.js'
+import { getAddressKeyString, getPublicKeyString } from './util.js'
 
 class Executor {
   tpsBase = 0 // tps waved based on tpsBase, doesn't need in real situation.
@@ -8,7 +8,6 @@ class Executor {
   visibleShards = null
 
   interval = null
-  blockInterval = null
   running = false
   txCount = 0
   chainHeight = 0
@@ -38,7 +37,7 @@ class Executor {
   }
 
   updateNetworkInfoInterval() {
-    this.infoInterval = setInterval(() => {
+    this.interval = setInterval(() => {
       if (!this.running) return
       const tps = randomBetween(this.tpsBase * 0.95, this.tpsBase * 1.05)
       this.txCount += tps * 12
@@ -118,9 +117,7 @@ class Executor {
 
   stop() {
     if (this.interval) clearInterval(this.interval)
-    // if (this.blockInterval) clearInterval(this.blockInterval)
     this.interval = null
-    // this.blockInterval = null
   }
 }
 

@@ -100,7 +100,7 @@ export default defineComponent({
     }
 
     const setResourceData = () => {
-      if (controller.resourceData.cpu && controller.resourceData.cpu.length) {
+      if (controller.resourceData.cpu) {
         chart && chart.setOption({
           series: [
             { data: controller.resourceData.cpu },
@@ -108,9 +108,13 @@ export default defineComponent({
             { data: controller.resourceData.bandwidth },
           ],
         })
-        currentCpu.value = controller.resourceData.cpu[controller.resourceData.cpu.length - 1].value[1]
-        currentMemory.value = controller.resourceData.memory[controller.resourceData.memory.length - 1].value[1]
-        currentBandwidth.value = controller.resourceData.bandwidth[controller.resourceData.bandwidth.length - 1].value[1]
+        if (!controller.resourceData.cpu.length) {
+          currentCpu.value = currentMemory.value = currentBandwidth.value = 0
+        } else {
+          currentCpu.value = controller.resourceData.cpu[controller.resourceData.cpu.length - 1].value[1]
+          currentMemory.value = controller.resourceData.memory[controller.resourceData.memory.length - 1].value[1]
+          currentBandwidth.value = controller.resourceData.bandwidth[controller.resourceData.bandwidth.length - 1].value[1]
+        }
       }
     }
 

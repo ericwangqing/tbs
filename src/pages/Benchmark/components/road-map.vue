@@ -98,8 +98,31 @@ export default defineComponent({
       return formatNumWithUnit(controller.testData.dataset.txCount)
     })
 
+    const now = ref(0)
+    let interval = null
+    watch(() => controller.state, (val) => {
+      if (val === 'running') {
+        interval = setInterval(() => {
+          now.value += 1
+        }, 1000)
+      } else {
+        console.log('!!!')
+        clearInterval(interval)
+      }
+    })
+
+    watch(() => controller.timeSpent, (val) => {
+      if (val) {
+        now.value = val
+        clearInterval(interval)
+        interval = setInterval(() => {
+          now.value += 1
+        }, 1000)
+      }
+    })
+
     const formattedTimeCost = computed(() => {
-      return formatTime(controller.timeSpent)
+      return formatTime(now.value)
     })
 
     const triggerColor = computed(() => {

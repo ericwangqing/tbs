@@ -44,6 +44,7 @@ export default defineComponent({
     const fireworksContainer = ref(null)
     let fireworks
     const router = useRouter()
+    const currentTestId = ref('')
 
     const bindKeyEvent = ({key}) => {
       if (key === 'ArrowUp') controller?.setSpeed(true)
@@ -89,11 +90,16 @@ export default defineComponent({
     }
 
     const handlePlayback = (id) => {
-      controller.start('Playback', id)
+      if (id) currentTestId.value = id
+      controller.stop()
+      controller.start('Playback', id || currentTestId.value)
     }
 
     const handleExecute = (id) => {
-      controller.start('Executing', id)
+      if (id) currentTestId.value = id
+      // TODO This operation need to confirm second time.
+      controller.stop()
+      controller.start('Executing', id || currentTestId.value)
     }
 
     return {
