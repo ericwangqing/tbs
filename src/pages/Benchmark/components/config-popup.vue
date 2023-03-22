@@ -41,7 +41,7 @@
       span Back
       img(:src="BackSvg")
 
-.config-btn(@click="openConfig", :class="{ breathe: controller.state === 'stopped' }")
+.config-btn(@click="openConfig", :class="{ breathe: controller.state === 'stopped' || controller.state === 'completed' }")
   .config-btn__text Config
   CaretRightOutlined.config-btn__icon
 </template>
@@ -401,6 +401,7 @@ export default defineComponent({
   background: linear-gradient(90deg,rgba(0, 0, 0, 0.80) 46%,  rgba(0, 0, 0, 0.00));
   display: flex;
   align-items: center;
+  z-index: 80;
   &.breathe {
     box-shadow: 0px 0px 20px 0px rgba(179, 195, 255, 0.50);
     .config-btn__text {

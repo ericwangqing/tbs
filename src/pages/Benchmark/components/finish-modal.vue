@@ -1,4 +1,5 @@
 <template lang="pug">
+.finish-modal--global-mask
 .finish-modal(v-if="controller.state === 'completed'")
   .finish-modal--border
   .finish-modal--bg
@@ -11,7 +12,6 @@
     AButton.download-btn(type="text" @click="handlePlayback")
       i.iconfont.icon-zhongzhi
       span Playback
-
 </template>
 
 <script>
@@ -39,6 +39,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '@/theme/mixin.scss';
 .finish-modal {
+  position: absolute;
   top: 280px;
   left: 0;
   right: 0;
@@ -48,7 +49,7 @@ export default defineComponent({
   white-space: nowrap;
   color: #fff;
   @include linearGradientRadiusBorder(min-content, min-content, 2, 8, #171925, linear-gradient(90deg, #FFCB00 3%, #F08B00 96%));
-  position: absolute;
+  z-index: 10;
   &--content {
     position: relative;
   }
@@ -74,5 +75,14 @@ export default defineComponent({
       }
     }
   }
+}
+.finish-modal--global-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 2;
 }
 </style>

@@ -90,7 +90,6 @@ export default defineComponent({
   right: 0;
   width: 1661px;
   height: 390px;
-  z-index: 5;
   display: flex;
   justify-content: center;
   .instrument-panel-bg {
