@@ -1,5 +1,5 @@
 <template lang="pug">
-.finish-modal(v-if="controller.completed && !toPlayback")
+.finish-modal(v-if="controller.state === 'completed'")
   .finish-modal--border
   .finish-modal--bg
   .finish-modal--content
@@ -21,20 +21,14 @@ import { controller } from '../composition/controller.js'
 export default defineComponent({
   name: 'FinishModal',
   setup: (props, { emit }) => {
-    const toPlayback = ref(false)
     const handleDownload = () => {
       // TODO
     }
     const handlePlayback = () => {
-      toPlayback.value = true
       emit('playback')
-      setTimeout(() => {
-        toPlayback.value = false
-      }, 5500) // start count down, before actually start and hide the modal.
     }
     return {
       controller,
-      toPlayback,
       handleDownload,
       handlePlayback
     }

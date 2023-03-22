@@ -1,9 +1,9 @@
 <template lang="pug">
-.star-field-container(ref="starFieldCvs" :class="{ started: started, alreadyStart: alreadyStart, completed: controller.completed }")
+.star-field-container(ref="starFieldCvs" :class="starFieldStateCls")
 </template>
 
 <script>
-import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { StarField } from '../composition/star-field.js'
 import { controller } from '../composition/controller.js'
 
@@ -12,56 +12,47 @@ export default defineComponent({
   setup: () => {
     const starFieldCvs = ref(null)
     const starField = new StarField()
-    const started = ref(false)
-    const alreadyStart = ref(false)
+    const needAnimate = ref(false)
 
     onMounted(() => {
       starField.init(starFieldCvs.value)
       starField.render()
-      if (controller.started) alreadyStart.value = true
-      if (controller.running) starField.start()
-      if (controller.isFast) starField.speedUp()
-        if (controller.completed) starField.stop()
+      if (controller.state === 'preparing' || controller.state === 'running') starField.start()
+      else starField.stop()
+      if (controller.tps >= 100000) starField.speedUp()
     })
 
     watch(
-      () => controller.isFast,
+      () => controller.tps,
       (val) => {
-        if (val) starField.speedUp()
+        if (val >= 100000) starField.speedUp()
         else starField.speedDown()
       }
     )
     
-    watch(() => controller.started, (val) => {
-      if (val) {
-        started.value = true
-        setTimeout(() => {
-          starField.start()
-        }, 2200)
+    watch(() => controller.state, (val, oldVal) => {
+      if (val === 'preparing') {}
+      else if (val === 'running') {
+        starField.start()
+        if (oldVal === 'preparing') needAnimate.value = true
+      } else {
+        starField.stop()
+        needAnimate.value = false
       }
     })
-
-    watch(
-      () => controller.running,
-      (val) => {
-        if (!val) starField.stop()
-        else if (!controller.runningByStart && controller.started) starField.start()
-      }
-    )
 
     onBeforeUnmount(() => {
       if (starField) starField.dispose()
     })
 
-    watch(() => controller.completed, (val) => {
-      if (val) started.value = alreadyStart.value = false
+    const starFieldStateCls = computed(() => {
+      return [controller.state, needAnimate.value ? 'startAnimate' : '']
     })
 
     return {
       starFieldCvs,
-      alreadyStart,
       controller,
-      started
+      starFieldStateCls
     }
   },
 })
@@ -95,10 +86,10 @@ export default defineComponent({
   transform-origin: 50% 0;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
-  &.started {
-    animation: starfieldStartAnimation 1 1s forwards, starfieldStartOpacity 1 0.5s forwards;
+  &.startAnimate {
+    animation: starfieldStartAnimation 1 1s 5.2s forwards, starfieldStartOpacity 1 0.5s 5.2s forwards;
   }
-  &.alreadyStart {
+  &.running {
     top: 0;
     opacity: 1;
     transform: scale(1);
@@ -125,11 +116,11 @@ export default defineComponent({
   transform: scale(1, 1.68);
 }
 
-.star-field-container.started canvas {
-  animation: starfieldStartAnimationCvs 1 2s forwards;
+.star-field-container.startAnimate canvas {
+  animation: starfieldStartAnimationCvs 1 2s 5.2s forwards;
 }
 
-.star-field-container.alreadyStart canvas {
+.star-field-container.running canvas {
   transform: scale(1);
 }
 </style>

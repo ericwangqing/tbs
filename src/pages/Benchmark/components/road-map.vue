@@ -1,8 +1,8 @@
 <template lang="pug">
 .road-map-container
   .test-plan-state
-    span(v-if="controller.mode === 'Playback'") {{ controller.playbackSpeed }}X 
-    span {{ controller.mode }}
+    span(v-if="controller.mode === 'Playback' && controller.state === 'running'") {{ controller.playbackSpeed }}X 
+    span(v-if="controller.state === 'running'") {{ controller.mode }}
   svg(width="218px" height="209px" viewBox="-10 -10 218 209" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="filter: drop-shadow(0px 0px 4px 0px rgba(0, 0, 0, 0.3));")
     defs
     linearGradient(x1="0" y1="0" x2="0" y2="1" id="gradient1")
@@ -26,7 +26,7 @@
     .test-plan-elapsed-time
       span.test-plan-elapsed-time__text {{ formattedTimeCost }}
       i.iconfont.icon-jishi.test-plan-elapsed-time__icon
-    .test-plan-estimated-time Estimated Time: {{ formattedTimeEstimated }}
+    .test-plan-estimated-time(v-if="controller.mode === 'Playback'") Estimated Time: {{ formattedTimeEstimated }}
 </template>
 
 <script>
@@ -95,11 +95,11 @@ export default defineComponent({
 
     const formattedTotalTxn = computed(() => {
       if (!controller.testData) return '0'
-      return formatNumWithUnit(controller.testData.txn)
+      return formatNumWithUnit(controller.testData.dataset.txCount)
     })
 
     const formattedTimeCost = computed(() => {
-      return formatTime(controller.timeCost)
+      return formatTime(controller.timeSpent)
     })
 
     const triggerColor = computed(() => {
@@ -109,7 +109,7 @@ export default defineComponent({
 
     const formattedTimeEstimated = computed(() => {
       if (!controller.testData) return '00:00.00'
-      return formatTime(controller.testData.estimated)
+      return formatTime(controller.testData.result?.timeUsed)
     })
 
     return {

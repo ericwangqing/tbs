@@ -41,7 +41,7 @@
       span Back
       img(:src="BackSvg")
 
-.config-btn(@click="openConfig", :class="{ breathe: !controller.running }")
+.config-btn(@click="openConfig", :class="{ breathe: controller.state === 'stopped' }")
   .config-btn__text Config
   CaretRightOutlined.config-btn__icon
 </template>
@@ -69,7 +69,7 @@ export default defineComponent({
   emits: ['playback', 'execute'],
   setup: (props, { emit }) => {
     const cardList = ref(null)
-    const selectedConfigId = ref('')
+    const selectedConfigId = ref('1')
     const visible = ref(false)
     const configList = ref([
       {

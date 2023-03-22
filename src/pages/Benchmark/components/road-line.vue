@@ -1,9 +1,9 @@
 <template lang="pug">
-.road-line-container(ref="lineCvs" :class="{ started: started, alreadyStart: alreadyStart, completed: controller.completed }")
+.road-line-container(ref="lineCvs" :class="roadLineStateCls")
 </template>
 
 <script>
-import { defineComponent, ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { computed, defineComponent, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { mountainDistortion, LongRaceDistortion } from '../composition/distortions.js'
 import { RoadLine } from '../composition/road-line.js'
 import { controller } from '../composition/controller.js'
@@ -12,8 +12,7 @@ export default defineComponent({
   name: 'RoadLine',
   setup: () => {
     const lineCvs = ref(null)
-    const started = ref(false)
-    const alreadyStart = ref(false)
+    const needAnimate = ref(false)
     const options = {
       onSpeedUp: (ev) => {					
       },
@@ -82,10 +81,9 @@ export default defineComponent({
       lineComp = new RoadLine(lineCvs.value, options);
       lineComp.loadAssets().then(() => {
         lineComp.init()
-        if (controller.started) alreadyStart.value = true
-        if (controller.running) lineComp.start()
-        if (controller.completed) lineComp.stop()
-        if (controller.isFast) lineComp.onSpeedUp()
+        if (controller.state === 'preparing' || controller.state === 'running') lineComp.start()
+        else lineComp.stop()
+        if (controller.tps >= 100000) lineComp.onSpeedUp()
       })
     })
 
@@ -94,36 +92,32 @@ export default defineComponent({
     })
 
     watch(
-      () => controller.isFast,
+      () => controller.tps,
       (val) => {
-        if (val) lineComp.onSpeedUp()
+        if (val >= 100000) lineComp.onSpeedUp()
         else lineComp.onSlowDown()
       }
     )
+
+    const roadLineStateCls = computed(() => {
+      return [controller.state, needAnimate.value ? 'startAnimate' : '']
+    })
     
-    watch(() => controller.started, (val) => {
-      if (val) {
-        started.value = true
-        setTimeout(() => {
-          lineComp.start()
-        }, 0)
+    watch(() => controller.state, (val, oldVal) => {
+      if (val === 'preparing') {}
+      else if (val === 'running') {
+        lineComp.start()
+        if (oldVal === 'preparing') needAnimate.value = true
+      } else {
+        lineComp.stop()
+        needAnimate.value = false
       }
-    })
-
-    watch(() => controller.running, (val) => {
-      if (!val) lineComp.stop()
-      else if (!controller.runningByStart && controller.started) lineComp.start()
-    })
-
-    watch(() => controller.completed, (val) => {
-      if (val) started.value = alreadyStart.value = false
     })
 
     return {
       lineCvs,
-      alreadyStart,
       controller,
-      started
+      roadLineStateCls
     }
   }
 })
@@ -164,10 +158,10 @@ export default defineComponent({
   transform: scale(1.68);
   transform-origin: 50% 0;
   opacity: 1;
-  &.started {
+  &.startAnimate {
     animation: roadlineStartAnimation 1 1s forwards, roadlineStartOpacity 1 0.5s forwards;
   }
-  &.alreadyStart, &.completed {
+  &.running, &.completed {
     top: 0;
     opacity: 1;
     transform: scale(1);
@@ -193,11 +187,11 @@ export default defineComponent({
   transform: scale(1.68, 1);
 }
 
-.road-line-container.started canvas {
+.road-line-container.startAnimate canvas {
   animation: roadlineStartAnimationCvs 1 2s forwards;
 }
 
-.road-line-container.alreadyStart canvas {
+.road-line-container.running canvas {
   transform: scale(1);
 }
 </style>

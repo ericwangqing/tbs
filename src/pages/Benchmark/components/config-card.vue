@@ -111,6 +111,7 @@ $--config-card-hover-mask: rgba(#fff, 0.1);
     &:deep label {
       color: #fff;
       font-size: 24px;
+      font-weight: bold;
       width: 158px;
       margin-right: 12px;
       cursor: pointer;
@@ -158,6 +159,15 @@ $--config-card-hover-mask: rgba(#fff, 0.1);
     .config-card--bg {
       background: $--config-card-executing-bg;
       border: none;
+    }
+  }
+  &.running {
+    &:deep .ant-form-item, .config-card--dataset {
+      color: rgba(0, 0, 0, 0.5);
+    }
+    color: #000;
+    &:deep label {
+      color: #000;
     }
   }
   &:hover .config-card--mask {

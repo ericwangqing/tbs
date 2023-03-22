@@ -9,7 +9,7 @@
   ConfigPop(@playback="handlePlayback", @execute="handleExecute")
   FinishModal(@playback="handlePlayback")
   BenchmarkHeader.benchmark-header(category="cockpit", @change-category="gotoChain")
-  Countdown(v-if="toStart")
+  Countdown(v-if="controller.state === 'preparing'")
 </template>
 
 <script>
@@ -22,8 +22,10 @@ import ConfigPop from './components/config-popup.vue'
 import RoadMap from './components/road-map.vue'
 import Countdown from './components/count-down.vue'
 import FinishModal from './components/finish-modal.vue'
-import { controller } from './composition/controller.js'
+// import { controller } from './composition/controller.js'
 import { Fireworks } from './composition/firework'
+
+import { controller } from './composition/controller.js'
 
 export default defineComponent({
   name: 'Cockpit',
@@ -42,21 +44,19 @@ export default defineComponent({
     const fireworksContainer = ref(null)
     let fireworks
     const router = useRouter()
-    const toStart = ref(false)
 
     const bindKeyEvent = ({key}) => {
-      if (key === 'ArrowUp') controller.setSpeed(true)
-      if (key === 'ArrowDown') controller.setSpeed(false)
-      if (key === ' ') controller.startOrStop()
+      if (key === 'ArrowUp') controller?.setSpeed(true)
+      if (key === 'ArrowDown') controller?.setSpeed(false)
       if (/^\d$/.test(key)) {
         if (presetProgress) {
-          controller.setProgress(Number(presetProgress + key))
+          controller?.setProgress(Number(presetProgress + key))
           if(timeout) clearTimeout(timeout)
           presetProgress = ''
           timeout = null
         } else {
           timeout = setTimeout(() => {
-            controller.setProgress(Number(key))
+            controller?.setProgress(Number(key))
             presetProgress = ''
             timeout = null
           }, 500)
@@ -76,11 +76,11 @@ export default defineComponent({
 
     onMounted(() => {
       fireworks = new Fireworks(fireworksContainer.value)
-      if (controller.completed) fireworks.start()
+      if (controller.state === 'completed') fireworks.start()
     })
 
-    watch(() => controller.completed, (val) => {
-      if (val) fireworks.start()
+    watch(() => controller.state, (val) => {
+      if (val === 'completed') fireworks.start()
       else fireworks?.stop()
     })
 
@@ -89,22 +89,16 @@ export default defineComponent({
     }
 
     const handlePlayback = (id) => {
-      // TODO not execute, playback the results, and speedup playback.
-      handleExecute()
+      controller.start('Playback', id)
     }
 
     const handleExecute = (id) => {
-      toStart.value = true
-      setTimeout(() => {
-        toStart.value = false
-        controller.startOrStop()
-      }, 5200);
+      controller.start('Executing', id)
     }
 
     return {
       controller,
       fireworksContainer,
-      toStart,
       gotoChain,
       handlePlayback,
       handleExecute
