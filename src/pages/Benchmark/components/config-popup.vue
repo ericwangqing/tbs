@@ -89,11 +89,16 @@ export default defineComponent({
 
     const handlePlayback = () => {
       emit('playback', selectedConfigId.value)
+      controller.stop()
+      controller.start('Playback', selectedConfigId.value)
       handleBack()
     }
 
     const handleExecute = () => {
       emit('execute', selectedConfigId.value)
+      // TODO This operation need to confirm second time.
+      controller.stop()
+      controller.start('Executing', selectedConfigId.value)
       handleBack()
     }
 

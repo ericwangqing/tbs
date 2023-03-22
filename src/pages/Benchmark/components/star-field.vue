@@ -17,7 +17,7 @@ export default defineComponent({
     onMounted(() => {
       starField.init(starFieldCvs.value)
       starField.render()
-      if (controller.state === 'preparing' || controller.state === 'running') starField.start()
+      if (controller.state === 'running') starField.start()
       else starField.stop()
       if (controller.tps >= 100000) starField.speedUp()
     })
@@ -87,7 +87,7 @@ export default defineComponent({
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
   &.startAnimate {
-    animation: starfieldStartAnimation 1 1s 5.2s forwards, starfieldStartOpacity 1 0.5s 5.2s forwards;
+    animation: starfieldStartAnimation 1 1s forwards, starfieldStartOpacity 1 0.5s forwards;
   }
   &.running, &.pausing {
     top: 0;
@@ -117,7 +117,7 @@ export default defineComponent({
 }
 
 .star-field-container.startAnimate canvas {
-  animation: starfieldStartAnimationCvs 1 2s 5.2s forwards;
+  animation: starfieldStartAnimationCvs 1 2s forwards;
 }
 
 .star-field-container.running canvas, .star-field-container.pausing canvas {

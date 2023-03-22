@@ -81,7 +81,7 @@ export default defineComponent({
       lineComp = new RoadLine(lineCvs.value, options);
       lineComp.loadAssets().then(() => {
         lineComp.init()
-        if (controller.state === 'preparing' || controller.state === 'running') lineComp.start()
+        if (controller.state === 'running') lineComp.start()
         else lineComp.stop()
         if (controller.tps >= 100000) lineComp.onSpeedUp()
       })
