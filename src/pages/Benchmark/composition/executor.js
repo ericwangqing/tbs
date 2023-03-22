@@ -74,8 +74,8 @@ class Executor {
         }
         const txn = randomBetween(100, 200)
         const slot = this.slot
-        setTimeout(() => this.events.emit('generateTbBlock', { number: slot, slot, state: 'collect', timestamp: Date.now() }), 0)
-        setTimeout(() => this.events.emit('updateTbBlockState', { number: slot, slot, txn, tbs: shards, state: 'finalized', timestamp: Date.now() }), max + SLOT_TIME * 40)
+        setTimeout(() => this.events.emit('generateTbBlock', { $beacon: true, number: slot, slot, state: 'collect', timestamp: Date.now() }), 0)
+        setTimeout(() => this.events.emit('updateTbBlockState', { $beacon: true, number: slot, slot, txn, tbs: shards, state: 'finalized', timestamp: Date.now() }), max + SLOT_TIME * 40)
       }, 0)
       this.slot++
     }, SLOT_TIME * 1000)
