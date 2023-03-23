@@ -1,7 +1,7 @@
 import { BigNumber, utils } from 'ethers'
 export default function useTransaction() {
   function getGasUsed(transactionReceipt) {
-    return BigNumber.from(transactionReceipt.gasUsed).toString()
+    return utils.commify(BigNumber.from(transactionReceipt.gasUsed).toString())
   }
 
   function getFee(transactionReceipt, unit = 'ether') {
@@ -21,7 +21,7 @@ export default function useTransaction() {
   }
 
   function getGasLimit(transaction) {
-    return BigNumber.from(transaction.gas).toString()
+    return utils.commify(BigNumber.from(transaction.gas).toString())
   }
 
   function getGasPrice(transactionReceipt, unit = 'ether') {

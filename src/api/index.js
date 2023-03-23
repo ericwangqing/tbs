@@ -1,6 +1,7 @@
 import { init, pickChainUrl } from 'etherscan-api'
 import axios from 'axios'
 import { BigNumber } from 'ethers'
+import { blockList } from './mock'
 const ETHERSCAN_APIKEY = import.meta.env.VITE_ETHERSCAN_APIKEY
 class TBSApi {
   constructor(network = 'homestead') {
@@ -10,7 +11,7 @@ class TBSApi {
     //   baseURL: chain,
     //   timeout: 10000,
     // })
-    this.api = init(ETHERSCAN_APIKEY, network, 10000)
+    this.api = init(ETHERSCAN_APIKEY, network, 30000)
   }
 
   // 获取最新区块

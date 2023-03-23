@@ -1,10 +1,10 @@
 import { BigNumber, utils } from 'ethers'
 export default function useBlock() {
   function getGasUsed(block) {
-    return BigNumber.from(block.gasUsed).toString()
+    return utils.commify(BigNumber.from(block.gasUsed).toString())
   }
   function getGasLimit(block) {
-    return BigNumber.from(block.gasLimit).toString()
+    return utils.commify(BigNumber.from(block.gasLimit).toString())
   }
   function getGasUsePecent({ gasUsed, gasLimit }) {
     return (
@@ -38,6 +38,11 @@ export default function useBlock() {
   function getReward() {
     return BigNumber.from()
   }
+
+  function getBlocksize(block) {
+    return utils.commify(block.size)
+  }
+
   return {
     getGasUsed,
     getGasLimit,
@@ -45,6 +50,6 @@ export default function useBlock() {
     getBaseFeePerGas,
     getBaseFee,
     getBurntFees,
-    getReward
+    getBlocksize,
   }
 }

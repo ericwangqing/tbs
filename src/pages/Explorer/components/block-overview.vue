@@ -12,20 +12,17 @@ div(v-if="props.block")
         block-change(@changeBlockNumber="changeBlockNumber", :blockNumber="props.block.number")
       template(v-else-if="description.label === 'Status'") 待实现
       template(v-else-if="description.label === 'Transactions'")
-        RouterLink(:to="`/explorer-transaction-list?block=${props.block.number}`") {{ props.block.transactions.length }}
-          | transactions
+        RouterLink(:to="`/explorer/transaction-list?block=${props.block.number}`")
+          a-tag(color="rgba(255, 211, 0, 0.3)") {{ props.block.transactions.length + 'transactions' }}
         | in this block
       template(v-else-if="description.label === 'Fee Recipient'")
-        RouterLink(:to="`/explorer-address/${props.block.miner}`")
+        RouterLink(:to="`/explorer/address/${props.block.miner}`")
           | {{
           | props.block.miner
           | }}
-      template(v-else-if="description.label === 'Gas Used'") {{ getGasUsed(props.block) }}
-        | (
-        | {{ getGasUsePecent(props.block) }}
-        | %)
+      template(v-else-if="description.label === 'Gas Used'") {{ getGasUsed(props.block) +'('+getGasUsePecent(props.block)+'%)'}} 
       template(v-else-if="description.label === 'Parent Hash'")
-        RouterLink(:to="`/explorer-block/${props.block.number - 1}`")
+        RouterLink(:to="`/explorer/block/${props.block.number - 1}`")
           | {{
           | props.block.parentHash
           | }}
@@ -40,6 +37,7 @@ import BlockChange from '@/pages/explorer/components/block-change.vue'
 import { QuestionCircleOutlined } from '@ant-design/icons-vue'
 import useBlock from '@/hook/blockHook'
 import useTime from '@/hook/timeHook'
+import { utils } from 'ethers'
 const {
   getGasUsed,
   getGasLimit,
@@ -47,6 +45,7 @@ const {
   getBaseFeePerGas,
   getBurntFees,
   getReward,
+  getBlocksize,
 } = useBlock()
 const { fromNow, formatTime } = useTime()
 const route = useRoute()
@@ -94,12 +93,12 @@ const descriptions = computed(() => {
       },
       {
         label: 'Total Difficulty',
-        content: props.block.totalDifficulty,
+        content: utils.commify(props.block.totalDifficulty),
         tooltip: 'Total difficulty of the chain until the block',
       },
       {
         label: 'Size',
-        content: props.block.size + ' bytes',
+        content: getBlocksize(props.block) + ' bytes',
         tooltip:
           "The block size is actually determined by the block's gas limit",
       },
@@ -115,7 +114,10 @@ const descriptions = computed(() => {
       },
       {
         label: 'Base Fee Per Gas',
-        content: getBaseFeePerGas(props.block) + ' Ether',
+        content: `${getBaseFeePerGas(props.block)} Ether(${getBaseFeePerGas(
+          props.block,
+          'gwei'
+        )} Gwei)`,
         tooltip:
           'Post-London Upgrade,this represents the minimum gasUsed multiplier required for a tx to be included in a block',
       },

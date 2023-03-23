@@ -4,7 +4,7 @@ div
   a-table(:columns="columns", :pagination="false", rowKey="address", :dataSource="dataSource")
     template(#bodyCell="{ column, record, text }")
       template(v-if="column.dataIndex === 'address'")
-        router-link(:to="`/explorer-address/${text}`").truncate.max-w-200px.inline-block {{ text }}
+        router-link(:to="`/explorer/address/${text}`").truncate.max-w-200px.inline-block {{ text }}
 
 </template>
 <script setup>
