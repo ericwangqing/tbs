@@ -1,11 +1,6 @@
 <template lang="pug">
-div.px-48px.pt-12px.pb-48px.h-full.flex.flex-col.overflow-hidden
-  div.text-white.text-36px
-    span Block
-    span(v-if="blockNumber").text-white.text-16px.ml-8px #
-      | {{ blockNumber }}
-  div.bg-white.px-8px.h-0.flex-1
-    a-tabs(v-model:activeKey="activeKey")
+div.block-detail-container.px-30px.pb-30px.rounded-8px
+    a-tabs(class="dark-tabs",v-model:activeKey="activeKey")
       a-tab-pane(key="Overview", tab="Overview")
         a-skeleton(:loading="loading")
           BlockOverview(:block="block")
@@ -49,10 +44,7 @@ watchEffect(async () => {
 })
 </script>
 <style lang="scss">
-.ant-tabs {
-  height: 100%;
-  .ant-tabs-content-holder {
-    overflow-y: auto;
-  }
+.block-detail-container {
+  background: #3a3d4c;
 }
 </style>

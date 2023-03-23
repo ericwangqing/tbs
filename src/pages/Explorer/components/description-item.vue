@@ -15,11 +15,19 @@ const props = defineProps({
     type: Number,
     default: 18,
   },
+  align: {
+    type: String,
+    default: 'center',
+  },
 })
 </script>
 <style lang="scss" scoped>
 .description-item {
-  padding: 12px 0px;
-  border-bottom: 1px solid #e7eaf3;
+  min-height: 48px;
+  display: flex;
+  align-items: v-bind(align);
+  color: white;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 </style>

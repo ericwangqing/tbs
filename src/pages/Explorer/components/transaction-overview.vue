@@ -1,26 +1,26 @@
 <template lang="pug">
 div(v-if="props.transaction")
   div
-    description-item(v-for="description of descriptions", :key="description.label")
+    description-item(v-for="description of descriptions", :key="description.label",:align="description.align||'center'")
       template(#label)
-        a-tooltip
-          template(#title) {{ description.tooltip }}
-          question-circle-outlined.mr-4px
-        | {{ description.label }}
-        | :
+        div(:style="{paddingTop:description.align==='start'?'12px':'0px'}")
+          a-tooltip
+            template(#title) {{ description.tooltip }}
+            QuestionCircleFilled.mr-4px(style="color:rgba(255,255,255,0.2)")
+          | {{ description.label }}
+          | :
       template(v-if="description.label === 'Transaction Hash'")
         | {{ props.transaction.hash
         | }}
         copy-outlined(@click="copyHash(props.transaction.hash)").ml-4px
       template(v-else-if="description.label === 'Status'")
-        a-tag(:color="props.transactionReceipt.status === 0 ? 'error' : 'success'")
+        a-tag(:color="props.transactionReceipt.status === 0 ? 'error' : 'rgba(90,216,166,0.3)'")
           | {{
-          | props.transactionReceipt.status === 0 ? 'fail' : 'success'
+          | props.transactionReceipt.status === 0 ? 'fail' : 'Success'
           | }}
       template(v-else-if="description.label === 'Block'")
-        router-link(:to="`/explorer-block/${props.transaction.blockNumber}`") {{ props.transaction.blockNumber }}
-        | {{ props.blockStart - props.block.number + 1 }}
-        | Block Confirmations
+        router-link(:to="`/explorer/block/${props.transaction.blockNumber}`") {{ props.transaction.blockNumber }}
+        span.ml-4px {{ props.blockStart - props.block.number + 1 }} Block Confirmations
       template(v-else-if="description.label === 'Timestamp'") {{ props.block && fromNow(props.block.timestamp) }}
         | (
         | {{
@@ -28,19 +28,21 @@ div(v-if="props.transaction")
         | }}
         | )
       template(v-else-if="description.label === 'From' || description.label === 'To'")
-        router-link(:to="`/explorer-address/${props.transaction[description.label.toLocaleLowerCase()]}`")
+        router-link(:to="`/explorer/address/${props.transaction[description.label.toLocaleLowerCase()]}`")
           | {{
           | props.transaction[description.label.toLocaleLowerCase()]
           | }}
         copy-outlined(@click="copyHash(props.transaction[description.label])").ml-4px
       template(v-else-if="description.label === 'Gas Fees'")
-        span Base:
-          | {{ getBaseFeePerGas(props.block) }}
-          | Ether
-        span.ml-16px Max:
+        span.text-black-30 Base：
+        | {{ getBaseFeePerGas(props.block) }}
+        | Ether
+        span.ml-16px(v-if="props.transaction.maxFeePerGas")
+          span.text-black-30  Max：
           | {{ getMaxPerGas(props.transaction) }}
           | Ether
-        span.ml-16px Max Priority:
+        span.ml-16px(v-if="props.transaction.maxFeePerGas")
+          span.text-black-30 Max Priority：
           | {{
           | getMaxPriorityFeePerGas(props.transaction)
           | }}
@@ -50,21 +52,21 @@ div(v-if="props.transaction")
         | getBurntFees(props.block, props.transactionReceipt) + ' Ether'
         | }}
       template(v-else-if="description.label === 'Other Attributes'")
-        a-tag Txn Type:
+        a-tag(color='rgba(194,194,194,0.3)') Txn Type:
           | {{ transaction.type }}
-        a-tag nonce:
+        a-tag(color='rgba(194,194,194,0.3)') nonce:
           | {{ transaction.nonce }}
-        a-tag Position In Block:
+        a-tag(color='rgba(194,194,194,0.3)') Position In Block:
           | {{ transaction.transactionIndex }}
       template(v-else-if="description.label === 'Input Data'")
-        a-textarea(disabled, :auto-size="{ minRows: 5, maxRows: 5 }", v-model:value="props.transaction.input")
+        a-textarea(class="my-12px! dark-input",disabled, :auto-size="{ minRows: 5, maxRows: 5 }", v-model:value="props.transaction.input")
       template(v-else) {{ description.content }}
   
 </template>
 <script setup>
 import { computed } from 'vue'
 import DescriptionItem from '@/pages/explorer/components/description-item.vue'
-import { QuestionCircleOutlined, CopyOutlined } from '@ant-design/icons-vue'
+import { QuestionCircleFilled, CopyOutlined } from '@ant-design/icons-vue'
 import { useClipboard } from '@vueuse/core'
 import useTime from '@/hook/timeHook'
 import useBlock from '@/hook/blockHook'
@@ -108,6 +110,9 @@ const descriptions = computed(() => {
           label: 'Block',
           tooltip:
             'Number of the block in which the transaction is recorded. Block confirmations indicate how many blocks have been added since the transaction was produced.',
+        },
+        {
+          label: 'Sponsored',
         },
         {
           label: 'Timestamp',
@@ -168,6 +173,7 @@ const descriptions = computed(() => {
         },
         {
           label: 'Input Data',
+          align: 'start',
           tooltip:
             'Additional data included for this transaction. Commonly used as part of contract interaction or as a message sent to the recipient.',
         },
@@ -178,6 +184,11 @@ const descriptions = computed(() => {
 
 function copyHash(hash) {
   copy(hash)
-  message.success('复制成功')
+  message.success('Copied!')
 }
 </script>
+<style lang="scss" scoped>
+.text-black-30 {
+  color: rgba(255, 255, 255, 0.3);
+}
+</style>

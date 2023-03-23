@@ -1,14 +1,10 @@
 <template lang="pug">
-div.px-48px.pt-12px.pb-48px.h-full
-  div.text-white.text-36px
-    span Transactions
-  div.bg-white.px-8px
-    div.h-36px.lh-36px.flex A total of
-      | {{ txs.length }}
-      | transactions found
-      block-change(:blockNumber="currentBlock", :routerAble="true", @changeBlockNumber="changeBlockNumber").ml-32px
-    TransactionTable(:txs="txs", :block="block", scrollY="calc(100vh - 290px)", :loading="loading")
-  
+div.transaction-list-container.px-30px.pb-30px.rounded-8px
+      div.h-64px.lh-64px.text-white.flex A total of 
+        | {{ txs.length }}
+        | transactions found
+        block-change(:blockNumber="currentBlock", :routerAble="true", @changeBlockNumber="changeBlockNumber").ml-32px
+      TransactionTable(:txs="txs", :block="block", :loading="loading",:pagination="pagination",@change='tableChange')
 </template>
 <script setup>
 import { inject, onMounted, computed, ref, watchEffect } from 'vue'
@@ -23,6 +19,16 @@ const currentBlock = ref(1)
 const txs = ref([])
 const blockStart = ref(0)
 const block = ref(null)
+const current = ref(1)
+const pageSize = ref(2)
+
+const pagination = computed(() => ({
+  total: (block.value && block.value.transactions.length) || 0,
+  current: current.value,
+  pageSize: pageSize.value,
+  position: ['bottomRight', 'topRight'],
+  size: 'small',
+}))
 
 onMounted(async () => {
   if (route.query.block) {
@@ -47,6 +53,11 @@ watchEffect(async () => {
   }
 })
 
+function tableChange(page) {
+  current.value = page.current
+  pageSize.value = page.pageSize
+}
+
 function changeBlockNumber(blockNumber) {
   router.push({
     name: route.name,
@@ -56,3 +67,8 @@ function changeBlockNumber(blockNumber) {
   })
 }
 </script>
+<style scoped lang="scss">
+.transaction-list-container {
+  background: #3a3d4c;
+}
+</style>

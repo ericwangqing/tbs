@@ -3,6 +3,11 @@ div(v-if="props.block")
   div
     description-item(v-for="description of descriptions", :key="description.label")
       template(#label)
+        a-tooltip
+            template(#title) {{ description.tooltip }}
+            question-circle-outlined.mr-4px
+        | {{ description.label }}
+        | :
       template(v-if="description.label === 'Status'")
       template(v-else-if="description.label === 'Transactions'")
       template(v-else)

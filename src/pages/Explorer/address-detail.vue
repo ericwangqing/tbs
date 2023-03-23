@@ -1,8 +1,5 @@
 <template lang="pug">
-div.px-48px.pt-12px.pb-48px.h-full
-  div.text-white.text-36px
-    span address
-    span.text-white.text-16px.ml-8px {{ address }}
+div.rounded-8px
   a-row(:gutter="12").mb-12px
     a-col(:span="12")
       a-card(:bodyStyle="{ padding: '0 32px' }")
@@ -19,10 +16,10 @@ div.px-48px.pt-12px.pb-48px.h-full
         div
           description-item(label="balance")
             template(#label) My Name Tag:
-  div.bg-white.px-8px
+  div.address-detail-container.px-8px.pb-30px
     a-tabs(v-model:activeKey="activeKey")
       a-tab-pane(key="transactions", tab="Transactions")
-        TransactionsTable(:txs="txs", :loading="loading", scrollY="calc(100vh - 440px)")
+        TransactionsTable(:txs="txs", :loading="loading",:pagination="pagination")
 
 </template>
 <script setup>
@@ -41,6 +38,14 @@ const address = computed(() => {
   return route.params.hash
 })
 
+const pagination = computed(() => ({
+  // total: (block.value && block.value.transactions.length) || 0,
+  // current: current.value,
+  // pageSize: pageSize.value,
+  position: ['bottomRight', 'topRight'],
+  size: 'small',
+}))
+
 watchEffect(async () => {
   loading.value = true
   try {
@@ -57,3 +62,8 @@ watchEffect(async () => {
   }
 })
 </script>
+<style>
+.address-detail-container {
+  background: #3a3d4c;
+}
+</style>
