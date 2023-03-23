@@ -15,7 +15,7 @@
       .block-info-board-ceil__label Total transactions
       .block-info-board-ceil__num {{ thousands(controller.txCount) }}
     .block-info-board-ceil
-      .block-info-board-ceil__label W3 chain height
+      .block-info-board-ceil__label Chain height
       .block-info-board-ceil__num {{ thousands(controller.chainHeight) }}
     .block-info-board-ceil
       .block-info-board-ceil__label Shards
