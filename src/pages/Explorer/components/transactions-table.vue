@@ -6,7 +6,10 @@ a-table(:dataSource="props.txs", :columns="columns", rowKey="hash", :loading="pr
     template(v-if="column.dataIndex === 'blockNumber'")
       router-link(:to="`/explorer/block/${text}`") {{ text }}
     template(v-if="column.dataIndex === 'from' || column.dataIndex === 'to'")
-      router-link(:to="`/explorer/address/${text}`").truncate.max-w-150px.inline-block {{ text }}
+      .flex.justify-between.items-center
+        router-link(:to="`/explorer/address/${text}`").truncate.max-w-150px.inline-block {{ text }}
+        .icon-container(v-if="column.dataIndex === 'from'")
+          .iconfont.icon-youjiantou1
     template(v-if="column.dataIndex==='method'")
       a-tag(color='rgba(255, 211, 0, 0.3)') Transfer  
     template(v-if="column.dataIndex === 'age'")
@@ -59,3 +62,15 @@ const columns = [
   },
 ]
 </script>
+<style lang="scss" scoped>
+.icon-container {
+  width: 18px;
+  height: 18px;
+  background: rgba(255, 211, 0, 0.3);
+  border-radius: 50%;
+  color: #f4b03e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>

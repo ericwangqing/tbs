@@ -89,7 +89,7 @@ export default defineComponent({
     ConfigPop,
   },
   setup: () => {
-    const w3Api = inject('w3Api')
+    const TBSApi = inject('TBSApi')
     const timeBeaconChain = reactive([]) // 信标链
     const shardChains = reactive([]) // n个分片链
     const percent = ref(0) // slot 进度条

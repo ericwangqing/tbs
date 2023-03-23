@@ -34,9 +34,10 @@ div(v-if="props.transaction")
           | }}
         copy-outlined(@click="copyHash(props.transaction[description.label])").ml-4px
       template(v-else-if="description.label === 'Gas Fees'")
-        span.text-black-30 Base：
-        | {{ getBaseFeePerGas(props.block) }}
-        | Ether
+        span(v-if="props.block.baseFeePerGas")    
+          span.text-black-30 Base：
+          | {{ getBaseFeePerGas(props.block) }}
+          | Ether
         span.ml-16px(v-if="props.transaction.maxFeePerGas")
           span.text-black-30  Max：
           | {{ getMaxPerGas(props.transaction) }}
@@ -48,6 +49,7 @@ div(v-if="props.transaction")
           | }}
           | Ether
       template(v-else-if="description.label === 'Burnt Fees'")
+        span.text-black-30 Burnt：
         | {{
         | getBurntFees(props.block, props.transactionReceipt) + ' Ether'
         | }}

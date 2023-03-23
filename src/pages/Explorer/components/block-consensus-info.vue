@@ -5,7 +5,7 @@ div(v-if="props.block")
       template(#label)
         a-tooltip
             template(#title) {{ description.tooltip }}
-            question-circle-outlined.mr-4px
+            QuestionCircleFilled.mr-4px(style="color:rgba(255,255,255,0.2)")
         | {{ description.label }}
         | :
       template(v-if="description.label === 'Status'")
@@ -15,7 +15,7 @@ div(v-if="props.block")
 <script setup>
 import { inject, onMounted, computed, ref, watchEffect, toRefs } from 'vue'
 import DescriptionItem from '@/pages/explorer/components/description-item.vue'
-import { QuestionCircleOutlined } from '@ant-design/icons-vue'
+import { QuestionCircleFilled } from '@ant-design/icons-vue'
 import useBlock from '@/hook/blockHook'
 const { getGasUsed, getGasLimit, getGasUsePecent, getBaseFeePerGas } =
   useBlock()

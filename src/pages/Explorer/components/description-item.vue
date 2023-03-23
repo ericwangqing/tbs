@@ -29,5 +29,8 @@ const props = defineProps({
   color: white;
   font-size: 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  &.no-border {
+    border-bottom: 0px;
+  }
 }
 </style>
