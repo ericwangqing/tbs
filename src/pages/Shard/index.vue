@@ -17,7 +17,7 @@
             .left-fade-mask
             .right-fade-mask
           .blockchain-more
-            .blocklist-btn(@click="gotoBlockList('beacon')")
+            .blocklist-btn(:class="{disabled: tbLoading}" @click="gotoBlockList('beacon')")
               EllipsisOutlined
     .blockchain-overview-container
       .blockchain-overview-header
@@ -35,7 +35,7 @@
             .left-fade-mask
             .right-fade-mask
           .blockchain-more
-            .blocklist-btn
+            .blocklist-btn.disabled
               EllipsisOutlined
         .blockchain-item(v-for="(blockchain) in controller.visibleLatestShardBlocks" :key="blockchain[0].shard" v-else)
           .blockchain-info S-{{`${blockchain[0].shard}`.padStart(3, '0')}}
@@ -119,6 +119,7 @@ export default defineComponent({
     })
 
     function gotoBlockList(type, index) {
+      if (this.tbLoading) return
       router.push({
         name: 'explorer-block-list',
         query: {
@@ -261,6 +262,9 @@ export default defineComponent({
           }
           &:active {
             background: #757781;
+          }
+          &.disabled {
+            cursor: not-allowed;
           }
         }
       }
