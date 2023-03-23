@@ -47,10 +47,13 @@ export default function useTransaction() {
   }
 
   function getBurntFees(block, transactionReceipt, unit = 'ether') {
-    return utils.formatUnits(
-      BigNumber.from(block.baseFeePerGas).mul(transactionReceipt.gasUsed),
-      unit
-    )
+    if (block.baseFeePerGas && transactionReceipt.gasUsed) {
+      return utils.formatUnits(
+        BigNumber.from(block.baseFeePerGas).mul(transactionReceipt.gasUsed),
+        unit
+      )
+    }
+    return ''
   }
 
   return {

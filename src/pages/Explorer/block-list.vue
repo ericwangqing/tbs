@@ -1,6 +1,8 @@
 <template lang="pug">
 div.block-list-container.px-30px.pb-30px.rounded-8px
-    div.h-64px.lh-64px.text-white {{ `Block #${fromBlockNumber} ~ #${toBlockNumber}    (Total of ${blockStart + 1} blocks)`}}
+    div.h-64px.lh-64px.text-white
+      | Block 
+      span(v-if="!loading") {{ `#${fromBlockNumber} ~ #${toBlockNumber}    (Total of ${blockStart + 1} blocks)`}}
     a-table(:dataSource="blocks", :columns="columns", rowKey="number",:pagination="pagination", :loading="loading", @change="tableChange")
       template(#bodyCell="{ column, record, text, index }")
         template(v-if="column.dataIndex === 'number'")
@@ -20,7 +22,7 @@ div.block-list-container.px-30px.pb-30px.rounded-8px
         template(v-else-if="column.dataIndex === 'gasLimit'")
           span {{ getGasLimit(record) }}
         template(v-else-if="column.dataIndex === 'baseFee'")
-          span {{ getBaseFeePerGas(record, 'gwei').substr(0,6) + ' Gwei' }}
+          span {{ getBaseFeePerGas(record, 'gwei').substr(0,5) + ' Gwei' }}
         template(v-else-if="column.dataIndex === 'Reward'") 待定
         template(v-else-if="column.dataIndex === 'Burnt'")
           | {{

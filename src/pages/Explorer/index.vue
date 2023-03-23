@@ -2,7 +2,7 @@
 .explorer.overflow-auto.h-full
   .max-w-1400px.mx-auto.pt-12px.pb-48px
       .flex.pt-20px.pb-30px.text-white
-          left-outlined.mt-12px.mr-8px.cursor-pointer
+          left-outlined.mt-12px.mr-8px.cursor-pointer(@click="back()")
           .text-white
               .text-24px.font-medium 
                 component(:is='name',v-if="typeof name==='object'")
@@ -20,14 +20,18 @@ const router = useRouter()
 const route = useRoute()
 const routeName = route.name
 let name, label
+let routeOption
 if (routeName === 'explorer-block-list') {
   const { type, index } = route.query
   if (type === 'beacon') {
     name = 'ETH'
     label = 'Time Beacon Chain'
   } else {
-    name = 'TBS'
+    name = 'W3'
     label = `S-${index}`.padStart(3, '0')
+  }
+  routeOption = {
+    name: 'blockchain',
   }
 } else if (routeName === 'explorer-transaction-list') {
   name = 'Transactions'
@@ -40,6 +44,9 @@ if (routeName === 'explorer-block-list') {
       </RouterLink>
     </div>
   )
+  routeOption = {
+    path: `block/${query}`,
+  }
 } else if (routeName === 'explorer-block-detail') {
   const block = route.params.blockNumber
   name = (
@@ -55,13 +62,27 @@ if (routeName === 'explorer-block-list') {
     </div>
   )
   label = 'Time Beacon Chain'
+  routeOption = {
+    name: `explorer-block-list`,
+  }
 } else if (routeName === 'explorer-transaction-detail') {
   const block = route.params.blockNumber
   name = <div>Transaction Details</div>
   label = 'Time Beacon Chain'
+  routeOption = {
+    name: `explorer-transaction-list`,
+  }
 } else if (routeName === 'explorer-address-detail') {
   name = <div>Address Details</div>
   label = 'Time Beacon Chain'
+}
+function back() {
+  const routers = router.getRoutes()
+  if (routers.length > 1) {
+    router.back()
+  } else {
+    routeOption && router.push(routeOption)
+  }
 }
 </script>
 <style lang="scss" scoped>

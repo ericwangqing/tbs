@@ -140,18 +140,23 @@ class TBSApi {
       startblock: 1,
       page: 1,
       offset: 10,
-      sort: 'asc',
+      sort: 'desc',
     }
   ) {
     const { result } = await this.api.account.txlist(
       address,
-      startblock,
-      endblock,
-      page,
-      offset,
-      sort
+      startblock || '1',
+      endblock || 'latest',
+      page || 1,
+      offset || 10,
+      sort || 'desc'
     )
     return result
+  }
+
+  async getTransactionCount(address) {
+    const { result } = await this.api.proxy.eth_getTransactionCount(address)
+    return BigNumber.from(result).toNumber()
   }
 
   hex2Number(data, properties, propertiesOfNumberString = []) {
