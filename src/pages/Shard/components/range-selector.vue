@@ -67,7 +67,7 @@ export default defineComponent({
 .range-selector-container {
   position: relative;
   width: 284px;
-  height: 30px;
+  height: 32px;
   overflow: hidden;
   &:hover {
     overflow: unset;
@@ -95,9 +95,7 @@ export default defineComponent({
     }
     .range-selector-input {
       width: 124px;
-      height: 30px;
       font-size: 14px;
-      line-height: 30px;
       padding-left: 16px;
       padding-right: 28px;
     }
@@ -106,7 +104,7 @@ export default defineComponent({
       cursor: pointer;
       margin-left: 10px;
       width: 40px;
-      height: 30px;
+      height: 32px;
       background: linear-gradient(90deg,#ffcb00 3%, #f08b00 96%);
       border-radius: 4px;
       display: flex;
