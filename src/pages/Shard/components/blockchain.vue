@@ -1,16 +1,13 @@
 <template lang="pug">
-.blockchain-container
-  Block.block-item(
-    v-for="(block, index) in blocks"
-    v-show="!block.$hide"
-    :block="block"
-    :key="block.$key"
-    :style="[getBlockStyle(index)]"
-  )
+.blockchain-container(:class="{'blockchain-move': move}")
+  .block-item(v-for="block in blocks" :key="block.number")
+    Block(:block="block" :class="{'block-new': block.state === 'collect' && move}")
+    .blockchain-linkline
 </template>
 
 <script>
-import {defineComponent, nextTick, onBeforeUnmount, onMounted, reactive, ref, toRaw, watch} from 'vue'
+import {defineComponent, watch, ref} from 'vue'
+import {useNewBlockTrigger} from "../composition/util"
 import Block from './block.vue'
 
 export default defineComponent({
@@ -24,21 +21,18 @@ export default defineComponent({
     }
   },
   setup: (props) => {
-    const blocks = props.blocks
-    const getBlockStyle = (index) => {
-      if (blocks.length < 6) {
-        index += 7 - blocks.length
+    const move = ref(false)
+    const len = props.blocks.length
+    const lastNumber = len <= 1 ? -1 : props.blocks[props.blocks.length - 1]?.number
+    const lastBlock = useNewBlockTrigger(() => props.blocks, lastNumber)
+    watch(lastBlock, () => {
+      if (lastBlock.value) {
+        move.value = true
+        setTimeout(() => move.value = false, 500)
       }
-      const ret = {
-        transform: `translateX(${index * (200 + 20)}px)`
-      }
-      if (index === 6) {
-        ret.transform = ret.transform + ` scale(0.7)`
-      }
-      return ret
-    }
+    }, {immediate: true})
     return {
-      getBlockStyle,
+      move
     }
   }
 })
@@ -46,9 +40,49 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .blockchain-container {
+  position: absolute;
+  right: 0;
+  top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   .block-item {
-    position: absolute;
-    transition: transform 0.5s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .blockchain-linkline {
+    height: 4px;
+    width: 20px;
+    opacity: 0.1;
+    background: #ffffff;
+  }
+}
+
+.block-new {
+  animation: scale 0.5s ease-in-out forwards;
+}
+
+.blockchain-move {
+  animation: move 0.5s ease-in-out forwards;
+}
+
+@keyframes scale {
+  0% {
+    transform: scale(0.7);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes move {
+  0% {
+    transform: translateX(220px);
+  }
+  100% {
+    transform: translateX(0px);
   }
 }
 

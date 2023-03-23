@@ -167,7 +167,7 @@ export default defineComponent({
   }
 }
 .config-popup {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
@@ -194,7 +194,7 @@ export default defineComponent({
   }
 
   &--mask {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -202,7 +202,7 @@ export default defineComponent({
     background: linear-gradient(180deg, rgba(22, 24, 30, 0.80) 0%,  rgba(0, 0, 0, 0.95));
   }
   &--wrapper {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
     right: 0;

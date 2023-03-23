@@ -27,7 +27,7 @@ if (routeName === 'explorer-block-list') {
     name = 'ETH'
     label = 'Time Beacon Chain'
   } else {
-    name = 'W3'
+    name = 'TBS'
     label = `S-${index}`.padStart(3, '0')
   }
   routeOption = {

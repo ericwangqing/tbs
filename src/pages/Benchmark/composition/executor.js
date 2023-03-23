@@ -104,8 +104,8 @@ class Executor {
     const collectCost = randomBetween(collectBase * 0.9, collectBase * 1.1)
     const attestCost = randomBetween(assestBase * 0.9, assestBase * 1.1)
     const finalizedCost = randomBetween(finalizeBase * 0.9, finalizeBase * 1.1)
-    const miner = util.getAddressKeyString()
-    const hash = util.getPublicKeyString()
+    const miner = getAddressKeyString()
+    const hash = getPublicKeyString()
     setTimeout(() => {
       if (this.visibleShards[i] !== undefined) this.events.emit('generateBlock', { number: slot, slot, shard: this.visibleShards[i], state: 'collect', timestamp: Date.now() })
     }, 0)

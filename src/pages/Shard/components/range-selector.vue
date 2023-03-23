@@ -3,7 +3,7 @@
   .range-selector-wrapper
     a-input.range-selector-input(placeholder="#" v-model:value="startInput" @keyup.enter="onConfirm")
     .range-selecotr-sep
-    a-input.range-selector-input(placeholder="#" v-model="endInput" @keyup.enter="onConfirm")
+    a-input.range-selector-input(placeholder="#" v-model:value="endInput" @keyup.enter="onConfirm")
     .range-selector-ok-btn(@click="onConfirm")
 </template>
 
