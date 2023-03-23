@@ -18,7 +18,7 @@
             .left-fade-mask
             .right-fade-mask
           .blockchain-more
-            .blocklist-btn(@click="")
+            .blocklist-btn(@click="gotoBlockList('beacon')")
               EllipsisOutlined
     .blockchain-overview-container
       .blockchain-overview-header
@@ -47,7 +47,7 @@
             .left-fade-mask
             .right-fade-mask
           .blockchain-more
-            .blocklist-btn
+            .blocklist-btn(@click="gotoBlockList('shard',blockchain[0].shard)")
               EllipsisOutlined
       .blockchain-overview-footer
         a-pagination(
@@ -62,20 +62,34 @@
 </template>
 
 <script>
-import {defineComponent, onMounted, reactive, ref, watch, inject, watchEffect} from 'vue'
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+  inject,
+  watchEffect,
+} from 'vue'
 import { useRouter } from 'vue-router'
 import Blockchain from './components/blockchain.vue'
 import RangeSelector from './components/range-selector.vue'
 import BlockchainSkeleton from './components/blockchain-skeleton.vue'
 import { EllipsisOutlined } from '@ant-design/icons-vue'
 import ConfigPop from '@/pages/Benchmark/components/config-popup.vue'
-import {random, range} from 'lodash'
+import { random, range } from 'lodash'
 
 export default defineComponent({
   name: 'ShardOverview',
-  components: {Blockchain, EllipsisOutlined, RangeSelector, BlockchainSkeleton, ConfigPop},
+  components: {
+    Blockchain,
+    EllipsisOutlined,
+    RangeSelector,
+    BlockchainSkeleton,
+    ConfigPop,
+  },
   setup: () => {
-    const TBSApi = inject('TBSApi')
+    const w3Api = inject('w3Api')
     const timeBeaconChain = reactive([]) // 信标链
     const shardChains = reactive([]) // n个分片链
     const percent = ref(0) // slot 进度条
@@ -95,10 +109,21 @@ export default defineComponent({
         setTimeout(() => {
           const num = 6
           const now = Date.now() - 2000
-          timeBeaconChain.splice(0, timeBeaconChain.length, ...range(num).map((slot) => {
-            const timestamp = now - (4 - slot) * 12000
-            return { number: slot, slot, state: 'finalized', timestamp, $key: random(1000), $beacon: true }
-          }))
+          timeBeaconChain.splice(
+            0,
+            timeBeaconChain.length,
+            ...range(num).map((slot) => {
+              const timestamp = now - (4 - slot) * 12000
+              return {
+                number: slot,
+                slot,
+                state: 'finalized',
+                timestamp,
+                $key: random(1000),
+                $beacon: true,
+              }
+            })
+          )
           resolve()
         }, 2000)
       })
@@ -112,10 +137,20 @@ export default defineComponent({
           const now = Date.now() - 2000
           shardChains.splice(0, shardChains.length)
           shardIndexArray.forEach((index) => {
-            shardChains.push(range(num).map((slot) => {
-              const timestamp = now - (4 - slot) * 12000
-              return { number: slot, slot, shard: index, txn: random(500), state: 'finalized', timestamp, $key: random(1000) }
-            }))
+            shardChains.push(
+              range(num).map((slot) => {
+                const timestamp = now - (4 - slot) * 12000
+                return {
+                  number: slot,
+                  slot,
+                  shard: index,
+                  txn: random(500),
+                  state: 'finalized',
+                  timestamp,
+                  $key: random(1000),
+                }
+              })
+            )
           })
           resolve()
         }, 2000)
@@ -136,7 +171,7 @@ export default defineComponent({
           state: event.state,
           timestamp: Date.now(),
           $key: random(1000),
-          $beacon: true
+          $beacon: true,
         }
         timeBeaconChain.push(block)
         if (timeBeaconChain.length > 5) {
@@ -176,7 +211,7 @@ export default defineComponent({
           shard: event.shard,
           state: event.state,
           timestamp: event.timestamp,
-          $key: random(1000)
+          $key: random(1000),
         }
         blocks.push(block)
         if (blocks.length > 5) {
@@ -226,7 +261,7 @@ export default defineComponent({
       }
     }
 
-    const filterBlockchain = ({start, end}) => {
+    const filterBlockchain = ({ start, end }) => {
       allPageShards.splice(0, allPageShards.length, ...range(start, end + 1))
       currentPage.value = 1
       filterShardChainNum.value = allPageShards.length
@@ -237,21 +272,87 @@ export default defineComponent({
       // shard blockchain
       const slot = timeBeaconChain[timeBeaconChain.length - 1].slot + 1
       currentPageShards.forEach((shard) => {
-        setTimeout(() => handleShardBlockCollectEvent({number: slot, slot, shard, state: 'collect', timestamp: Date.now()}), 0)
-        setTimeout(() => handleShardBlockAttestEvent({number: slot, slot, shard, state: 'attest', timestamp: Date.now()}), 5000)
+        setTimeout(
+          () =>
+            handleShardBlockCollectEvent({
+              number: slot,
+              slot,
+              shard,
+              state: 'collect',
+              timestamp: Date.now(),
+            }),
+          0
+        )
+        setTimeout(
+          () =>
+            handleShardBlockAttestEvent({
+              number: slot,
+              slot,
+              shard,
+              state: 'attest',
+              timestamp: Date.now(),
+            }),
+          5000
+        )
         const txn = random(1000)
         const miner = '0x000000000000000000000000000000'
         const hash = '0x0000000000000000000000000'
-        setTimeout(() => handleShardBlockUnfinalizedEvent({number: slot, slot, shard, state: 'unfinalized', txn, miner, hash, timestamp: Date.now()}), 8000)
-        setTimeout(() => handleShardBlockFinalizedEvent({number: slot, slot, shard, state: 'finalized', txn, miner, hash, timestamp: Date.now()}), 10000)
+        setTimeout(
+          () =>
+            handleShardBlockUnfinalizedEvent({
+              number: slot,
+              slot,
+              shard,
+              state: 'unfinalized',
+              txn,
+              miner,
+              hash,
+              timestamp: Date.now(),
+            }),
+          8000
+        )
+        setTimeout(
+          () =>
+            handleShardBlockFinalizedEvent({
+              number: slot,
+              slot,
+              shard,
+              state: 'finalized',
+              txn,
+              miner,
+              hash,
+              timestamp: Date.now(),
+            }),
+          10000
+        )
       })
       // time beacon blockchain
-      setTimeout(() => handleBeaconBlockCollectEvent({number: slot, slot,  state: 'collect', timestamp: Date.now()}), 0)
-      setTimeout(() => handleBeaconBlockFinalizedEvent({number: slot, slot, txn: random(500), tbs: 229, state: 'finalized', timestamp: Date.now()}), 10500)
+      setTimeout(
+        () =>
+          handleBeaconBlockCollectEvent({
+            number: slot,
+            slot,
+            state: 'collect',
+            timestamp: Date.now(),
+          }),
+        0
+      )
+      setTimeout(
+        () =>
+          handleBeaconBlockFinalizedEvent({
+            number: slot,
+            slot,
+            txn: random(500),
+            tbs: 229,
+            state: 'finalized',
+            timestamp: Date.now(),
+          }),
+        10500
+      )
     }
 
     const gotoCockpit = () => {
-      router.push({name: 'benchmark'})
+      router.push({ name: 'benchmark' })
     }
 
     onMounted(async () => {
@@ -261,10 +362,17 @@ export default defineComponent({
       // 同步最新那几块block数据
       watchEffect(async (onInvalidate) => {
         loading.value = true
-        currentPageShards.splice(0, currentPageShards.length, ...allPageShards.slice((currentPage.value - 1) * pageSize.value, currentPage.value * pageSize.value))
+        currentPageShards.splice(
+          0,
+          currentPageShards.length,
+          ...allPageShards.slice(
+            (currentPage.value - 1) * pageSize.value,
+            currentPage.value * pageSize.value
+          )
+        )
         await Promise.all([
           syncLatestShardBlocks(currentPageShards),
-          syncLatestBeaconBlocks()
+          syncLatestBeaconBlocks(),
         ])
         loading.value = false
         // processing slot
@@ -283,6 +391,17 @@ export default defineComponent({
         })
       })
     })
+
+    function gotoBlockList(type, index) {
+      router.push({
+        name: 'explorer-block-list',
+        query: {
+          type,
+          index,
+        },
+      })
+    }
+
     return {
       currentPage,
       pageSize,
@@ -294,9 +413,10 @@ export default defineComponent({
       filterBlockchain,
       loading,
       gotoCockpit,
-      configVisible
+      configVisible,
+      gotoBlockList,
     }
-  }
+  },
 })
 </script>
 
@@ -380,7 +500,11 @@ export default defineComponent({
           top: 0;
           bottom: 0;
           left: -9px;
-          background: linear-gradient(90deg,#3a3d4c 40%, rgba(58,61,76,0.00) 94%);
+          background: linear-gradient(
+            90deg,
+            #3a3d4c 40%,
+            rgba(58, 61, 76, 0) 94%
+          );
         }
         .right-fade-mask {
           position: absolute;
@@ -388,7 +512,11 @@ export default defineComponent({
           top: 0;
           bottom: 0;
           right: 0;
-          background: linear-gradient(-90deg,#3a3d4c 40%, rgba(58,61,76,0.00) 94%);
+          background: linear-gradient(
+            -90deg,
+            #3a3d4c 40%,
+            rgba(58, 61, 76, 0) 94%
+          );
         }
         .chain {
           transform: translate(-220px, 10px);

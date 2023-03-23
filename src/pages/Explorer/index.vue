@@ -21,8 +21,14 @@ const route = useRoute()
 const routeName = route.name
 let name, label
 if (routeName === 'explorer-block-list') {
-  name = 'ETH'
-  label = 'Time Beacon Chain'
+  const { type, index } = route.query
+  if (type === 'beacon') {
+    name = 'ETH'
+    label = 'Time Beacon Chain'
+  } else {
+    name = 'TBS'
+    label = `S-${index}`.padStart(3, '0')
+  }
 } else if (routeName === 'explorer-transaction-list') {
   name = 'Transactions'
   const query = route.query.block
