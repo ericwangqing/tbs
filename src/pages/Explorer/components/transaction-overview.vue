@@ -6,7 +6,7 @@ div(v-if="props.transaction")
         div(:style="{paddingTop:description.align==='start'?'12px':'0px'}")
           a-tooltip
             template(#title) {{ description.tooltip }}
-            QuestionCircleFilled.mr-4px(style="color:rgba(255,255,255,0.2)")
+            QuestionCircleFilled.mr-14px(style="color:rgba(255,255,255,0.2)")
           | {{ description.label }}
           | :
       template(v-if="description.label === 'Transaction Hash'")
@@ -22,7 +22,7 @@ div(v-if="props.transaction")
         router-link(:to="`/explorer/block/${props.transaction.blockNumber}`") {{ props.transaction.blockNumber }}
         span.ml-10px {{ props.blockStart - props.block.number + 1 }} Block Confirmations
       template(v-else-if="description.label === 'Timestamp'") {{ props.block && fromNow(props.block.timestamp) }}
-        | (
+        |  (
         | {{
         | formatTime(props.block.timestamp)
         | }}
@@ -61,8 +61,9 @@ div(v-if="props.transaction")
         a-tag(color='rgba(194,194,194,0.3)') Position In Block:
           | {{ transaction.transactionIndex }}
       template(v-else-if="description.label === 'Input Data'")
-        a-textarea(class="my-12px! dark-input",disabled, :auto-size="{ minRows: 5, maxRows: 5 }", v-model:value="props.transaction.input")
-      template(v-else) {{ description.content }}
+        a-textarea(class="my-12px! dark-input",disabled, :auto-size="{ minRows: 5, maxRows: 7 }", v-model:value="props.transaction.input")
+      template(v-else)
+        div(v-html="description.content")
   
 </template>
 <script setup>
@@ -153,9 +154,9 @@ const descriptions = computed(() => {
             'Maximum amount of gas allocated for the transaction & the amount eventually used. Normal ETH transfers involve 21,000 gas units while contracts involve higher values.',
           content:
             getGasLimit(props.transaction) +
-            ' | ' +
+            '<span class="mx-6px text-white/30">|</span>' +
             getGasUsed(props.transactionReceipt) +
-            '(' +
+            ' (' +
             getGasLimitPecent(props.transaction, props.transactionReceipt) +
             '%' +
             ')',
@@ -190,10 +191,12 @@ function copyHash(hash) {
 }
 </script>
 <style lang="scss" scoped>
+@import '@/theme/dark/mixin.scss';
 .text-black-30 {
   color: rgba(255, 255, 255, 0.3);
 }
 textarea.ant-input {
   cursor: text;
+  @include scrollbar(#3a3d4c, #4e505d);
 }
 </style>

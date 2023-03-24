@@ -1,11 +1,11 @@
 <template lang="pug">
-div.block-detail-container.px-30px.pb-30px.rounded-8px
+div.block-detail-container.px-30px.pb-60px.rounded-8px
     a-tabs(class="dark-tabs",v-model:activeKey="activeKey")
       a-tab-pane(key="Overview", tab="Overview")
-        a-skeleton(:loading="loading")
+        a-skeleton(:loading="loading" active)
           BlockOverview(:block="block")
       a-tab-pane(key="ConsensusInfo", tab="Consensus Info")
-        a-skeleton(:loading="loading")
+        a-skeleton(:loading="loading" active)
           BlockConsensusInfo(:block="block")  
 </template>
 <script setup>

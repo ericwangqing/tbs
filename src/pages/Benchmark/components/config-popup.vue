@@ -16,11 +16,11 @@
         AButton.create-btn(@click="handleCreate")
           i.iconfont.icon-create
           span Create
-        AInputSearch(allowClear)
+        AInputSearch(allowClear size="large")
     .config-popup--container-main(v-if="mode === ''" ref="cardList", :class="{ needScroll: needScroll }")
       ConfigCard(
         v-for="item in controller.testList", :key="item.id", :data="item", :selectedId="selectedConfigId"
-        @select="selectedConfigId = item.id"
+        @select="selectedConfigId = item.id" @delete="handleDelete"
       )
     ConfigForm(v-else :data="editTestdata")
   .config-popup--footer
@@ -44,26 +44,32 @@
           ATooltip(v-if="!selectedTest.result" title="This test configuration has not yet executed, cannot playback!")
             .btn-disabled-wrapper
       ASpace(:size="40")
-        AButton.download-btn(type="text" @click="handleDownload")
+        AButton.download-btn.bottom-animated(type="text" @click="handleDownload")
           i.iconfont.icon-download
           span Download
-        AButton.contrast-btn(type="text" @click="handleContrast")
+        AButton.contrast-btn.bottom-animated(type="text" @click="handleContrast")
           i.iconfont.icon-contrast
           span Contrast
-        AButton.setting-btn(type="text" @click="handleEdit")
+        AButton.setting-btn.bottom-animated(type="text" @click="handleEdit")
           i.iconfont.icon-setting
           span Setting
-    AButton.back-btn(type="text" @click="handleBack")
+        BreatheBtn(badge-hint="Replays the records generated when this test configuration was last executed" disable-hint="This test configuration has not yet executed, cannot playback!" size="large" disable=true)
+          template(slot="badge")
+            i.iconfont.icon-jieshi
+          i.iconfont.icon-zhongzhi
+          span Playback
+    AButton.back-btn.bottom-animated(type="text" @click="handleBack")
       span Back
       img(:src="BackSvg")
 
 .config-btn(@click="openConfig", :class="{ breathe: controller.state === 'stopped' || controller.state === 'completed' }")
   .config-btn__text Config
   CaretRightOutlined.config-btn__icon
+  .config-btn-shadow
 </template>
 
 <script>
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, onMounted, onBeforeUnmount } from 'vue'
 import BackSvg from '@/assets/back-icon.svg'
 import { controller } from '../composition/controller.js'
 import { CaretRightOutlined } from '@ant-design/icons-vue'
@@ -83,6 +89,10 @@ export default defineComponent({
     configBtnTop: {
       type: String,
       default: '510px'
+    },
+    configBtnRight: {
+      type: String,
+      default: '0'
     }
   },
   emits: ['playback', 'execute'],
@@ -93,11 +103,12 @@ export default defineComponent({
     const visible = ref(false)
     const mode = ref('') // '' | 'create' | 'edit'
     const editTestdata = ref({})
+    const needScroll = ref(false)
 
-    const needScroll = computed(() => {
-      if (!cardList.value) return false;
-      return cardList.value.scrollHeight > cardList.value.clientHeight
-    })
+    const calcNeedScroll = () => {
+      if (!cardList.value) needScroll.value = false;
+      needScroll.value = cardList.value.scrollHeight > cardList.value.clientHeight
+    }
 
     const handleCreate = () => {
       mode.value = 'create'
@@ -145,6 +156,12 @@ export default defineComponent({
       // TODO after post api
       mode.value = ''
       editTestdata.value = null
+      calcNeedScroll()
+    }
+
+    const handleDelete = () => {
+      // TODO
+      calcNeedScroll()
     }
 
     const openConfig = () => {
@@ -153,6 +170,15 @@ export default defineComponent({
 
     const selectedTest = computed(() => {
       return controller.testList.find((test) => test.id === selectedConfigId.value)
+    })
+
+    onMounted(() => {
+      calcNeedScroll()
+      window.addEventListener('resize', calcNeedScroll)
+    })
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('resize', calcNeedScroll)
     })
 
     return {
@@ -172,6 +198,7 @@ export default defineComponent({
       handleContrast,
       handleEdit,
       handleSave,
+      handleDelete,
       handleBack,
       openConfig,
     }
@@ -180,6 +207,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/theme/mixin.scss';
 @mixin btnSize() {
   width: 180px;
   height: 46px;
@@ -222,47 +250,6 @@ export default defineComponent({
   }
   .ant-input-search {
     width: 280px;
-    height: 50px;
-    &:deep {
-      .ant-input-affix-wrapper {
-        line-height: 40px;
-        background: rgba(#000, 0.1);
-        border-radius: 8px 0 0 8px;
-        padding-left: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.45);
-        border-right: none;
-        box-shadow: none;
-      }
-      .ant-input-suffix svg {
-        color: rgba(#fff, 0.15);
-        font-size: 12px;
-      }
-      input {
-        background: transparent;
-        color: #fff;
-        font-size: 18px;
-        border: none;
-      }
-      .ant-input-group-addon {
-        background: transparent;
-        left: 0;
-      }
-      button.ant-btn.ant-input-search-button {
-        height: 50px;
-        width: 64px;
-        background: rgba(#000, 0.1);
-        border-radius: 0 8px 8px 0;
-        border: 1px solid rgba(255, 255, 255, 0.45);
-        border-left: none;
-        svg {
-          color: #fff;
-          font-size: 22px;
-        }
-        &::after {
-          display: none;
-        }
-      }
-    }
   }
 
   &--mask {
@@ -325,19 +312,9 @@ export default defineComponent({
       padding: 0 40px;
       overflow-y: auto;
       &.needScroll {
-        padding-right: 20px;
-        margin-right: 8px;
+        padding-right: 12px;
       }
-      &::-webkit-scrollbar {
-        width: 12px;
-      }
-      &::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      &::-webkit-scrollbar-thumb {
-        border-radius: 6px;
-        background: #4e505d;
-      }
+      @include scrollbar(#3a3d4c, #4e505d);
     }
   }
   &--footer {
@@ -422,26 +399,10 @@ export default defineComponent({
         cursor: not-allowed;
       }
     }
-    .ant-btn-text {
+    .ant-btn-text.bottom-animated {
       position: relative;
       span {
         font-family: PingFangSC, PingFangSC-Semibold;
-        font-weight: 600;
-      }
-      &::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 0;
-        height: 2px;
-        background: #fff;
-        transition: width 0.3s ease-in-out;
-      }
-      &:hover {
-        &::after {
-          width: 100%;
-        }
       }
     }
     .back-btn {
@@ -457,7 +418,7 @@ export default defineComponent({
 }
 .config-btn {
   position: fixed;
-  right: 0;
+  right: v-bind('configBtnRight');
   top: v-bind('configBtnTop');
   padding: 12px 46px 10px 16px;
   color: #fff;
@@ -473,12 +434,30 @@ export default defineComponent({
   align-items: center;
   z-index: 80;
   &.breathe {
-    box-shadow: 0px 0px 20px 0px rgba(179, 195, 255, 0.50);
     .config-btn__text {
       background-image:-webkit-linear-gradient(left, #FFCB00, #F08B00);
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+    }
+    .config-btn-shadow {
+      position: absolute;
+      top: -20px;
+      left: -20px;
+      right: 0;
+      bottom: -20px;
+      overflow: hidden;
+      &::after {
+        content: '';
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        right: 0;
+        bottom: 20px;
+        z-index: -10;
+        border-radius: 8px 0 0 8px;
+        box-shadow: 0px 0px 20px 0px rgba(179, 195, 255, 0.50);
+      }
     }
   }
   &__icon {

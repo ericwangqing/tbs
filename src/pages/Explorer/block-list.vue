@@ -1,5 +1,5 @@
 <template lang="pug">
-div.block-list-container.px-30px.pb-30px.rounded-8px
+div.block-list-container.px-30px.pb-60px.rounded-8px
     div.h-64px.lh-64px.text-white
       | Block 
       span(v-if="!loading") {{ `#${fromBlockNumber} ~ #${toBlockNumber}    (Total of ${blockStart + 1} blocks)`}}
@@ -57,6 +57,7 @@ const pagination = computed(() => ({
   pageSize: pageSize.value,
   position: ['bottomRight', 'topRight'],
   size: 'small',
+  'show-quick-jumper': true
 }))
 
 const toBlockNumber = computed(() => {

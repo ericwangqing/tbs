@@ -1,7 +1,7 @@
 <template lang="pug">
-.explorer.overflow-auto.h-full
+.explorer.overflow-auto.h-full(ref="explorer" :class="{ needScroll: needScroll }")
   .max-w-1400px.mx-auto.pt-12px.pb-48px
-      .flex.pt-20px.pb-30px.text-white
+      .flex.pt-20px.pb-36px.text-white
           left-outlined.mt-12px.mr-8px.cursor-pointer(@click="back()")
           .text-white
               .text-24px.font-medium 
@@ -10,14 +10,16 @@
               .text-12px(class="text-white/50")
                   component(:is='label',v-if="typeof label=='object'")
                   template(v-else) {{label}}
-      router-view
+      router-view(@finish="handleFinish")
 </template>
 <script setup lang="jsx">
-import { h } from 'vue'
+import { h, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { LeftOutlined } from '@ant-design/icons-vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
 const router = useRouter()
 const route = useRoute()
+const explorer = ref(null)
+const needScroll = ref(false)
 const routeName = route.name
 let name, label
 let routeOption
@@ -39,7 +41,7 @@ if (routeName === 'explorer-block-list') {
   label = (
     <div>
       For Block
-      <RouterLink style="color:#FFAE00" to={'/explorer/block/' + query}>
+      <RouterLink class="ml-2px" style="color:#FFAE00" to={'/explorer/block/' + query}>
         {query}
       </RouterLink>
     </div>
@@ -52,7 +54,7 @@ if (routeName === 'explorer-block-list') {
   name = (
     <div class="font-bold">
       Block
-      <span style="font-size:12px"> # </span>
+      <span class="ml-8px" style="font-size:12px"> # </span>
       <RouterLink
         style="color:#FFAE00;font-size:12px"
         to={'/explorer/block/' + block}
@@ -84,11 +86,27 @@ function back() {
     routeOption && router.push(routeOption)
   }
 }
+
+const calcNeedScroll = async () => {
+  await nextTick()
+  if (!explorer.value) needScroll.value = false;
+  needScroll.value = explorer.value.scrollHeight > explorer.value.clientHeight
+}
+
+onMounted(() => {
+  window.addEventListener('resize', calcNeedScroll)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', calcNeedScroll)
+})
+
+const handleFinish = () => {
+  calcNeedScroll()
+}
 </script>
 <style lang="scss" scoped>
-.explorer {
-  &::-webkit-scrollbar {
-    width: 0;
-  }
+.explorer.needScroll {
+  padding-left: 28px;
 }
 </style>

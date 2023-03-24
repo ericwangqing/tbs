@@ -5,7 +5,7 @@ div(v-if="props.block")
       template(#label)
         a-tooltip
           template(#title) {{ description.tooltip }}
-          QuestionCircleFilled.mr-4px(style="color:rgba(255,255,255,0.2)")
+          QuestionCircleFilled.mr-14px(style="color:rgba(255,255,255,0.2)")
         | {{ description.label }}
         | :
       template(v-if="description.label === 'BlockHeight'")
