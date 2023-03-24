@@ -76,7 +76,7 @@ export default defineComponent({
   }
   &.breathe {
     .side-btn__text {
-      background-image:-webkit-linear-gradient(left, #1acd57, #0093c2);
+      background-image:-webkit-linear-gradient(left, #FFCB00, #F08B00);
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
