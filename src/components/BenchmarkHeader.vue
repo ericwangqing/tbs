@@ -4,9 +4,10 @@
     .category-ceil(@click="changeTo('cockpit')", :class="{ selected: category === 'cockpit' }")
       i.iconfont.icon-dashboard.category-ceil--icon
       .category-ceil--name Cockpit
-    .category-ceil(@click="changeTo('chain')", :class="{ selected: category === 'chain' }")
-      i.iconfont.icon-blockchain2.category-ceil--icon
-      .category-ceil--name Chain
+    ATooltip(:title="controller.state === 'stopped' && category === 'cockpit' ? 'Should start executing or playback from config button firstly, then view the chain overview.' : ''" placement="bottom")
+      .category-ceil(@click="changeTo('chain')", :class="{ selected: category === 'chain', disabled: controller.state === 'stopped' && category === 'cockpit' }")
+        i.iconfont.icon-blockchain2.category-ceil--icon
+        .category-ceil--name Chain
   ScannedBox.block-info-board
     .block-info-board-ceil
       .block-info-board-ceil__label TPS
@@ -45,6 +46,7 @@ export default defineComponent({
   setup: (props, { emit }) => {
     const changeTo = (category) => {
       if (category === props.category) return
+      if (controller.state === 'stopped' && category === 'chain') return
       emit('change-category', category)
     }
     return {
@@ -80,27 +82,31 @@ export default defineComponent({
         font-size: 16px;
         line-height: 18px;
       }
-      &:hover {
+      &:hover:not(.disabled) {
         .category-ceil--icon, .category-ceil--name {
           color: #fff;
         }
       }
-      &:active {
+      &:active:not(.disabled) {
         .category-ceil--icon {
           font-size: 36px;
         }
       }
-      &.selected {
+      &.selected, &.selected:hover, &.selected:active {
         cursor: default;
         .category-ceil--icon {
           color: rgba(#FFA900, 0.85);
+          font-size: 40px;
         }
         .category-ceil--name {
           color: #fff;
         }
       }
       &:not(:last-child) {
-        border-right: solid 1px #d0d0d0;
+        border-right: solid 1px rgba(255, 255, 255, 0.3);
+      }
+      &.disabled {
+        cursor: not-allowed;
       }
     }
   }
@@ -112,8 +118,8 @@ export default defineComponent({
     margin: 0 auto;
     display: flex;
     width: min-content;
-    background: linear-gradient(180deg,rgba(0,0,0,0.50), rgba(0,0,0,0.20));
     border-radius: 4px;
+    background: linear-gradient(180deg,rgba(0,0,0,0.50), rgba(0,0,0,0.20));
     &-ceil {
       padding: 16px 66px 13px;
       position: relative;
@@ -124,7 +130,7 @@ export default defineComponent({
         line-height: 23px;
       }
       &__num {
-        color: #FFA900;
+        color: #ffa900;
         font-size: 34px;
         font-weight: bold;
         line-height: 39px;
