@@ -38,8 +38,9 @@
           span {{ memoryData }}
         AFormItem(label="Bandwidth")
           span {{ bandwidthData }}
-    .delete-btn(@click="handleDelete")
-      i.iconfont.icon-shanchu
+    APopconfirm(title="Are you sure to delete this test?" ok-text="Yes" cancel-text="No" @confirm.stop="handleDelete" arrowPointAtCenter)
+      .delete-btn(@click.stop)
+        i.iconfont.icon-shanchu
 </template>
 
 <script>
@@ -202,15 +203,26 @@ $--config-card-hover-mask: rgba(#fff, 0.1);
     }
     .delete-btn {
       position: absolute;
-      top: 20px;
-      right: 25px;
-      width: 24px;
-      height: 24px;
+      top: 18px;
+      right: 23px;
+      width: 28px;
+      height: 28px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       i {
         font-size: 24px;
         line-height: 24px;
         color: rgba(#fff, 0.3);
+        transition: all 0.3s ease-in-out;
+      }
+      &:hover i {
+        font-size: 28px;
+        color: rgba(#fff, 0.8);
+      }
+      &:active i {
+        font-size: 24px;
       }
     }
   }

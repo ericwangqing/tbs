@@ -7,10 +7,10 @@
   RoadMap.road-map-container
   BenchmarkHeader.benchmark-header(category="cockpit", @change-category="gotoChain")
   Countdown(v-if="controller.state === 'preparing'")
+  InstrumentPanel
   .cockpit-play-controller(v-if="controller.state === 'pausing' || controller.state === 'running'" @click="pauseOrRun")
     i.iconfont.icon-play(v-if="controller.state === 'pausing'")
     i.iconfont.icon-stop(v-if="controller.state === 'running'")
-  InstrumentPanel
   FinishModal(@playback="handlePlayback")
   ConfigPop(@playback="handlePlayback", @execute="handleExecute")
 
@@ -92,6 +92,7 @@ export default defineComponent({
     }
 
     const handlePlayback = (id) => {
+      controller.stop()
       if (id) currentTestId.value = id
       else controller.start('Playback', currentTestId.value)
     }
@@ -169,6 +170,7 @@ export default defineComponent({
       transform: perspective(1rem) rotateX(2deg);
       border-radius: 8px 0px 0px 0px;
       z-index: -1;
+      transition: box-shadow 0.3s ease-in-out;
     }
     i {
       color: #fff;

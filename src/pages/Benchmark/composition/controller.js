@@ -224,8 +224,14 @@ class Controller {
   }
 
   setVisibleShards({ page, perpage, key }) {
-    if (key) this.visibleShards = key
-    else {
+    const length = this.visibleShards.length
+    const first = this.visibleShards[0]
+    const last = this.visibleShards[length - 1]
+    if (key) {
+      if (key[0] ===first && key[key.length - 1] === last) return
+      this.visibleShards = key
+    } else {
+      if ((page - 1) * perpage ===first && page * perpage - 1 === last) return
       this.visibleShards = []
       for (let i = (page - 1) * perpage; i < page * perpage; i++) {
         this.visibleShards.push(i)

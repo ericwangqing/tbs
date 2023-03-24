@@ -2,7 +2,7 @@ import EventEmitter2 from 'eventemitter2'
 import { randomBetween } from './util.js'
 import { getAddressKeyString, getPublicKeyString } from './util.js'
 
-const SLOT_TIME = 12
+const SLOT_TIME = 4
 const COLLECT_PERCENT = 5 / 12
 const ASSEST_PERCENT = 3 / 12
 const FINALIZE_PERCENT = 2 / 12
@@ -35,15 +35,17 @@ class Executor {
     this.timeSpent = 0
     this.running = true
     this.updateNetworkInfoInterval()
+    this.generateMsg()
   }
 
   setSpeed(tpsBase) {
     this.tpsBase = tpsBase
   }
 
-  updateNetworkInfoInterval() {
-    this.interval = setInterval(() => {
-      if (!this.running) return
+  generateMsg() {
+    if (!this.running) return
+    setTimeout(() => {
+      const shards = this.testData.shards
       const tps = randomBetween(this.tpsBase * 0.95, this.tpsBase * 1.05)
       this.txCount += tps * SLOT_TIME
       if (this.txCount >= this.testData.dataset.txCount) {
@@ -52,7 +54,6 @@ class Executor {
       }
       this.chainHeight += this.testData.shards
       this.timeSpent += SLOT_TIME
-      const shards = this.testData.shards
       const performance = this.getPerformance(tps)
       const resource = this.getResource()
       this.events.emit('updateNetworkInfo', {
@@ -65,19 +66,27 @@ class Executor {
         performance,
         resource
       })
-      setTimeout(() => {
-        let max = 0
-        for (let i = 0; i < 10; i++) {
-          const base = tps * SLOT_TIME / shards
-          const currentBlockTxn = randomBetween(base * 0.95, base * 1.05)
-          max = Math.max(max, this.generateBlock(i, currentBlockTxn))
-        }
-        const txn = randomBetween(100, 200)
-        const slot = this.slot
-        setTimeout(() => this.events.emit('generateTbBlock', { $beacon: true, number: slot, slot, state: 'collect', timestamp: Date.now() }), 0)
-        setTimeout(() => this.events.emit('updateTbBlockState', { $beacon: true, number: slot, slot, txn, tbs: shards, state: 'finalized', timestamp: Date.now() }), max + SLOT_TIME * 40)
-      }, 0)
-      this.slot++
+    }, SLOT_TIME * 1000)
+    setTimeout(() => {
+      const shards = this.testData.shards
+      const tps = randomBetween(this.tpsBase * 0.95, this.tpsBase * 1.05)
+      let max = 0
+      for (let i = 0; i < 10; i++) {
+        const base = tps * SLOT_TIME / shards
+        const currentBlockTxn = randomBetween(base * 0.95, base * 1.05)
+        max = Math.max(max, this.generateBlock(i, currentBlockTxn))
+      }
+      const txn = randomBetween(100, 200)
+      const slot = this.slot
+      setTimeout(() => this.events.emit('generateTbBlock', { $beacon: true, number: slot, slot, state: 'collect', timestamp: Date.now() }), 0)
+      setTimeout(() => this.events.emit('updateTbBlockState', { $beacon: true, number: slot, slot, txn, tbs: shards, state: 'finalized', timestamp: Date.now() }), max + SLOT_TIME * 40)
+    }, 0)
+    this.slot++
+  }
+
+  updateNetworkInfoInterval() {
+    this.interval = setInterval(() => {
+      this.generateMsg()
     }, SLOT_TIME * 1000)
   }
 
