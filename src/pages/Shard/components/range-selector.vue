@@ -4,7 +4,8 @@
     a-input.range-selector-input(placeholder="#" v-model:value="startInput" @keyup.enter="onConfirm")
     .range-selecotr-sep
     a-input.range-selector-input(placeholder="#" v-model:value="endInput" @keyup.enter="onConfirm")
-    .range-selector-ok-btn(@click="onConfirm")
+    BreatheBtn.range-selector-ok-btn(@click="onConfirm" size="small" bgColor="linear-gradient(90deg, #ffcb00 3%, #f08b00 96%)")
+      span OK
 </template>
 
 <script>
@@ -100,35 +101,8 @@ export default defineComponent({
       padding-right: 28px;
     }
     .range-selector-ok-btn {
-      position: relative;
-      cursor: pointer;
       margin-left: 10px;
-      width: 40px;
-      height: 32px;
-      background: linear-gradient(90deg,#ffcb00 3%, #f08b00 96%);
-      border-radius: 4px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      &::after {
-        content: "OK";
-        font-size: 16px;
-        font-style: italic;
-        font-weight: bold;
-        color: #000000;
-      }
-      &:active::before {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        border-radius: inherit;
-        background: rgba(255, 255, 255, 0.1);
-      }
     }
   }
-
 }
 </style>

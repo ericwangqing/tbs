@@ -24,25 +24,22 @@
       )
     ConfigForm(v-else :data="editTestdata")
   .config-popup--footer
-    .wrappered-btn(v-if="mode !== ''")
-      AButton.save-btn(@click="handleSave")
-        i.iconfont.icon-Save
-        span Save
+    BreatheBtn(v-if="mode !== ''" @clk="handleSave" size="large" bgColor="linear-gradient(90deg, #ffcb00 3%, #f09b00 96%)" :disable-hint="saveDisabledHint", :disable="!!saveDisabledHint")
+      i.iconfont.icon-Save
+      span Save
       .btn-wrapper.execute-btn-wrapper
     ASpace(:size="140" v-else)
       ASpace(:size="50")
-        ABadge.config-btn--badged.wrappered-btn(count="?" :title="'Re execute'" :offset="[3, -12]")
-          AButton.execute-btn(@click="handleExecute")
-            i.iconfont.icon-Execute
-            span Execute
-          .btn-wrapper.execute-btn-wrapper
-        ABadge.config-btn--badged.wrappered-btn(count="?" :title="'Replays the records generated when this test configuration was last executed'" :offset="[3, -12]")
-          AButton.playback-btn(@click="handlePlayback")
-            i.iconfont.icon-zhongzhi
-            span Playback
-          .btn-wrapper
-          ATooltip(v-if="!selectedTest.result" title="This test configuration has not yet executed, cannot playback!")
-            .btn-disabled-wrapper
+        BreatheBtn(@clk="handleExecute" badge-hint="Re execute" size="large" bgColor="linear-gradient(90deg, #ffcb00 3%, #f09b00 96%)")
+          template(#badge)
+            i.iconfont.icon-jieshi
+          i.iconfont.icon-Execute
+          span Execute
+        BreatheBtn(@clk="handlePlayback" badge-hint="Replays the records generated when this test configuration was last executed" disable-hint="This test configuration has not yet executed, cannot playback!" size="large" :disable="!selectedTest.result")
+          template(#badge)
+            i.iconfont.icon-jieshi
+          i.iconfont.icon-zhongzhi
+          span Playback
       ASpace(:size="40")
         AButton.download-btn.bottom-animated(type="text" @click="handleDownload")
           i.iconfont.icon-download
@@ -53,26 +50,17 @@
         AButton.setting-btn.bottom-animated(type="text" @click="handleEdit")
           i.iconfont.icon-setting
           span Setting
-        BreatheBtn(badge-hint="Replays the records generated when this test configuration was last executed" disable-hint="This test configuration has not yet executed, cannot playback!" size="large" disable=true)
-          template(slot="badge")
-            i.iconfont.icon-jieshi
-          i.iconfont.icon-zhongzhi
-          span Playback
     AButton.back-btn.bottom-animated(type="text" @click="handleBack")
       span Back
       img(:src="BackSvg")
 
-.config-btn(@click="openConfig", :class="{ breathe: controller.state === 'stopped' || controller.state === 'completed' }")
-  .config-btn__text Config
-  CaretRightOutlined.config-btn__icon
-  .config-btn-shadow
+SideBtn.config-btn(@click="openConfig", :breathe="controller.state === 'stopped' || controller.state === 'completed'")
 </template>
 
 <script>
-import { computed, defineComponent, ref, onMounted, onBeforeUnmount } from 'vue'
+import { computed, defineComponent, nextTick, ref, onMounted, onBeforeUnmount } from 'vue'
 import BackSvg from '@/assets/back-icon.svg'
 import { controller } from '../composition/controller.js'
-import { CaretRightOutlined } from '@ant-design/icons-vue'
 import { useRoute } from 'vue-router'
 
 import ConfigCard from './config-card.vue'
@@ -82,8 +70,7 @@ export default defineComponent({
   name: 'ConfigPopup',
   components: {
     ConfigCard,
-    ConfigForm,
-    CaretRightOutlined
+    ConfigForm
   },
   props: {
     configBtnTop: {
@@ -105,7 +92,8 @@ export default defineComponent({
     const editTestdata = ref({})
     const needScroll = ref(false)
 
-    const calcNeedScroll = () => {
+    const calcNeedScroll = async () => {
+      await nextTick()
       if (!cardList.value) needScroll.value = false;
       needScroll.value = cardList.value.scrollHeight > cardList.value.clientHeight
     }
@@ -155,9 +143,19 @@ export default defineComponent({
       console.log(editTestdata.value)
       // TODO after post api
       mode.value = ''
-      editTestdata.value = null
+      editTestdata.value = {}
       calcNeedScroll()
     }
+
+    const saveDisabledHint = computed(() => {
+      const list = []
+      if (!editTestdata.value.name) list.push('Name')
+      if (!editTestdata.value.dataset || !editTestdata.value.dataset.timeRange) list.push('Data range')
+      if (!editTestdata.value.shards) list.push('Shards')
+      if (!editTestdata.value.nodes) list.push('Node Scale')
+      if (list.length > 0) return 'Need ' + list.join(', ')
+      return ''
+    })
 
     const handleDelete = () => {
       // TODO
@@ -191,6 +189,7 @@ export default defineComponent({
       selectedTest,
       mode,
       editTestdata,
+      saveDisabledHint,
       handleCreate,
       handlePlayback,
       handleExecute,
@@ -329,76 +328,6 @@ export default defineComponent({
     align-items: center;
     justify-content: space-between;
 
-    .config-btn--badged {
-      &:deep .ant-badge-count {
-        width: 14px;
-        height: 14px;
-        background: rgba(#fff, 0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #000;
-        min-width: unset;
-        font-size: 12px;
-        border: none;
-        box-shadow: none;
-        cursor: pointer;
-      }
-    }
-    .wrappered-btn {
-      position: relative;
-      .btn-wrapper {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: -1;
-        @include btnSize;
-        background: #fff;
-        transition: all 0.3s ease-in-out;
-        &.execute-btn-wrapper {
-          background: linear-gradient(90deg,#ffcb00 3%, #f08b00 96%);
-        }
-      }
-      .ant-btn {
-        color: #000;
-        font-family: Helvetica;
-        font-weight: bold;
-        font-style: italic;
-        background: transparent;
-        border: none;
-        i {
-          margin-right: 6px;
-          font-weight: normal;
-        }
-        &:hover, &:active {
-          & + .btn-wrapper {
-            height: 48px;
-            width: 186px;
-            box-shadow: 0px 0px 20px 0px rgba(179,195,255,0.50);
-          }
-        }
-        &:active {
-          & + .btn-wrapper {
-            height: 44px;
-            width: 174px;
-          }
-        }
-        &::after {
-          display: none;
-        }
-      }
-      .btn-disabled-wrapper {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 2;
-        background: rgba(255, 255, 255, 0.3);
-        @include btnSize;
-        cursor: not-allowed;
-      }
-    }
     .ant-btn-text.bottom-animated {
       position: relative;
       span {
@@ -420,48 +349,5 @@ export default defineComponent({
   position: fixed;
   right: v-bind('configBtnRight');
   top: v-bind('configBtnTop');
-  padding: 12px 46px 10px 16px;
-  color: #fff;
-  font-weight: bold;
-  font-style: italic;
-  font-size: 20px;
-  line-height: 24px;;
-  border-radius: 8px 0px 0px 8px;
-  user-select: none;
-  cursor: pointer;
-  background: linear-gradient(90deg,rgba(0, 0, 0, 0.80) 46%,  rgba(0, 0, 0, 0.00));
-  display: flex;
-  align-items: center;
-  z-index: 80;
-  &.breathe {
-    .config-btn__text {
-      background-image:-webkit-linear-gradient(left, #FFCB00, #F08B00);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .config-btn-shadow {
-      position: absolute;
-      top: -20px;
-      left: -20px;
-      right: 0;
-      bottom: -20px;
-      overflow: hidden;
-      &::after {
-        content: '';
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        right: 0;
-        bottom: 20px;
-        z-index: -10;
-        border-radius: 8px 0 0 8px;
-        box-shadow: 0px 0px 20px 0px rgba(179, 195, 255, 0.50);
-      }
-    }
-  }
-  &__icon {
-    margin-left: 35px;
-  }
 }
 </style>
