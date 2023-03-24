@@ -24,17 +24,17 @@ let routeOption
 if (routeName === 'explorer-block-list') {
   const { type, index } = route.query
   if (type === 'beacon') {
-    name = 'ETH'
+    name = <div class="font-bold">ETH</div>
     label = 'Time Beacon Chain'
   } else {
-    name = 'TBS'
+    name = <div class="font-bold">TBS</div>
     label = `S-${index}`.padStart(3, '0')
   }
   routeOption = {
     name: 'blockchain',
   }
 } else if (routeName === 'explorer-transaction-list') {
-  name = 'Transactions'
+  name = <div class="font-bold">Transactions</div>
   const query = route.query.block
   label = (
     <div>
@@ -50,7 +50,7 @@ if (routeName === 'explorer-block-list') {
 } else if (routeName === 'explorer-block-detail') {
   const block = route.params.blockNumber
   name = (
-    <div>
+    <div class="font-bold">
       Block
       <span style="font-size:12px"> # </span>
       <RouterLink
@@ -67,13 +67,13 @@ if (routeName === 'explorer-block-list') {
   }
 } else if (routeName === 'explorer-transaction-detail') {
   const block = route.params.blockNumber
-  name = <div>Transaction Details</div>
+  name = <div class="font-bold">Transaction Details</div>
   label = 'Time Beacon Chain'
   routeOption = {
     name: `explorer-transaction-list`,
   }
 } else if (routeName === 'explorer-address-detail') {
-  name = <div>Address Details</div>
+  name = <div class="font-bold">Address Details</div>
   label = 'Time Beacon Chain'
 }
 function back() {
