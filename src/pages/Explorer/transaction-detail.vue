@@ -1,8 +1,8 @@
 <template lang="pug">
-div.transaction-detail-container.px-30px.pb-30px.rounded-8px
+div.transaction-detail-container.px-30px.pb-60px.rounded-8px
     a-tabs(class="dark-tabs",v-model:activeKey="activeKey")
       a-tab-pane(key="Overview", tab="Overview")
-        a-skeleton(:loading="loading")
+        a-skeleton(:loading="loading" active)
           TransactionOverview(:transaction="transaction", :block="block", :transactionReceipt="transactionReceipt", :blockStart="blockStart")
   
 </template>
@@ -19,6 +19,7 @@ const block = ref(null)
 const transaction = ref(null)
 const transactionReceipt = ref(null)
 const blockStart = ref(0)
+const emit = defineEmits()
 
 const transactionHash = computed(() => {
   return route.params.hash
@@ -38,6 +39,7 @@ watchEffect(async () => {
     console.log(e)
   } finally {
     loading.value = false
+    emit('finish')
   }
 })
 </script>

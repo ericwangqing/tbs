@@ -1,7 +1,7 @@
 <template lang="pug">
 .blockchain-page-container
   BenchmarkHeader.benchmark-header(category="chain" @change-category="gotoCockpit")
-  ConfigPop(@playback="gotoCockpit", @execute="gotoCockpit")
+  ConfigPop(:configBtnRight="'28px'" @playback="gotoCockpit", @execute="gotoCockpit")
   .blockchain-page-content
     .blockchain-overview-container
       .blockchain-overview-header

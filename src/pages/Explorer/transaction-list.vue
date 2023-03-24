@@ -1,5 +1,5 @@
 <template lang="pug">
-div.transaction-list-container.px-30px.pb-30px.rounded-8px
+div.transaction-list-container.px-30px.pb-60px.rounded-8px
       div.h-64px.lh-64px.text-white.flex A total of 
         | {{ txs.length }}
         | transactions found
@@ -21,6 +21,7 @@ const blockStart = ref(0)
 const block = ref(null)
 const current = ref(1)
 const pageSize = ref(2)
+const emit = defineEmits()
 
 const pagination = computed(() => ({
   total: (block.value && block.value.transactions.length) || 0,
@@ -28,6 +29,7 @@ const pagination = computed(() => ({
   pageSize: pageSize.value,
   position: ['bottomRight', 'topRight'],
   size: 'small',
+  'show-quick-jumper': true
 }))
 
 onMounted(async () => {
@@ -50,12 +52,14 @@ watchEffect(async () => {
   } catch (e) {
   } finally {
     loading.value = false
+    emit('finish')
   }
 })
 
 function tableChange(page) {
   current.value = page.current
   pageSize.value = page.pageSize
+  emit('finish')
 }
 
 function changeBlockNumber(blockNumber) {

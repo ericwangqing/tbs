@@ -133,7 +133,7 @@ export default defineComponent({
         content: '';
         height: 62px;
         width: 1px;
-        background: #d0d0d0;
+        background: rgba(255, 255, 255, 0.3);
         position: absolute;
         right: 0;
         top: 12px;

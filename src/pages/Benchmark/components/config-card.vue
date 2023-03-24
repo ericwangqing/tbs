@@ -7,7 +7,6 @@
     .config-card--content-header
       .config-card--title {{ data.name }}
       .config-card--dataset {{ data.dataset.name }}
-      .config-card--delete
     .config-card--content-main
       AForm
         AFormItem(label="Dataset range")

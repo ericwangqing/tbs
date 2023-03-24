@@ -16,7 +16,7 @@ div.rounded-8px
         div
           description-item.no-border(label="balance")
             template(#label) My Name Tag:
-  div.address-detail-container.px-8px.pb-30px
+  div.address-detail-container.px-8px.pb-60px
     a-tabs(v-model:activeKey="activeKey")
       a-tab-pane(key="transactions", tab="Transactions")
         addressTransactions(:address="address")
