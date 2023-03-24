@@ -54,5 +54,26 @@
       "bandwidth": 434000
     },
     "record": []
+  },
+  {
+    "name": "ETH Q1&Q2, 22",
+    "id": "4",
+    "dataset": {
+      "name": "ETH",
+      "timeRange": [
+        1648742400000,
+        1664553599000
+      ],
+      "txCount": 100000000000
+    },
+    "shards": 4000,
+    "nodes": 40345,
+    "result": {
+      "timeUsed": 986320,
+      "cpu": 8,
+      "memory": 329000000,
+      "bandwidth": 434000
+    },
+    "record": []
   }
 ]

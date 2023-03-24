@@ -1,32 +1,42 @@
 <template lang="pug">
 .config-popup(:class="{ visible: visible }")
   .config-popup--mask
-  .config-popup--wrapper
-    .config-popup--wrapper-header
-      .title
+  .config-popup--container
+    .config-popup--container-header
+      .title(v-if="mode === ''")
         i Config
         span （
         i {{ controller.testList.length }}
         span ）
-      ASpace(:size="40")
+      .title(v-else-if="mode === 'create'")
+        i Create
+      .title(v-else)
+        i Setting
+      ASpace(:size="40" v-if="mode === ''")
         AButton.create-btn(@click="handleCreate")
           i.iconfont.icon-create
           span Create
         AInputSearch(allowClear)
-    .config-popup--wrapper-main(ref="cardList", :class="{ needScroll: needScroll }")
+    .config-popup--container-main(v-if="mode === ''" ref="cardList", :class="{ needScroll: needScroll }")
       ConfigCard(
         v-for="item in controller.testList", :key="item.id", :data="item", :selectedId="selectedConfigId"
         @select="selectedConfigId = item.id"
       )
+    ConfigForm(v-else :data="editTestdata")
   .config-popup--footer
-    ASpace(:size="140")
+    .wrappered-btn(v-if="mode !== ''")
+      AButton.save-btn(@click="handleSave")
+        i.iconfont.icon-Save
+        span Save
+      .btn-wrapper.execute-btn-wrapper
+    ASpace(:size="140" v-else)
       ASpace(:size="50")
-        ABadge.config-btn--badged(count="?" :title="'Re execute'" :offset="[3, -12]")
+        ABadge.config-btn--badged.wrappered-btn(count="?" :title="'Re execute'" :offset="[3, -12]")
           AButton.execute-btn(@click="handleExecute")
             i.iconfont.icon-Execute
             span Execute
           .btn-wrapper.execute-btn-wrapper
-        ABadge.config-btn--badged(count="?" :title="'Replays the records generated when this test configuration was last executed'" :offset="[3, -12]")
+        ABadge.config-btn--badged.wrappered-btn(count="?" :title="'Replays the records generated when this test configuration was last executed'" :offset="[3, -12]")
           AButton.playback-btn(@click="handlePlayback")
             i.iconfont.icon-zhongzhi
             span Playback
@@ -60,11 +70,13 @@ import { CaretRightOutlined } from '@ant-design/icons-vue'
 import { useRoute } from 'vue-router'
 
 import ConfigCard from './config-card.vue'
+import ConfigForm from './config-form.vue'
 
 export default defineComponent({
   name: 'ConfigPopup',
   components: {
     ConfigCard,
+    ConfigForm,
     CaretRightOutlined
   },
   props: {
@@ -79,6 +91,8 @@ export default defineComponent({
     const cardList = ref(null)
     const selectedConfigId = ref('1')
     const visible = ref(false)
+    const mode = ref('') // '' | 'create' | 'edit'
+    const editTestdata = ref({})
 
     const needScroll = computed(() => {
       if (!cardList.value) return false;
@@ -86,7 +100,8 @@ export default defineComponent({
     })
 
     const handleCreate = () => {
-
+      mode.value = 'create'
+      editTestdata.value = {}
     }
 
     const jumpPageBeforeStart = String(route.name) === 'blockchain'
@@ -115,11 +130,21 @@ export default defineComponent({
     }
 
     const handleEdit = () => {
-      
+      mode.value = 'edit'
+      editTestdata.value = JSON.parse(JSON.stringify(selectedTest.value))
     }
 
     const handleBack = () => {
-      visible.value = false
+      if (mode.value !== '') mode.value = ''
+      else visible.value = false
+      editTestdata.value = {}
+    }
+
+    const handleSave = () => {
+      console.log(editTestdata.value)
+      // TODO after post api
+      mode.value = ''
+      editTestdata.value = null
     }
 
     const openConfig = () => {
@@ -138,12 +163,15 @@ export default defineComponent({
       BackSvg,
       visible,
       selectedTest,
+      mode,
+      editTestdata,
       handleCreate,
       handlePlayback,
       handleExecute,
       handleDownload,
       handleContrast,
       handleEdit,
+      handleSave,
       handleBack,
       openConfig,
     }
@@ -192,6 +220,50 @@ export default defineComponent({
       display: none;
     }
   }
+  .ant-input-search {
+    width: 280px;
+    height: 50px;
+    &:deep {
+      .ant-input-affix-wrapper {
+        line-height: 40px;
+        background: rgba(#000, 0.1);
+        border-radius: 8px 0 0 8px;
+        padding-left: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        border-right: none;
+        box-shadow: none;
+      }
+      .ant-input-suffix svg {
+        color: rgba(#fff, 0.15);
+        font-size: 12px;
+      }
+      input {
+        background: transparent;
+        color: #fff;
+        font-size: 18px;
+        border: none;
+      }
+      .ant-input-group-addon {
+        background: transparent;
+        left: 0;
+      }
+      button.ant-btn.ant-input-search-button {
+        height: 50px;
+        width: 64px;
+        background: rgba(#000, 0.1);
+        border-radius: 0 8px 8px 0;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        border-left: none;
+        svg {
+          color: #fff;
+          font-size: 22px;
+        }
+        &::after {
+          display: none;
+        }
+      }
+    }
+  }
 
   &--mask {
     position: fixed;
@@ -201,7 +273,7 @@ export default defineComponent({
     bottom: 0;
     background: linear-gradient(180deg, rgba(22, 24, 30, 0.80) 0%,  rgba(0, 0, 0, 0.95));
   }
-  &--wrapper {
+  &--container {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -219,51 +291,11 @@ export default defineComponent({
     &-header {
       display: flex;
       justify-content: space-between;
-      padding: 26px 40px;
+      padding: 26px 40px 29px;
       .title {
         font-size: 34px;
         line-height: 41px;
         font-weight: bold;
-      }
-      .ant-input-search {
-        width: 280px;
-        height: 50px;
-        &:deep {
-          .ant-input-affix-wrapper {
-            line-height: 40px;
-            background: rgba(#000, 0.1);
-            border-radius: 8px 0 0 8px;
-            padding-left: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.45);
-            border-right: none;
-            box-shadow: none;
-          }
-          .ant-input-suffix svg {
-            color: rgba(#fff, 0.15);
-            font-size: 12px;
-          }
-          input {
-            background: transparent;
-            color: #fff;
-            font-size: 18px;
-          }
-          .ant-input-group-addon {
-            background: transparent;
-            left: 0;
-          }
-          button.ant-btn.ant-input-search-button {
-            height: 50px;
-            width: 64px;
-            background: rgba(#000, 0.1);
-            border-radius: 0 8px 8px 0;
-            border: 1px solid rgba(255, 255, 255, 0.45);
-            border-left: none;
-            svg {
-              color: #fff;
-              font-size: 22px;
-            }
-          }
-        }
       }
       .create-btn {
         background: rgba(255, 255, 255, 0.10);
@@ -289,6 +321,7 @@ export default defineComponent({
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      margin-top: 20px;
       padding: 0 40px;
       overflow-y: auto;
       &.needScroll {
@@ -334,6 +367,9 @@ export default defineComponent({
         box-shadow: none;
         cursor: pointer;
       }
+    }
+    .wrappered-btn {
+      position: relative;
       .btn-wrapper {
         position: absolute;
         top: 50%;
@@ -356,6 +392,7 @@ export default defineComponent({
         border: none;
         i {
           margin-right: 6px;
+          font-weight: normal;
         }
         &:hover, &:active {
           & + .btn-wrapper {
