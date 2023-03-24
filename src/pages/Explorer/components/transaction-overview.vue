@@ -12,7 +12,7 @@ div(v-if="props.transaction")
       template(v-if="description.label === 'Transaction Hash'")
         | {{ props.transaction.hash
         | }}
-        copy-outlined(@click="copyHash(props.transaction.hash)").ml-4px
+        i.iconfont.icon-copy.ml-8px.text-2xl.align-middle.cursor-pointer(@click="copyHash(props.transaction.hash)")
       template(v-else-if="description.label === 'Status'")
         a-tag(:color="props.transactionReceipt.status === 0 ? 'error' : 'rgba(90,216,166,0.3)'")
           | {{
@@ -20,7 +20,7 @@ div(v-if="props.transaction")
           | }}
       template(v-else-if="description.label === 'Block'")
         router-link(:to="`/explorer/block/${props.transaction.blockNumber}`") {{ props.transaction.blockNumber }}
-        span.ml-4px {{ props.blockStart - props.block.number + 1 }} Block Confirmations
+        span.ml-10px {{ props.blockStart - props.block.number + 1 }} Block Confirmations
       template(v-else-if="description.label === 'Timestamp'") {{ props.block && fromNow(props.block.timestamp) }}
         | (
         | {{
@@ -32,7 +32,7 @@ div(v-if="props.transaction")
           | {{
           | props.transaction[description.label.toLocaleLowerCase()]
           | }}
-        copy-outlined(@click="copyHash(props.transaction[description.label])").ml-4px
+        i.iconfont.icon-copy.ml-8px.text-2xl.align-middle.cursor-pointer(@click="copyHash(props.transaction.hash)")
       template(v-else-if="description.label === 'Gas Fees'")
         span(v-if="props.block.baseFeePerGas")    
           span.text-black-30 Base：
@@ -192,5 +192,8 @@ function copyHash(hash) {
 <style lang="scss" scoped>
 .text-black-30 {
   color: rgba(255, 255, 255, 0.3);
+}
+textarea.ant-input {
+  cursor: text;
 }
 </style>

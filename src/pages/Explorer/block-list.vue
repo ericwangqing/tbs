@@ -6,13 +6,13 @@ div.block-list-container.px-30px.pb-30px.rounded-8px
     a-table(:dataSource="blocks", :columns="columns", rowKey="number",:pagination="pagination", :loading="loading", @change="tableChange")
       template(#bodyCell="{ column, record, text, index }")
         template(v-if="column.dataIndex === 'number'")
-          router-link(:to="`/explorer/block/${record.number}`") {{text}}
+          router-link(:to="`/explorer/block/${record.number}`").font-bold {{text}}
         template(v-if="column.dataIndex === 'timestamp'")
           span {{ fromNow(text) }}
         template(v-else-if="column.dataIndex === 'transactions'")
-          router-link(:to="`/explorer/transaction-list?block=${record.number}`") {{ text.length }}
+          router-link(:to="`/explorer/transaction-list?block=${record.number}`").font-bold {{ text.length }}
         template(v-else-if="column.dataIndex === 'miner'")
-          router-link(:to="`/explorer/address/${record.miner}`").truncate.max-w-200px.inline-block {{ text }}
+          router-link(:to="`/explorer/address/${record.miner}`").truncate.max-w-200px.inline-block.align-bottom.font-bold {{ text }}
         template(v-else-if="column.dataIndex === 'gasUsed'")
           div
             div

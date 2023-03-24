@@ -161,7 +161,6 @@ $--config-card-hover-mask: rgba(#fff, 0.1);
 
 .config-card {
   @include linearGradientRadiusBorder($--config-card-width, $--config-card-height, $--config-card-border-width, $--config-card-border-radius, $--config-card-bg, $--config-card-bg);
-  margin-bottom: 33px;
   &--content {
     padding: 36px 26px 23px;
     cursor: pointer;
@@ -170,6 +169,8 @@ $--config-card-hover-mask: rgba(#fff, 0.1);
     &-header {
       display: flex;
       align-items: center;
+      line-height: 45px;
+      margin-bottom: 26px;
       .config-card--title {
         font-size: 32px;
         font-weight: bold;
@@ -247,6 +248,9 @@ $--config-card-hover-mask: rgba(#fff, 0.1);
   }
   &:hover.selected .config-card--mask {
     @include basicCard($--config-card-width, $--config-card-height, 0, $--config-card-border-radius, $--config-card-hover-mask);
+  }
+  &:not(:nth-last-child(1), :nth-last-child(2):nth-child(2n+1)) {
+    margin-bottom: 40px;
   }
 }
 </style>

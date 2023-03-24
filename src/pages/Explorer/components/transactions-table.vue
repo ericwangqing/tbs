@@ -7,7 +7,7 @@ a-table(:dataSource="props.txs", :columns="columns", rowKey="hash", :loading="pr
       router-link(:to="`/explorer/block/${text}`") {{ text }}
     template(v-if="column.dataIndex === 'from' || column.dataIndex === 'to'")
       .flex.justify-between.items-center
-        router-link(:to="`/explorer/address/${text}`").truncate.max-w-150px.inline-block {{ text }}
+        router-link(:to="`/explorer/address/${text}`").truncate.max-w-150px.inline-block.font-bold {{ text }}
         .icon-container(v-if="column.dataIndex === 'from'")
           .iconfont.icon-youjiantou1
     template(v-if="column.dataIndex==='method'")
