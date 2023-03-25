@@ -27,6 +27,7 @@ class Controller {
     inAll: [],
     outAll: []
   }
+  fastThreshold = 90000
   resourceData = {
     cpu: [],
     memory: [],
@@ -133,6 +134,10 @@ class Controller {
           this.initEvents()
           this.executor.start(this.testData, this.visibleShards)
         }
+
+        setTimeout(() => {
+          controller.setSpeed(true)
+        }, 200)
       }, PREPARING_TIME)
     }, needPageJumpDelay ? 500 : 0) // from blockchain to cockpit, give a time to redraw page.
   }
@@ -270,7 +275,7 @@ class Controller {
   }
 
   setSpeed(isFast) {
-    const tpsBase = isFast ? randomBetween(106000, 116000) : randomBetween(90, 110)
+    const tpsBase = isFast ? randomBetween(94000, 115000) : randomBetween(90, 110)
     this.executor.setSpeed(tpsBase)
   }
 

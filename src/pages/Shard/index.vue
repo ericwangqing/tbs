@@ -5,12 +5,14 @@
   .blockchain-page-content
     .blockchain-overview-container
       .blockchain-overview-header
-        .blockchain-title Time Beacon Chain
+        .blockchain-title
+          span Time Beacon Chain --
+          span.label(v-if="controller.testData") {{ controller.testData.timeBeaconChain }}
         a-progress(v-if="!tbLoading" type="circle" :percent="percent" :width="20" :strokeWidth="10" :format="() => ''" strokeColor="#ffffff" trailColor="#373948")
       .blockchain-overview-content
         .blockchain-item
           .blockchain-info
-            span(v-if="!tbLoading") ETH
+            span(v-if="!tbLoading") {{controller?.testData?.timeBeaconChain || 'ETH'}}
           .blockchain-detail
             BlockchainSkeleton(v-if="tbLoading")
             Blockchain(v-else :blocks="controller.visibleLatestTbBlocks")
@@ -125,6 +127,7 @@ export default defineComponent({
         query: {
           type,
           index,
+          chain: controller?.testData?.timeBeaconChain || undefined
         },
       })
     }
@@ -181,6 +184,11 @@ export default defineComponent({
       text-align: left;
       color: #ffffff;
       line-height: 28px;
+      .label {
+        margin-left: 4px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.85);
+      }
     }
     .blockchain-interface {
       display: flex;

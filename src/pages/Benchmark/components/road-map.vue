@@ -1,6 +1,6 @@
 <template lang="pug">
 .road-map-container
-  .test-plan-beacon-chain {{ controller.testData.timeBeaconChain.toLocaleUpperCase() }}
+  .test-plan-beacon-chain(v-if="controller?.testData?.timeBeaconChain") {{ controller.testData.timeBeaconChain.toLocaleUpperCase() }}
   .test-plan-state
     span(v-if="controller.mode === 'Playback' && controller.state === 'running'") {{ controller.playbackSpeed }}X 
     span(v-if="controller.state === 'running' || controller.state === 'pausing' || controller.state === 'completed'") {{ controller.mode }}
@@ -127,7 +127,7 @@ export default defineComponent({
     })
 
     const triggerColor = computed(() => {
-      if (controller.tps >= 100000) return '#CD401A'
+      if (controller.tps >= controller.fastThreshold) return '#CD401A'
       return '#FD693C'
     })
 
