@@ -11,6 +11,13 @@ ALayout
       AMenuItem(key="home" title="Home") Home
       AMenuItem(key="benchmark" title="Benchmark") Benchmark
       AMenuItem(key="security" title="Security") Security
+    
+    .logos
+      i.iconfont.icon-ETHglobal(@click="jumpTo('eth')")
+      i.iconfont.icon-GitHub(@click="jumpTo('github')")
+      i.iconfont.icon-Polygon(@click="jumpTo('Polygon')")
+      i.iconfont.icon-Polybase(@click="jumpTo('Polybase')")
+      i.iconfont.icon-Gnosis(@click="jumpTo('Gnosis')")
 
   ALayoutContent
     slot
@@ -50,12 +57,21 @@ export default defineComponent({
       router.push({ name: 'home' })
     }
 
+    const jumpTo = (where) => {
+      if (where === 'eth') window.open('https://ethglobal.com/showcase/tbs-hqkne')
+      else if (where === 'github') window.open('https://github.com/ericwangqing/tbs')
+      else if (where === 'Polygon') window.open('https://polygon.technology/')
+      else if (where === 'Polybase') window.open('https://polybase.xyz/')
+      else if (where === 'Gnosis') window.open('https://www.gnosis.io/')
+    }
+
     return {
       route,
       selectedRoute,
       Logo,
       goHome,
-      linkToRoute
+      linkToRoute,
+      jumpTo
     }
   }
 })
@@ -86,6 +102,7 @@ export default defineComponent({
       user-select: none
       height: 100%
       color: #fff
+      cursor: pointer
       img
         max-height: 100%
 
@@ -132,7 +149,17 @@ export default defineComponent({
             border-color: transparent
       :deep .ant-menu-overflow-item-rest
         display: none !important
-
+    .logos
+      position: absolute
+      right: 30px
+      display: flex
+      i
+        margin: 0 8px
+        font-size: 32px
+        color: rgba(255, 255, 255, 0.65)
+        cursor: pointer
+        &:hover
+          color: #fff
   &-content
     flex-grow: 1
 
