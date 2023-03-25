@@ -21,7 +21,13 @@
     "size": "t=\"$(npm pack .)\"; wc -c \"${t}\"; tar tvf \"${t}\"; rm \"${t}\";",
     "stage": "git add . && git commit -m \"$npm_package_version\" && git tag $npm_package_version && git push && git push --tags"
   },
-  "license": "UNLICENSED",
+  "author": "wangqing <wangqing@mq-ai.cn>",
+  "contributors": [
+    "weihaopeng <weihaopeng@mq-ai.cn>",
+    "lixinfeng <lixinfeng@mq-ai.cn>",
+    "huangdongmin <huangdongmin@mq-ai.cn>"
+  ],
+  "license": "MIT",
   "dependencies": {
     "@vueuse/core": "^9.6.0",
     "ant-design-vue": "^3.2.12",
