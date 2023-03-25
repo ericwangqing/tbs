@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3771513 */
-  src: url('iconfont.woff2?t=1679705974420') format('woff2'),
-       url('iconfont.woff?t=1679705974420') format('woff'),
-       url('iconfont.ttf?t=1679705974420') format('truetype');
+  src: url('iconfont.woff2?t=1679769727888') format('woff2'),
+       url('iconfont.woff?t=1679769727888') format('woff'),
+       url('iconfont.ttf?t=1679769727888') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,22 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-TBS:before {
+  content: "\e6a1";
+}
+
+.icon-Polybase:before {
+  content: "\e6a4";
+}
+
+.icon-Gnosis:before {
+  content: "\e6a5";
+}
+
+.icon-Polygon:before {
+  content: "\e6a6";
 }
 
 .icon-GitHub:before {
@@ -39,10 +55,6 @@
 
 .icon-chart:before {
   content: "\e6a0";
-}
-
-.icon-TBS:before {
-  content: "\e6a1";
 }
 
 .icon-QRcode:before {

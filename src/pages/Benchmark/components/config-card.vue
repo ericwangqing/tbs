@@ -5,6 +5,8 @@
   .config-card--mask
   .config-card--content
     .config-card--content-header
+      .config-card--beacon-chain-icon
+        i.iconfont(:class="getIcon(data.timeBeaconChain)")
       .config-card--title {{ data.name }}
       .config-card--dataset {{ data.dataset.name }}
     .config-card--content-main
@@ -126,6 +128,14 @@ export default defineComponent({
       return formatTime(now.value)
     })
 
+    const getIcon = (beconChainName) => {
+      if (beconChainName === 'Ethereum') return 'icon-ETHglobal'
+      if (beconChainName === 'Polygon') return 'icon-Polygon'
+      if (beconChainName === 'Polybase') return 'icon-Polybase'
+      if (beconChainName === 'Gnosis') return 'icon-Gnosis'
+      return ''
+    }
+
     return {
       isRunning,
       isPlayback,
@@ -141,7 +151,8 @@ export default defineComponent({
       formatTimeRange,
       formatDayTimeWithUnit,
       handleClick,
-      handleDelete
+      handleDelete,
+      getIcon
     }
   }
 })
@@ -174,6 +185,12 @@ $--config-card-hover-mask: rgba(#fff, 0.1);
       .config-card--title {
         font-size: 32px;
         font-weight: bold;
+      }
+      .config-card--beacon-chain-icon i {
+        font-size: 30px;
+        vertical-align: bottom;
+        margin-right: 16px;
+        font-weight: bolder;
       }
       .config-card--dataset {
         font-size: 24px;

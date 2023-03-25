@@ -20,7 +20,7 @@
     .config-popup--container-main(v-if="mode === ''" ref="cardList", :class="{ needScroll: needScroll }")
       ConfigCard(
         v-for="item in controller.testList", :key="item.id", :data="item", :selectedId="selectedConfigId"
-        @select="selectedConfigId = item.id" @delete="handleDelete"
+        @select="selectedConfigId = item.id" @delete="handleDelete(item.id)"
       )
     ConfigForm(v-else :data="editTestdata")
   .config-popup--footer
@@ -62,6 +62,7 @@ import { computed, defineComponent, nextTick, ref, onMounted, onBeforeUnmount } 
 import BackSvg from '@/assets/back-icon.svg'
 import { controller } from '../composition/controller.js'
 import { useRoute } from 'vue-router'
+import { v4 as uuidv4 } from 'uuid'
 
 import ConfigCard from './config-card.vue'
 import ConfigForm from './config-form.vue'
@@ -141,7 +142,16 @@ export default defineComponent({
 
     const handleSave = () => {
       console.log(editTestdata.value)
+      editTestdata.value.id = uuidv4()
+      editTestdata.value.txCount = 30050620
       // TODO after post api
+      controller.addTest(editTestdata.value)
+      const customListStr = localStorage.getItem('tbsTestList')
+      let customList
+      if (customListStr) customList = JSON.parse(customListStr)
+      else customList = []
+      customList.unshift(editTestdata.value)
+      localStorage.setItem('tbsTestList', JSON.stringify(customList))
       mode.value = ''
       editTestdata.value = {}
       calcNeedScroll()
@@ -157,8 +167,16 @@ export default defineComponent({
       return ''
     })
 
-    const handleDelete = () => {
-      // TODO
+    const handleDelete = (id) => {
+      const customListStr = localStorage.getItem('tbsTestList')
+      let customList
+      if (customListStr) {
+        customList = JSON.parse(customListStr)
+        const index = customList.findIndex(data => data.id === id)
+        if (index > -1) customList.splice(index, 1)
+        localStorage.setItem('tbsTestList', JSON.stringify(customList))
+      }
+      controller.removeTest(id)
       calcNeedScroll()
     }
 

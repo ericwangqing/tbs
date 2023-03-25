@@ -18,9 +18,11 @@ class Controller {
   txCount = 0
   chainHeight = 0
   shards = 0
+  nodeScale = 0
   nodes = 0
   testData = null
   timeSpent = 0
+  timeBeaconChain = ''
   performanceData = {
     inAll: [],
     outAll: []
@@ -37,7 +39,10 @@ class Controller {
 
   constructor() {
     this.executor = new Executor()
-    this.testList = testList
+    const customListStr = localStorage.getItem('tbsTestList')
+    let customList = []
+    if (customListStr) customList = JSON.parse(customListStr)
+    this.testList = customList.concat(testList)
   }
 
   get percent() {
@@ -46,7 +51,7 @@ class Controller {
   }
 
   addTest(test) {
-    this.testList.push(test)
+    this.testList.unshift(test)
   }
 
   removeTest(testId) {
