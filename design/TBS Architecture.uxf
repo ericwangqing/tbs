@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.0.0">
+  <zoom_level>14</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>154</x>
+      <y>602</y>
+      <w>406</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>TCP UDP Libp2p NTP
+bg=light_gray
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>434</x>
+      <y>98</y>
+      <w>686</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>* Time Beacon Chain Architecture *
+style=wordwrap</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>154</x>
+      <y>504</y>
+      <w>224</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>network
+-
+p2p, swarm
+-
+connectiveness
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>154</x>
+      <y>434</y>
+      <w>868</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>      node
+-
+state-machine, 2-stages-minit，initialization，boostrap, leader-election
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>560</x>
+      <y>504</y>
+      <w>266</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>blockchain comp. Ehtereum
+-
+tx, bp, bk, chain/sh
+-
+golabl rule, resource loc.
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>168</x>
+      <y>224</y>
+      <w>266</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>W3 blockchain browser 
+browse/query
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>154</x>
+      <y>168</y>
+      <w>462</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>W3 testbed
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>448</x>
+      <y>308</y>
+      <w>154</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>W3 benchmark
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>448</x>
+      <y>224</y>
+      <w>154</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>W3 simulator
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>378</x>
+      <y>504</y>
+      <w>182</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>sync 
+-
+ntp, epoch, slot
+-
+1/2 slot sync
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>826</x>
+      <y>504</y>
+      <w>154</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>crypto
+-
+VRF, Hash, Sig
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>168</x>
+      <y>308</y>
+      <w>266</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>W3 CMD
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>266</x>
+      <y>364</y>
+      <w>140</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>lt=[^]-[W3 API]
+web3.js
+group=group-3</panel_attributes>
+    <additional_attributes>30.0;10.0;30.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1022</x>
+      <y>434</y>
+      <w>112</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>intensive
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>980</x>
+      <y>504</y>
+      <w>154</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>Smart Contract
+VM
+SES
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>560</x>
+      <y>602</y>
+      <w>574</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>localfact（data-store）
+-
+shard(bks), peers, swams
+-
+persistence（DB, Query）
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>364</y>
+      <w>154</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>lt=[^]-[W3 Metric API]
+group=group-3</panel_attributes>
+    <additional_attributes>50.0;10.0;50.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>714</x>
+      <y>336</y>
+      <w>168</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>beacon
+-
+uid, time, action
+-
+create, verify
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>882</x>
+      <y>336</y>
+      <w>140</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>2-way bridge
+-
+-
+asset 
+exchange
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>714</x>
+      <y>168</y>
+      <w>308</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>
+
+Ethereum/Ploygon/…
+（layer 1）
+bg=LIGHT_GRAY
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>728</x>
+      <y>280</y>
+      <w>182</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Smart Contract&gt;&gt;
+TAB
+fg=BLACK
+bg=NONE
+layer=2
+group=group-3</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
