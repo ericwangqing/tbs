@@ -1,0 +1,33 @@
+{
+  "name": "@tbs/time-beacon-tab",
+  "version": "0.0.1",
+  "main": "index.js",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.3",
+    "hardhat": "^2.12.1",
+    "hardhat-gas-reporter": "^1.0.9"
+  },
+  "dependencies": {
+    "@polybase/client": "^0.3.36",
+    "ethers": "^5.7.2",
+    "uuid": "^9.0.0"
+  },
+  "scripts": {
+    "node": "cross-env MINING_INTERVAL=6000 hardhat node",
+    "benchmark": "cross-env MINING_INTERVAL=6000 hardhat run scripts/benchmark.js --network localhost",
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:goerli": "hardhat run scripts/deploy.js --network goerli",
+    "deploy:polygonmumbai": "hardhat run scripts/deploy.js --network polygon_mumbai",
+    "deploy:polygonmainnet": "hardhat run scripts/deploy.js --network polygon_mainnet",
+    "deploy:polygonzkevm": "hardhat run scripts/deploy.js --network polygon_zkEVM",
+    "deploy:chiado": "hardhat run scripts/deploy.js --network chiado",
+    "deploy:gnosis": "hardhat run scripts/deploy.js --network gnosis"
+  },
+  "files": [
+    "artifacts",
+    "test"
+  ]
+}
