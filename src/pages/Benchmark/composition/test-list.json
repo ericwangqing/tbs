@@ -2,13 +2,14 @@
   {
     "name": "Random Data in ETH 4~6, 22",
     "id": "1",
+    "timeBeaconChain": "Polygon",
     "dataset": {
       "name": "ETH",
       "timeRange": [
-        1640966400000,
-        1672502399000
+        1648742400000,
+        1656604799000
       ],
-      "txCount": 3000000
+      "txCount": 100000000000
     },
     "shards": 4523,
     "nodes": 45443
@@ -16,10 +17,11 @@
   {
     "name": "ETH Q3, 22",
     "id": "2",
+    "timeBeaconChain": "Polygon",
     "dataset": {
       "name": "ETH",
       "timeRange": [
-        1648742400000,
+        1656604800000,
         1664553599000
       ],
       "txCount": 100000000000
@@ -27,7 +29,7 @@
     "shards": 3056,
     "nodes": 31004,
     "result": {
-      "timeUsed": 996462,
+      "timeUsed": 99642,
       "cpu": 10,
       "memory": 332000000,
       "bandwidth": 450000
@@ -37,18 +39,19 @@
   {
     "name": "ETH all 22",
     "id": "3",
+    "timeBeaconChain": "Gnosis",
     "dataset": {
       "name": "ETH",
       "timeRange": [
-        1648742400000,
-        1664553599000
+        1640966400000,
+        1672502399000
       ],
-      "txCount": 100000000000
+      "txCount": 400000000000
     },
     "shards": 4000,
     "nodes": 40345,
     "result": {
-      "timeUsed": 986320,
+      "timeUsed": 376320,
       "cpu": 8,
       "memory": 329000000,
       "bandwidth": 434000
@@ -58,10 +61,11 @@
   {
     "name": "ETH Q1&Q2, 22",
     "id": "4",
+    "timeBeaconChain": "Polybase",
     "dataset": {
       "name": "ETH",
       "timeRange": [
-        1648742400000,
+        1640966400000,
         1664553599000
       ],
       "txCount": 100000000000
@@ -69,7 +73,7 @@
     "shards": 4000,
     "nodes": 40345,
     "result": {
-      "timeUsed": 986320,
+      "timeUsed": 98620,
       "cpu": 8,
       "memory": 329000000,
       "bandwidth": 434000

@@ -1,5 +1,6 @@
 <template lang="pug">
 .road-map-container
+  .test-plan-beacon-chain {{ controller.testData.timeBeaconChain.toLocaleUpperCase() }}
   .test-plan-state
     span(v-if="controller.mode === 'Playback' && controller.state === 'running'") {{ controller.playbackSpeed }}X 
     span(v-if="controller.state === 'running' || controller.state === 'pausing' || controller.state === 'completed'") {{ controller.mode }}
@@ -160,7 +161,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  .test-plan-state {
+  .test-plan-state, .test-plan-beacon-chain {
     height: 24px;
     font-size: 20px;
     line-height: 24px;

@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "34760288",
+      "name": "TBS",
+      "font_class": "TBS",
+      "unicode": "e6a1",
+      "unicode_decimal": 59041
+    },
+    {
+      "icon_id": "34761437",
+      "name": "Polybase",
+      "font_class": "Polybase",
+      "unicode": "e6a4",
+      "unicode_decimal": 59044
+    },
+    {
+      "icon_id": "34761438",
+      "name": "Gnosis",
+      "font_class": "Gnosis",
+      "unicode": "e6a5",
+      "unicode_decimal": 59045
+    },
+    {
+      "icon_id": "34761439",
+      "name": "Polygon",
+      "font_class": "Polygon",
+      "unicode": "e6a6",
+      "unicode_decimal": 59046
+    },
+    {
       "icon_id": "34756988",
       "name": "GitHub",
       "font_class": "GitHub",
@@ -53,13 +81,6 @@
       "font_class": "chart",
       "unicode": "e6a0",
       "unicode_decimal": 59040
-    },
-    {
-      "icon_id": "34756858",
-      "name": "TBS",
-      "font_class": "TBS",
-      "unicode": "e6a1",
-      "unicode_decimal": 59041
     },
     {
       "icon_id": "33302105",
