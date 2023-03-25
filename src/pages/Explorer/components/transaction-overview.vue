@@ -191,7 +191,7 @@ function copyHash(hash) {
 }
 </script>
 <style lang="scss" scoped>
-@import '@/theme/dark/mixin.scss';
+@import '@/theme/mixin.scss';
 .text-black-30 {
   color: rgba(255, 255, 255, 0.3);
 }
