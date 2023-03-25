@@ -15,7 +15,7 @@
         stop(stop-color="#FFCB00" offset="0%")
           animate(ref="borderAniToRed1" attributeName="stop-color" :values="borderAniToRed1Vals" :dur="dur" repeatCount="1" begin="indefinite" fill="freeze")
         stop(stop-color="#F08B00" offset="100%")
-          animate(ref="borderAniToRed3" attributeName="stop-color" :values="borderAniToRed2Vals" :dur="dur" repeatCount="1" begin="indefinite" fill="freeze")
+          animate(ref="borderAniToRed2" attributeName="stop-color" :values="borderAniToRed2Vals" :dur="dur" repeatCount="1" begin="indefinite" fill="freeze")
       linearGradient(x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-main")
         stop(stop-color="#3C2F26" stop-opacity="0.85" offset="0%")
           animate(ref="maskAniToRed1" attributeName="stop-color" :values="maskAniToRed1Vals" :dur="dur" repeatCount="1" begin="indefinite" fill="freeze")
@@ -40,7 +40,6 @@ export default defineComponent({
   setup: (props) => {
     const borderAniToRed1 = ref(null)
     const borderAniToRed2 = ref(null)
-    const borderAniToRed3 = ref(null)
     const borderAniToRed1Vals = ref('#FFCB00;#FB6555')
     const borderAniToRed2Vals = ref('#F08B00;#A20D0A')
     
@@ -50,7 +49,7 @@ export default defineComponent({
     const maskAniToRed2Vals = ref('#0F1220;#20170F')
 
     const dur = ref('0.4s')
-
+ 
     watch(() => props.isBurning, (val) => {
       if (val) {
         borderAniToRed1Vals.value = '#FFCB00;#FB6555'
@@ -81,7 +80,6 @@ export default defineComponent({
     return {
       borderAniToRed1,
       borderAniToRed2,
-      borderAniToRed3,
       borderAniToRed1Vals,
       borderAniToRed2Vals,
 
