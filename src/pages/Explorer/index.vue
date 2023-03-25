@@ -24,9 +24,9 @@ const routeName = route.name
 let name, label
 let routeOption
 if (routeName === 'explorer-block-list') {
-  const { type, index } = route.query
+  const { type, index, chain } = route.query
   if (type === 'beacon') {
-    name = <div class="font-bold">ETH</div>
+    name = <div class="font-bold">{chain || 'ETH'}</div>
     label = 'Time Beacon Chain'
   } else {
     name = <div class="font-bold">TBS</div>

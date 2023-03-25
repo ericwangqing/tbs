@@ -31,7 +31,7 @@ export default defineComponent({
       starField.render()
       if (controller.state === 'running') starField.start()
       else starField.stop()
-      if (controller.tps >= 100000) starField.speedUp()
+      if (controller.tps >= controller.fastThreshold) starField.speedUp()
     })
 
     const getOffset = () => {
@@ -86,7 +86,7 @@ export default defineComponent({
     watch(
       () => controller.tps,
       (val) => {
-        if (val >= 100000) {
+        if (val >= controller.fastThreshold) {
           starField.speedUp()
           if (!hashFly.value) startFly()
         } else {

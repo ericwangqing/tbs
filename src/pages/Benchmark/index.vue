@@ -1,5 +1,5 @@
 <template lang="pug">
-.cockpit(:class="{ burning: controller.tps >= 100000 }")
+.cockpit(:class="{ burning: controller.tps >= controller.fastThreshold }")
   StarField
   RoadLine
   .footer-shadow

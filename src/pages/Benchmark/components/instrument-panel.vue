@@ -1,11 +1,11 @@
 <template lang="pug">
 .instrument-panel-container
-  InstrumentPanelBg.instrument-panel-bg(:isBurning="tps >= 100000")
+  InstrumentPanelBg.instrument-panel-bg(:isBurning="controller && tps >= controller.fastThreshold")
   PerformanceChart.performance-chart
   .tps-gauge-wrapper
-    TpsGauge.tps-gauge(id="tpsGauge", :percent="percent", :percentChangeAnimate="false" :burning="tps >= 100000")
+    TpsGauge.tps-gauge(id="tpsGauge", :percent="percent", :percentChangeAnimate="false" :burning="controller && tps >= controller.fastThreshold")
     .tps-gauge-content
-      .count(:class="{ burning: tps >= 100000 }") {{formattedTps}}
+      .count(:class="{ burning: controller && tps >= controller.fastThreshold }") {{formattedTps}}
       .tps TPS
       img.logo(:src="logo")
   ResourceCharts.resource-charts-container
@@ -65,9 +65,9 @@ export default defineComponent({
       if (tps.value < 100) return (tps.value / 100) * 10
       else if (tps.value < 1000) return ((tps.value - 100) / 1000) * 5 + 10
       else if (tps.value < 10000) return ((tps.value - 1000) / 10000) * 5 + 15
-      else if (tps.value < 100000)
-        return ((tps.value - 10000) / 100000) * 63 + 20
-      else return Math.min(100, ((tps.value - 100000) / 30000) * 17 + 83)
+      else if (tps.value < 90000)
+        return ((tps.value - 10000) / 90000) * 63 + 20
+      else return Math.min(100, ((tps.value - 90000) / 30000) * 17 + 83)
     })
 
     return {
@@ -75,7 +75,8 @@ export default defineComponent({
       logo,
       formattedTps,
       tps,
-      panelImg
+      panelImg,
+      controller
     }
   },
 })

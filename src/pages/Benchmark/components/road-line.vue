@@ -83,7 +83,7 @@ export default defineComponent({
         lineComp.init()
         if (controller.state === 'running') lineComp.start()
         else lineComp.stop()
-        if (controller.tps >= 100000) lineComp.onSpeedUp()
+        if (controller.tps >= controller.fastThreshold) lineComp.onSpeedUp()
       })
     })
 
@@ -94,7 +94,7 @@ export default defineComponent({
     watch(
       () => controller.tps,
       (val) => {
-        if (val >= 100000) lineComp.onSpeedUp()
+        if (val >= controller.fastThreshold) lineComp.onSpeedUp()
         else lineComp.onSlowDown()
       }
     )
