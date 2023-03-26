@@ -68,7 +68,7 @@ export default defineComponent({
       const { offsetY, offsetX, offsetXASide } = getOffset()
       const hashDirection = offsetX / Math.abs(offsetX)
       const blockDirection = offsetXASide / Math.abs(offsetXASide)
-      setElementPerspectivePos(hashList.value, '-1500px', '500px', `${offsetY}vh`, `${offsetX}px`, `${hashDirection * 90}deg`)
+      setElementPerspectivePos(hashList.value, '-1500px', '500px', `${offsetY}vh`, `${offsetX}px`, `${-hashDirection * 90}deg`)
       setElementPerspectivePos(blockList.value, '-1500px', '200px', `${offsetY}vh`, `${offsetXASide}px`, `${blockDirection * 5}deg`, true)
 
       setTimeout(() => {
