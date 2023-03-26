@@ -3,7 +3,7 @@ TransactionsTable(:txs="txs", :loading="loading",:pagination="pagination",@chang
 </template>
 <script setup>
 import { ref, computed, defineProps, watchEffect, inject } from 'vue'
-import TransactionsTable from '@/pages/explorer/components/transactions-table.vue'
+import TransactionsTable from '@/pages/Explorer/components/transactions-table.vue'
 const txs = ref([])
 const TBSApi = inject('TBSApi')
 const loading = ref(false)

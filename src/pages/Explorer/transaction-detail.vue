@@ -9,8 +9,8 @@ div.transaction-detail-container.px-30px.pb-60px.rounded-8px
 <script setup>
 import { computed, ref, watchEffect, inject } from 'vue'
 import { useRoute } from 'vue-router'
-import TransactionOverview from '@/pages/explorer/components/transaction-overview.vue'
-import TransactionState from '@/pages/explorer/components/transaction-state.vue'
+import TransactionOverview from '@/pages/Explorer/components/transaction-overview.vue'
+import TransactionState from '@/pages/Explorer/components/transaction-state.vue'
 const TBSApi = inject('TBSApi')
 const route = useRoute()
 const activeKey = ref('Overview')

@@ -26,7 +26,7 @@ import { inject, computed, ref, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import { utils } from 'ethers'
 import AddressTransactions from './components/address-transactions.vue'
-import DescriptionItem from '@/pages/explorer/components/description-item.vue'
+import DescriptionItem from '@/pages/Explorer/components/description-item.vue'
 const route = useRoute()
 
 const loading = ref(false)

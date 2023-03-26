@@ -68,7 +68,7 @@ div(v-if="props.transaction")
 </template>
 <script setup>
 import { computed } from 'vue'
-import DescriptionItem from '@/pages/explorer/components/description-item.vue'
+import DescriptionItem from '@/pages/Explorer/components/description-item.vue'
 import { QuestionCircleFilled, CopyOutlined } from '@ant-design/icons-vue'
 import { useClipboard } from '@vueuse/core'
 import useTime from '@/hook/timeHook'
