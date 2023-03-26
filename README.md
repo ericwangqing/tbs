@@ -1,4 +1,4 @@
-# TDS
+# TBS
 TBS is a high-performance blockchain scaling platform that achieves impressive scalability without compromising on security or decentralization. 
 
 ## How does it work?
@@ -25,7 +25,7 @@ and the web3.storage will be used soon to record/publish the testing results.
 
 ### GA
 
-* Project Gateway 
+* Project Gateway http://tbs.mq-ai.cn
 * IPFS Gateway 
 
 ### Snapshot
@@ -48,7 +48,7 @@ npm run serve
 Then visit http://localhost:4173 (default)
 
 ## References
-1. [W3Chain: A Layer2 Blockchain Defeating the Scalability Trilemma]()(Acceped by ICBC 2023 and will be released soon)
+1. [W3Chain: A Layer2 Blockchain Defeating the Scalability Trilemma]()(Accepted by ICBC 2023 and will be released soon)
 2. [W3 Whitepaper](https://wiki.mq-ai.cn/display/WEB3/W3+Whitepaper) (beta release soon)
 3. [Consensusless Blockchain: A Promising High-Performance Blockchain without Consensus](https://arxiv.org/abs/2208.12381)   
 4. [区块链不需要挖矿——无共识区块链](https://zhuanlan.zhihu.com/p/557733758) (Chinese)   
@@ -61,10 +61,10 @@ Then visit http://localhost:4173 (default)
 ### Core team 💪
 
 * [@Eric Wang](https://github.com/ericwangqing)  _(founder, project lead, technical product owner, architect)_
-* [@Rengar Wei](https://github.com/weihaopeng)  _(Ccore Engineer)_
+* [@Rengar Wei](https://github.com/weihaopeng)  _(Core Engineer)_
 * [@Xinfeng Li](https://github.com/lixinfenggh)  _(Core Engineer)_
 * [@Tommy Huang](https://github.com/huanghdm88)  _(UI/UX Designer)_
-* [@Miaoyong Xu](https://github.com/xumy29)  _(Algorithn Reacher)_
+* [@Miaoyong Xu](https://github.com/xumy29)  _(Algorithm Researcher)_
 
 
 
