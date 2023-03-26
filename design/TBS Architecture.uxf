@@ -80,7 +80,7 @@ group=group-3</panel_attributes>
       <w>266</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>W3 blockchain browser 
+    <panel_attributes>Blockchain browser 
 browse/query
 group=group-3</panel_attributes>
     <additional_attributes/>
@@ -93,7 +93,7 @@ group=group-3</panel_attributes>
       <w>462</w>
       <h>210</h>
     </coordinates>
-    <panel_attributes>W3 testbed
+    <panel_attributes>TBS testbed
 group=group-3</panel_attributes>
     <additional_attributes/>
   </element>
@@ -105,7 +105,7 @@ group=group-3</panel_attributes>
       <w>154</w>
       <h>42</h>
     </coordinates>
-    <panel_attributes>W3 benchmark
+    <panel_attributes>benchmark
 group=group-3</panel_attributes>
     <additional_attributes/>
   </element>
@@ -117,7 +117,7 @@ group=group-3</panel_attributes>
       <w>154</w>
       <h>56</h>
     </coordinates>
-    <panel_attributes>W3 simulator
+    <panel_attributes>network
 group=group-3</panel_attributes>
     <additional_attributes/>
   </element>
@@ -159,7 +159,7 @@ group=group-3</panel_attributes>
       <w>266</w>
       <h>42</h>
     </coordinates>
-    <panel_attributes>W3 CMD
+    <panel_attributes>CLI tool
 group=group-3</panel_attributes>
     <additional_attributes/>
   </element>
@@ -171,7 +171,7 @@ group=group-3</panel_attributes>
       <w>140</w>
       <h>98</h>
     </coordinates>
-    <panel_attributes>lt=[^]-[W3 API]
+    <panel_attributes>lt=[^]-[TBS API]
 web3.js
 group=group-3</panel_attributes>
     <additional_attributes>30.0;10.0;30.0;50.0</additional_attributes>
@@ -226,7 +226,7 @@ group=group-3</panel_attributes>
       <w>154</w>
       <h>98</h>
     </coordinates>
-    <panel_attributes>lt=[^]-[W3 Metric API]
+    <panel_attributes>lt=[^]-[TBS Metric API]
 group=group-3</panel_attributes>
     <additional_attributes>50.0;10.0;50.0;50.0</additional_attributes>
   </element>
