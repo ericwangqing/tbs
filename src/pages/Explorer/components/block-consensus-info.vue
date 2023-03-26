@@ -14,7 +14,7 @@ div(v-if="props.block")
 </template>
 <script setup>
 import { inject, onMounted, computed, ref, watchEffect, toRefs } from 'vue'
-import DescriptionItem from '@/pages/explorer/components/description-item.vue'
+import DescriptionItem from '@/pages/Explorer/components/description-item.vue'
 import { QuestionCircleFilled } from '@ant-design/icons-vue'
 import useBlock from '@/hook/blockHook'
 const { getGasUsed, getGasLimit, getGasUsePecent, getBaseFeePerGas } =

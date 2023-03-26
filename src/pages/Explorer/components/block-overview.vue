@@ -32,8 +32,8 @@ div(v-if="props.block")
 <script setup>
 import { inject, onMounted, computed, ref, watchEffect, toRefs } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import DescriptionItem from '@/pages/explorer/components/description-item.vue'
-import BlockChange from '@/pages/explorer/components/block-change.vue'
+import DescriptionItem from '@/pages/Explorer/components/description-item.vue'
+import BlockChange from '@/pages/Explorer/components/block-change.vue'
 import { QuestionCircleFilled } from '@ant-design/icons-vue'
 import useBlock from '@/hook/blockHook'
 import useTime from '@/hook/timeHook'

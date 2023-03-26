@@ -11,8 +11,8 @@ div.block-detail-container.px-30px.pb-60px.rounded-8px
 <script setup>
 import { computed, ref, watchEffect, inject } from 'vue'
 import { useRoute } from 'vue-router'
-import BlockOverview from '@/pages/explorer/components/block-overview.vue'
-import BlockConsensusInfo from '@/pages/explorer/components/block-consensus-info.vue'
+import BlockOverview from '@/pages/Explorer/components/block-overview.vue'
+import BlockConsensusInfo from '@/pages/Explorer/components/block-consensus-info.vue'
 const TBSApi = inject('TBSApi')
 const route = useRoute()
 const activeKey = ref('Overview')

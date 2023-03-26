@@ -9,8 +9,8 @@ div.transaction-list-container.px-30px.pb-60px.rounded-8px
 <script setup>
 import { inject, onMounted, computed, ref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import BlockChange from '@/pages/explorer/components/block-change.vue'
-import TransactionTable from '@/pages/explorer/components/transactions-table.vue'
+import BlockChange from '@/pages/Explorer/components/block-change.vue'
+import TransactionTable from '@/pages/Explorer/components/transactions-table.vue'
 const TBSApi = inject('TBSApi')
 const route = useRoute()
 const router = useRouter()
