@@ -3,7 +3,9 @@ TBS is a high-performance blockchain scaling platform that achieves impressive s
 
 ## How does it work?
 
-TBS utilizes sharding technology, and maintains security through frequent reconfiguration of its stateless committees. The platform introduces a time beacon chain to assist these committees in verifying intra-shard and cross-shard transactions. The time beacon chain runs parallel to the sharding chains and is utilized by sharding chains to store and request its state root. Any secure blockchain that supports smart contracts can be used as TBS's time beacon chain, with Ethereum, Gnosis Chain, and Polygon currently supported. TBS boasts impressive performance, capable of achieving over 100,000 TPS with thousands of nodes.
+TBS currently employs Ethereum, Gnosis Chain, Polygon, and Polybase as its layer 1 blockchains. It deploys corresponding smart contracts on these chains to create time beacons and verify the generation of blocks on sharding chains (including shard ID, hash, time, and creator). TBS sharding nodes implement the TBS protocol using a fork of Ethereum-js, and compose a TBS network via libp2p. They use NTP for epoch synchronization and slot allocation in block generation.
+
+The TBS testbed is both a visualization and a development tool for the TBS blockchain. This decentralized JavaScript application runs in the browser, is distributed via IPFS, and is connected via libp2p. It utilizes ECharts for visualizing TBS networks and benchmarking. A GitHub workflow automatically publishes the main version to IPFS.
 
 
 ![img](design/TBS_Architecture.jpg)
