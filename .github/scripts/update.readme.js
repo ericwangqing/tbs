@@ -28,7 +28,7 @@ const readCID = () => {
 const updateUrls = (CID) => {
   const readme = fs.readFileSync(readmePath, 'utf8')
   const newReadme = readme.replace(
-    /(https:\/\/.+\/ipfs\/)(Qm[a-zA-Z0-9_-]+)/g,
+    /(https?:\/\/.+\/ipfs\/)(Qm[a-zA-Z0-9_-]+)/g,
     `$1${CID}`
   )
   fs.writeFileSync(readmePath, newReadme)
