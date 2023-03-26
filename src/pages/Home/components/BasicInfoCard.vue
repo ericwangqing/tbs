@@ -33,6 +33,7 @@ export default defineComponent({
     font-size: 20px;
     color: #ffffff;
     font-weight: bold;
+    font-family: 'PangMenZhengDaoBiao';
   }
   &-value {
     font-weight: bold;

@@ -112,6 +112,7 @@ export default defineComponent({
       background: transparent
       border-bottom-color: transparent
       color: rgba(255, 255, 255, 0.5)
+      font-family: 'PangMenZhengDaoBiao'
       :deep .ant-menu-item
         padding: 0
         font-weight: 400
