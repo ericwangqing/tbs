@@ -2,7 +2,7 @@ node_modules
 .idea
 *.iml
 .DS_Store
-package-lock.json
+lib/**/package-lock.json
 data
 dist
 .nyc_output
