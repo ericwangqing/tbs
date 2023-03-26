@@ -55,10 +55,10 @@ export default defineComponent({
     }
     const getStateIcon = () => {
       const dict = {
-        collect: 'icon-shouji',
-        attest: 'icon-jianzheng',
-        unfinalized: 'icon-chukuai',
-        finalized: 'icon-qiaoding'
+        collect: 'icon-shouji1',
+        attest: 'icon-jianzheng1',
+        unfinalized: 'icon-chukuai1',
+        finalized: 'icon-qiaoding1'
       }
       return ['iconfont', dict[block.state]]
     }
