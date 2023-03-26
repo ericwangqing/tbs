@@ -30,8 +30,8 @@ and the web3.storage will be used soon to record/publish the testing results.
 
 ### Snapshot
 
-* Project Gateway http://159.75.244.103:5002/ipfs/QmUHCiAZhdRdW2KrPbuzSxg9BzeHaWLHV2V9Ku11U8PZXp
-* IPFS Gateway https://ipfs.io/ipfs/QmUHCiAZhdRdW2KrPbuzSxg9BzeHaWLHV2V9Ku11U8PZXp/
+* Project Gateway http://159.75.244.103:5002/ipfs/QmXBSB9UaLCbTEYVFj2SrB5mxNM1AEGejoBZahqJmCawum
+* IPFS Gateway https://ipfs.io/ipfs/QmXBSB9UaLCbTEYVFj2SrB5mxNM1AEGejoBZahqJmCawum/
 
 ## Getting started
 ### development
