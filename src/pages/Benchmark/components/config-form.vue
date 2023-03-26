@@ -38,7 +38,7 @@ import dayjs from 'dayjs'
 import { thousands, formatTime, formatNumWithUnit } from '../composition/util.js'
 
 const dataSourceOptions = [{ key: 'ETH', value: 'ETH' }]
-const beaconChainOptions = [{ key: 'Polygon', value: 'Polygon' }, { key: 'Gnosis', value: 'Gnosis' }, { key: 'Polybase', value: 'Polybase' }]
+const beaconChainOptions = [{ key: 'Ethereum', value: 'Ethereum' }, { key: 'Polygon', value: 'Polygon' }, { key: 'Gnosis', value: 'Gnosis' }, { key: 'Polybase', value: 'Polybase' }]
 
 export default defineComponent({
   name: 'ConfigForm',

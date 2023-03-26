@@ -129,7 +129,7 @@ export default defineComponent({
     })
 
     const getIcon = (beconChainName) => {
-      if (beconChainName === 'Ethereum') return 'icon-ETHglobal'
+      if (beconChainName === 'Ethereum') return 'icon-ethereum'
       if (beconChainName === 'Polygon') return 'icon-Polygon'
       if (beconChainName === 'Polybase') return 'icon-Polybase'
       if (beconChainName === 'Gnosis') return 'icon-Gnosis'

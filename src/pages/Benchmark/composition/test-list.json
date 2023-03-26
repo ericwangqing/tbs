@@ -2,7 +2,7 @@
   {
     "name": "Random Data in ETH 4~6, 22",
     "id": "1",
-    "timeBeaconChain": "Polygon",
+    "timeBeaconChain": "Ethereum",
     "dataset": {
       "name": "ETH",
       "timeRange": [
