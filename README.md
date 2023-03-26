@@ -25,7 +25,7 @@ and the web3.storage will be used soon to record/publish the testing results.
 
 ### GA
 
-* Project Gateway http://tbs.mq-ai.cn
+* Project Gateway http://tbs.mq-ai.cn:5002
 * IPFS Gateway 
 
 ### Snapshot
