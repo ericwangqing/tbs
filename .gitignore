@@ -13,4 +13,11 @@ public/*
 # temp
 ~*
 src/theme/dark/*.css
-src/theme/*.css
+src/theme/*.css# CI temp
+
+ipfs.md
+ipfs.txt
+kubo
+kubo*
+*.tar.gz
+tbs
