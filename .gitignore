@@ -4,6 +4,7 @@ node_modules
 .DS_Store
 package-lock.json
 data
+dist
 .nyc_output
 bin/example/*
 test_result
