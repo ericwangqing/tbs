@@ -87,9 +87,8 @@ export default defineComponent({
           top: '4.6%',
           textStyle: {
             color: '#ffffff',
-            fontWeight: 'bold',
-            fontSize: 20,
-            fontFamily: 'Arial, Arial-Regular'
+            fontSize: 30,
+            fontFamily: 'PangMenZhengDaoBiao, Arial, Arial-Regular'
           }
         },
         tooltip: {

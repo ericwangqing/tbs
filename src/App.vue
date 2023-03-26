@@ -24,6 +24,11 @@ export default defineComponent({
 </script>
 
 <style>
+
+@font-face {
+  font-family: 'PangMenZhengDaoBiao';
+  src: url('@/assets/PangMenZhengDaoBiao.ttf')
+}
 html,
 body {
   overflow: hidden;

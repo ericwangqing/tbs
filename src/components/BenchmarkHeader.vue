@@ -128,6 +128,7 @@ export default defineComponent({
         white-space: nowrap;
         font-size: 20px;
         line-height: 23px;
+        font-family: 'PangMenZhengDaoBiao';
       }
       &__num {
         color: #ffa900;
